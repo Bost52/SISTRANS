@@ -1,0 +1,5 @@
+package vos;
+
+public enum TipoDeComida {
+	ITALIANA, HINDU, TIPICA, RAPIDA, SANDUCHES, MEXICANA, POSTRES, CHINA
+}

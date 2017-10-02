@@ -79,7 +79,8 @@ public class DAOTablaRestaurantes {
 		while (rs.next()) {
 			String name = rs.getString("NAME");
 			Long id = rs.getLong("ID");
-			restaurantes.add(new Restaurante(id, name));
+			String url = rs.getString("URL");
+			restaurantes.add(new Restaurante(id, name, url));
 		}
 		return restaurantes;
 	}
@@ -96,7 +97,8 @@ public class DAOTablaRestaurantes {
 		while (rs.next()) {
 			String name2 = rs.getString("NAME");
 			Long id = rs.getLong("ID");
-			restaurantes.add(new Restaurante(id, name2));
+			String url = rs.getString("URL");
+			restaurantes.add(new Restaurante(id, name2, url));
 		}
 
 		return restaurantes;
@@ -115,7 +117,8 @@ public class DAOTablaRestaurantes {
 		if(rs.next()) {
 			String name = rs.getString("NAME");
 			Long id2 = rs.getLong("ID");
-			restaurante = new Restaurante(id2, name);
+			String url = rs.getString("URL");
+			restaurante = new Restaurante(id2, name, url);
 		}
 
 		return restaurante;
