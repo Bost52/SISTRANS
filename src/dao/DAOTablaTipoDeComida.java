@@ -1,30 +1,14 @@
-/**-------------------------------------------------------------------
- * $Id$
- * Universidad de los Andes (Bogotá - Colombia)
- * Departamento de Ingeniería de Sistemas y Computación
- *
- * Materia: Sistemas Transaccionales
- * Ejercicio: VideoAndes
- * Autor: Juan Felipe García - jf.garcia268@uniandes.edu.co
- * -------------------------------------------------------------------
- */
 package dao;
 
-
-import java.sql.Connection; 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import vos.*;
+import vos.Restaurante;
 
-/**
- * Clase DAO que se conecta la base de datos usando JDBC para resolver los requerimientos de la aplicación
- * @author Monitores 2017-20
- */
-public class DAOTablaRestaurantes {
-
+public class DAOTablaTipoDeComida {
 
 	/**
 	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
@@ -40,7 +24,7 @@ public class DAOTablaRestaurantes {
 	 * Metodo constructor que crea DAOVideo
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
 	 */
-	public DAOTablaRestaurantes() {
+	public DAOTablaTipoDeComida() {
 		recursos = new ArrayList<Object>();
 	}
 
@@ -80,7 +64,6 @@ public class DAOTablaRestaurantes {
 			String name = rs.getString("NAME");
 			Long id = rs.getLong("ID");
 			String url = rs.getString("URL");
-			
 			restaurantes.add(new Restaurante(id, name, url));
 		}
 		return restaurantes;
@@ -127,10 +110,9 @@ public class DAOTablaRestaurantes {
 
 	public void addRestaurante(Restaurante restaurante) throws SQLException, Exception {
 
-		String sql = "INSERT INTO RESTAURANTE VALUES (";
+		String sql = "INSERT INTO VIDEO VALUES (";
 		sql += restaurante.getId() + ",'";
-		sql += restaurante.getName() + "','";
-		sql += restaurante.getUrlPaginaWeb() + "'";
+		sql += restaurante.getName() + "',";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -141,9 +123,7 @@ public class DAOTablaRestaurantes {
 	public void updateRestaurante(Restaurante restaurante) throws SQLException, Exception {
 
 		String sql = "UPDATE RESTAURANTE SET ";
-		sql += "ID=" + restaurante.getName() + ",";
-		sql += "NOMBRE='" + restaurante.getName() + "',";
-		sql += "URL='" + restaurante.getName() + "',";
+		sql += "NAME='" + restaurante.getName() + "',";
 		sql += " WHERE ID = " + restaurante.getId();
 
 
@@ -153,14 +133,13 @@ public class DAOTablaRestaurantes {
 	}
 
 
-	public void deleteRestaurante(Restaurante par) throws SQLException, Exception {
+	public void deleteRestaurante(Restaurante video) throws SQLException, Exception {
 
 		String sql = "DELETE FROM RESTAURANTE";
-		sql += " WHERE ID = " + par.getId();
+		sql += " WHERE ID = " + video.getId();
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 	}
-
 }

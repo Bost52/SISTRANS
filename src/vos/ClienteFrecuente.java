@@ -6,11 +6,11 @@ public class ClienteFrecuente {
 	
 	private String nombre;
 	
-	private PSE cuentaPSE;
+	private Long cuentaPSE;
 	
 	private Orden ordenActual;
 	
-	public ClienteFrecuente(Long id, String nombre, PSE cuentaPSE, Orden ordenActual) {
+	public ClienteFrecuente(Long id, String nombre, Long cuentaPSE, Orden ordenActual) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -34,11 +34,11 @@ public class ClienteFrecuente {
 		this.nombre = nombre;
 	}
 
-	public PSE getCuentaPSE() {
+	public Long getCuentaPSE() {
 		return cuentaPSE;
 	}
 
-	public void setCuentaPSE(PSE cuentaPSE) {
+	public void setCuentaPSE(Long cuentaPSE) {
 		this.cuentaPSE = cuentaPSE;
 	}
 

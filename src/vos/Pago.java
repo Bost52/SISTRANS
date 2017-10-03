@@ -4,12 +4,12 @@ public class Pago {
 
 	private double montoTotal;
 	
-	private PSE cuenta;
+	private Long cuentaPSE; 
 	
-	public Pago(double montoTotal, PSE cuenta) {
+	public Pago(double montoTotal, Long cuenta) {
 		super();
 		this.montoTotal = montoTotal;
-		this.cuenta = cuenta;
+		this.cuentaPSE = cuenta;
 	}
 
 	public double getMontoTotal() {
@@ -20,12 +20,12 @@ public class Pago {
 		this.montoTotal = montoTotal;
 	}
 
-	public PSE getCuenta() {
-		return cuenta;
+	public Long getCuenta() {
+		return cuentaPSE;
 	}
 
-	public void setCuenta(PSE cuenta) {
-		this.cuenta = cuenta;
+	public void setCuenta(Long cuenta) {
+		this.cuentaPSE = cuenta;
 	}
 	
 	
