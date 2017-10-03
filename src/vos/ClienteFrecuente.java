@@ -10,12 +10,11 @@ public class ClienteFrecuente {
 	
 	private Orden ordenActual;
 	
-	public ClienteFrecuente(Long id, String nombre, Long cuentaPSE, Orden ordenActual) {
+	public ClienteFrecuente(Long id, String nombre, Long cuentaPSE) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.cuentaPSE = cuentaPSE;
-		this.ordenActual = ordenActual;
 	}
 
 	public Long getId() {
