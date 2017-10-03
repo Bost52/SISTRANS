@@ -16,13 +16,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.codehaus.jackson.map.ObjectMapper;
-
 import tm.RotondAndesTM;
 import vos.Restaurante;
 
-@Path("videos")
+@Path("restaurantes")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class RestauranteAndesServices {

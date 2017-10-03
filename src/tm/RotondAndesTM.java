@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -62,7 +61,8 @@ public class RotondAndesTM {
 	public RotondAndesTM(String contextPathP) {
 		connectionDataPath = contextPathP + CONNECTION_DATA_FILE_NAME_REMOTE;
 		initConnectionData();
-	}
+		System.err.println("afeubwyegbfyuawbyuaibuifbfbfbfb-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");	
+		}
 
 	/**
 	 * Metodo que  inicializa los atributos que se usan para la conexion a la base de datos.
