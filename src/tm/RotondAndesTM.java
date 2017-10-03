@@ -2,15 +2,21 @@ package tm;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.security.PrivilegedActionException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 
 import dao.DAOTablaRestaurantes;
+import dao.DAOTablaUsuarios;
+import vos.AgregarRestaurante;
+import vos.AgregarUsuarioCliente;
 import vos.Restaurante;
+import vos.Usuario;
 
 public class RotondAndesTM {
 
@@ -61,7 +67,6 @@ public class RotondAndesTM {
 	public RotondAndesTM(String contextPathP) {
 		connectionDataPath = contextPathP + CONNECTION_DATA_FILE_NAME_REMOTE;
 		initConnectionData();
-		System.err.println("afeubwyegbfyuawbyuaibuifbfbfbfb-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");	
 		}
 
 	/**
@@ -96,234 +101,416 @@ public class RotondAndesTM {
 	}
 
 	////////////////////////////////////////
-	///////Transacciones////////////////////
+	///////Transacciones Restaurantes////////////////////
 	////////////////////////////////////////
 
 
-	public List<Restaurante> darRestaurantes() throws Exception {
-		List<Restaurante> restaurantes;
-		DAOTablaRestaurantes daoVideos = new DAOTablaRestaurantes();
-		try 
-		{
-			//////transaccion
-			this.conn = darConexion();
-			daoVideos.setConn(conn);
-			restaurantes = daoVideos.darRestaurantes();
+//	public List<Restaurante> darRestaurantes() throws Exception {
+//		List<Restaurante> restaurantes;
+//		DAOTablaRestaurantes daoVideos = new DAOTablaRestaurantes();
+//		try 
+//		{
+//			//////transaccion
+//			this.conn = darConexion();
+//			daoVideos.setConn(conn);
+//			restaurantes = daoVideos.darRestaurantes();
+//
+//		} catch (SQLException e) {
+//			System.err.println("SQLException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} catch (Exception e) {
+//			System.err.println("GeneralException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} finally {
+//			try {
+//				daoVideos.cerrarRecursos();
+//				if(this.conn!=null)
+//					this.conn.close();
+//			} catch (SQLException exception) {
+//				System.err.println("SQLException closing resources:" + exception.getMessage());
+//				exception.printStackTrace();
+//				throw exception;
+//			}
+//		}
+//		return restaurantes;
+//	}
+//
+//	public List<Restaurante> buscarRestaurantesPorName(String name) throws Exception {
+//		List<Restaurante> restaurantes;
+//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
+//		try 
+//		{
+//			//////transaccion
+//			this.conn = darConexion();
+//			daoRestaurantes.setConn(conn);
+//			restaurantes = daoRestaurantes.buscarRestaurantesPorName(name);
+//
+//		} catch (SQLException e) {
+//			System.err.println("SQLException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} catch (Exception e) {
+//			System.err.println("GeneralException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} finally {
+//			try {
+//				daoRestaurantes.cerrarRecursos();
+//				if(this.conn!=null)
+//					this.conn.close();
+//			} catch (SQLException exception) {
+//				System.err.println("SQLException closing resources:" + exception.getMessage());
+//				exception.printStackTrace();
+//				throw exception;
+//			}
+//		}
+//		return restaurantes;
+//	}
+//
+//	public Restaurante buscarRestaurantePorId(Long id) throws Exception {
+//		Restaurante restaurante;
+//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
+//		try 
+//		{
+//			//////transaccion
+//			this.conn = darConexion();
+//			daoRestaurantes.setConn(conn);
+//			restaurante = daoRestaurantes.buscarRestaurantePorId(id);
+//
+//		} catch (SQLException e) {
+//			System.err.println("SQLException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} catch (Exception e) {
+//			System.err.println("GeneralException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} finally {
+//			try {
+//				daoRestaurantes.cerrarRecursos();
+//				if(this.conn!=null)
+//					this.conn.close();
+//			} catch (SQLException exception) {
+//				System.err.println("SQLException closing resources:" + exception.getMessage());
+//				exception.printStackTrace();
+//				throw exception;
+//			}
+//		}
+//		return restaurante;
+//	}
+//	
+//	public void addRestaurante(Restaurante restaurante) throws Exception {
+//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
+//		try 
+//		{
+//			//////transaccion
+//			this.conn = darConexion();
+//			daoRestaurantes.setConn(conn);
+//			daoRestaurantes.addRestaurante(restaurante);
+//			conn.commit();
+//
+//		} catch (SQLException e) {
+//			System.err.println("SQLException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} catch (Exception e) {
+//			System.err.println("GeneralException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} finally {
+//			try {
+//				daoRestaurantes.cerrarRecursos();
+//				if(this.conn!=null)
+//					this.conn.close();
+//			} catch (SQLException exception) {
+//				System.err.println("SQLException closing resources:" + exception.getMessage());
+//				exception.printStackTrace();
+//				throw exception;
+//			}
+//		}
+//	}
+//	
+//	public void addRestaurantes(List<Restaurante> restaurantes) throws Exception {
+//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
+//		try 
+//		{
+//			//////transaccion - ACID Example
+//			this.conn = darConexion();
+//			conn.setAutoCommit(false);
+//			daoRestaurantes.setConn(conn);
+//			Iterator<Restaurante> it = restaurantes.iterator();
+//			while(it.hasNext())
+//			{
+//				daoRestaurantes.addRestaurante(it.next());
+//			}
+//			
+//			conn.commit();
+//		} catch (SQLException e) {
+//			System.err.println("SQLException:" + e.getMessage());
+//			e.printStackTrace();
+//			conn.rollback();
+//			throw e;
+//		} catch (Exception e) {
+//			System.err.println("GeneralException:" + e.getMessage());
+//			e.printStackTrace();
+//			conn.rollback();
+//			throw e;
+//		} finally {
+//			try {
+//				daoRestaurantes.cerrarRecursos();
+//				if(this.conn!=null)
+//					this.conn.close();
+//			} catch (SQLException exception) {
+//				System.err.println("SQLException closing resources:" + exception.getMessage());
+//				exception.printStackTrace();
+//				throw exception;
+//			}
+//		}
+//	}
+//	
+//
+//	public void updateRestaurante(Restaurante restaurante) throws Exception {
+//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
+//		try 
+//		{
+//			//////transaccion
+//			this.conn = darConexion();
+//			daoRestaurantes.setConn(conn);
+//			daoRestaurantes.updateRestaurante(restaurante);
+//
+//		} catch (SQLException e) {
+//			System.err.println("SQLException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} catch (Exception e) {
+//			System.err.println("GeneralException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} finally {
+//			try {
+//				daoRestaurantes.cerrarRecursos();
+//				if(this.conn!=null)
+//					this.conn.close();
+//			} catch (SQLException exception) {
+//				System.err.println("SQLException closing resources:" + exception.getMessage());
+//				exception.printStackTrace();
+//				throw exception;
+//			}
+//		}
+//	}
+//
+//	public void deleteRestaurante(Restaurante restaurante) throws Exception {
+//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
+//		try 
+//		{
+//			//////transaccion
+//			this.conn = darConexion();
+//			daoRestaurantes.setConn(conn);
+//			daoRestaurantes.deleteRestaurante(restaurante);
+//
+//		} catch (SQLException e) {
+//			System.err.println("SQLException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} catch (Exception e) {
+//			System.err.println("GeneralException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+//		} finally {
+//			try {
+//				daoRestaurantes.cerrarRecursos();
+//				if(this.conn!=null)
+//					this.conn.close();
+//			} catch (SQLException exception) {
+//				System.err.println("SQLException closing resources:" + exception.getMessage());
+//				exception.printStackTrace();
+//				throw exception;
+//			}
+//		}
+//	}
 
-		} catch (SQLException e) {
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} catch (Exception e) {
-			System.err.println("GeneralException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} finally {
-			try {
-				daoVideos.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
+	
+	////////////////////////////////////////
+	///////Transacciones Usuarios////////////////////
+	////////////////////////////////////////
+	
+	public List<Usuario> darUsuarios() throws Exception {
+	List<Usuario> usuarios;
+	 DAOTablaUsuarios daoUsuarios = new DAOTablaUsuarios();
+	try 
+	{
+		//////transaccion
+		this.conn = darConexion();
+		daoUsuarios.setConn(conn);
+		usuarios = daoUsuarios.darUsuarios();
+
+	} catch (SQLException e) {
+		System.err.println("SQLException:" + e.getMessage());
+		e.printStackTrace();
+		throw e;
+	} catch (Exception e) {
+		System.err.println("GeneralException:" + e.getMessage());
+		e.printStackTrace();
+		throw e;
+	} finally {
+		try {
+			daoUsuarios.cerrarRecursos();
+			if(this.conn!=null)
+				this.conn.close();
+		} catch (SQLException exception) {
+			System.err.println("SQLException closing resources:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
 		}
-		return restaurantes;
 	}
-
-	public List<Restaurante> buscarRestaurantesPorName(String name) throws Exception {
-		List<Restaurante> restaurantes;
-		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-		try 
+	return usuarios;
+}
+	
+	public void addUsuario(Usuario usuario) throws Exception {
+	DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
+	try 
+	{
+		if(usuario.getRol().equals("CLIENTE"))
 		{
-			//////transaccion
-			this.conn = darConexion();
-			daoRestaurantes.setConn(conn);
-			restaurantes = daoRestaurantes.buscarRestaurantesPorName(name);
+			throw new PrivilegedActionException(new Exception("no se tienen los permisos para relizar esta accion"));
+		}
+		//////transaccion
+		this.conn = darConexion();
+		daoUsuario.setConn(conn);
+		daoUsuario.addUsuario(usuario);
+		conn.commit();
 
-		} catch (SQLException e) {
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} catch (Exception e) {
-			System.err.println("GeneralException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} finally {
-			try {
-				daoRestaurantes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
+	} catch (SQLException e) {
+		System.err.println("SQLException:" + e.getMessage());
+		e.printStackTrace();
+		throw e;
+	} catch(PrivilegedActionException e){
+		System.err.println("privilegeException:" + e.getMessage());
+		e.printStackTrace();
+		throw e;
+	} catch (Exception e) {
+		System.err.println("GeneralException:" + e.getMessage());
+		e.printStackTrace();
+		throw e;
+	} finally {
+		try {
+			daoUsuario.cerrarRecursos();
+			if(this.conn!=null)
+				this.conn.close();
+		} catch (SQLException exception) {
+			System.err.println("SQLException closing resources:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
 			}
 		}
-		return restaurantes;
-	}
-
-	public Restaurante buscarRestaurantePorId(Long id) throws Exception {
-		Restaurante restaurante;
-		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-		try 
-		{
-			//////transaccion
-			this.conn = darConexion();
-			daoRestaurantes.setConn(conn);
-			restaurante = daoRestaurantes.buscarRestaurantePorId(id);
-
-		} catch (SQLException e) {
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} catch (Exception e) {
-			System.err.println("GeneralException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} finally {
-			try {
-				daoRestaurantes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-		return restaurante;
 	}
 	
-	public void addRestaurante(Restaurante restaurante) throws Exception {
-		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-		try 
-		{
-			//////transaccion
-			this.conn = darConexion();
-			daoRestaurantes.setConn(conn);
-			daoRestaurantes.addRestaurante(restaurante);
-			conn.commit();
-
-		} catch (SQLException e) {
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} catch (Exception e) {
-			System.err.println("GeneralException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} finally {
-			try {
-				daoRestaurantes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-	}
 	
-	public void addRestaurantes(List<Restaurante> restaurantes) throws Exception {
-		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-		try 
+	public void addUsuarioCliente(AgregarUsuarioCliente usuarioCliente) throws Exception {
+	DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
+	try 
+	{
+		this.conn = darConexion();
+		daoUsuario.setConn(conn);
+		if(daoUsuario.buscarRestaurantePorCedula(usuarioCliente.getCedulaAdministrador())==null)
 		{
-			//////transaccion - ACID Example
-			this.conn = darConexion();
-			conn.setAutoCommit(false);
-			daoRestaurantes.setConn(conn);
-			Iterator<Restaurante> it = restaurantes.iterator();
-			while(it.hasNext())
-			{
-				daoRestaurantes.addRestaurante(it.next());
-			}
-			
-			conn.commit();
-		} catch (SQLException e) {
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			conn.rollback();
-			throw e;
-		} catch (Exception e) {
-			System.err.println("GeneralException:" + e.getMessage());
-			e.printStackTrace();
-			conn.rollback();
-			throw e;
-		} finally {
-			try {
-				daoRestaurantes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
+			throw new NoSuchElementException("no se encontro el administrador con la cedula: "+usuarioCliente.getCedulaAdministrador());
+		}
+		if(!daoUsuario.buscarRestaurantePorCedula(usuarioCliente.getCedulaAdministrador()).getRol().equals("ADMINISTRADOR"))
+		{
+			throw new PrivilegedActionException(new Exception("no se tienen los permisos para relizar esta accion"));
+		}
+		if(!usuarioCliente.getUsuario().getRol().equals("CLIENTE"))
+		{
+			throw new PrivilegedActionException(new Exception("no se tienen los permisos para relizar esta accion"));
+		}
+		Usuario usuario = usuarioCliente.getUsuario();
+		//////transaccion
+
+		daoUsuario.addUsuario(usuario);
+		conn.commit();
+
+	} catch (SQLException e) {
+		System.err.println("SQLException:" + e.getMessage());
+		e.printStackTrace();
+		throw e;
+	} catch(PrivilegedActionException e){
+		System.err.println("privilegeException:" + e.getMessage());
+		e.printStackTrace();
+		throw e;
+	}catch(NoSuchElementException e) {
+		System.err.println("noSuchElementException:" + e.getMessage());
+		e.printStackTrace();
+		throw e;
+	}catch (Exception e) {
+		System.err.println("GeneralException:" + e.getMessage());
+		e.printStackTrace();
+		throw e;
+	} finally {
+		try {
+			daoUsuario.cerrarRecursos();
+			if(this.conn!=null)
+				this.conn.close();
+		} catch (SQLException exception) {
+			System.err.println("SQLException closing resources:" + exception.getMessage());
+			exception.printStackTrace();
+			throw exception;
 		}
 	}
+}
+//	public void addRestaurante(AgregarRestaurante usuarioCliente) throws Exception {
+//	DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
+//	DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
+//	try 
+//	{
+//		this.conn = darConexion();
+//		daoUsuario.setConn(conn);
+//		daoRestaurantes.setConn(conn);
+//		if(daoUsuario.buscarRestaurantePorCedula(usuarioCliente.getCedulaAdministrador())==null)
+//		{
+//			throw new NoSuchElementException("no se encontro el administrador con la cedula: "+usuarioCliente.getCedulaAdministrador());
+//		}
+//		if(!daoUsuario.buscarRestaurantePorCedula(usuarioCliente.getCedulaAdministrador()).getRol().equals("ADMINISTRADOR"))
+//		{
+//			throw new PrivilegedActionException(new Exception("no se tienen los permisos para relizar esta accion"));
+//		}
+//		Restaurante restaurante = usuarioCliente.getRestaurante();
+//		//////transaccion
+//
+//		daoRestaurantes.add;
+//		conn.commit();
+//
+//	} catch (SQLException e) {
+//		System.err.println("SQLException:" + e.getMessage());
+//		e.printStackTrace();
+//		throw e;
+//	} catch(PrivilegedActionException e){
+//		System.err.println("privilegeException:" + e.getMessage());
+//		e.printStackTrace();
+//		throw e;
+//	}catch(NoSuchElementException e) {
+//		System.err.println("noSuchElementException:" + e.getMessage());
+//		e.printStackTrace();
+//		throw e;
+//	}catch (Exception e) {
+//		System.err.println("GeneralException:" + e.getMessage());
+//		e.printStackTrace();
+//		throw e;
+//	} finally {
+//		try {
+//			daoUsuario.cerrarRecursos();
+//			if(this.conn!=null)
+//				this.conn.close();
+//		} catch (SQLException exception) {
+//			System.err.println("SQLException closing resources:" + exception.getMessage());
+//			exception.printStackTrace();
+//			throw exception;
+//		}
+//	}
+//}
 	
-
-	public void updateRestaurante(Restaurante restaurante) throws Exception {
-		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-		try 
-		{
-			//////transaccion
-			this.conn = darConexion();
-			daoRestaurantes.setConn(conn);
-			daoRestaurantes.updateRestaurante(restaurante);
-
-		} catch (SQLException e) {
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} catch (Exception e) {
-			System.err.println("GeneralException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} finally {
-			try {
-				daoRestaurantes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-	}
-
-	public void deleteRestaurante(Restaurante restaurante) throws Exception {
-		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-		try 
-		{
-			//////transaccion
-			this.conn = darConexion();
-			daoRestaurantes.setConn(conn);
-			daoRestaurantes.deleteRestaurante(restaurante);
-
-		} catch (SQLException e) {
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} catch (Exception e) {
-			System.err.println("GeneralException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} finally {
-			try {
-				daoRestaurantes.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-	}
-
+	
+	
 }
