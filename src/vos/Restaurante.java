@@ -5,42 +5,46 @@ import org.codehaus.jackson.annotate.*;
 
 public class Restaurante {
 
-	@JsonProperty(value="id")
-	private Long id;
+	@JsonProperty(value="local")
+	private int local;
 
-	@JsonProperty(value="name")
-	private String name;
+	@JsonProperty(value="nombre")
+	private String nombre;
 	
-	@JsonProperty(value="url")
+	@JsonProperty(value="urlpaginaweb")
 	private String urlPaginaWeb;
 	
+	@JsonProperty(value="tipoComida")
 	private TipoDeComida tipoCom;
 	
-	private Representante representante;
+	@JsonProperty(value="representante")
+	private Usuario representante;
 
-	public Restaurante(@JsonProperty(value="id")Long id, @JsonProperty(value="name")String name, @JsonProperty(value="url") String urlPagina) {
+	public Restaurante(@JsonProperty(value="local")int local, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="url") String urlPagina,@JsonProperty(value="representante") Usuario representante ,@JsonProperty(value="tipoComida") TipoDeComida tipoComida) {
 		super();
-		this.id = id;
-		this.name = name;
+		this.local = local;
+		this.nombre = nombre;
 		this.urlPaginaWeb = urlPagina;
+		this.representante=representante;
+		this.tipoCom=tipoComida;
 	}
 
-	public Long getId() {
-		return id;
+	public int getLocal() {
+		return local;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-
-	public String getName() {
-		return name;
+	public void setId(int local) {
+		this.local = local;
 	}
 
 
-	public void setName(String name) {
-		this.name = name;
+	public String getNombre() {
+		return nombre;
+	}
+
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 	public String getUrlPaginaWeb() {
@@ -59,11 +63,11 @@ public class Restaurante {
 		this.tipoCom = tipoCom;
 	}
 
-	public Representante getRepresentante() {
+	public Usuario getRepresentante() {
 		return representante;
 	}
 
-	public void setRepresentante(Representante representante) {
+	public void setRepresentante(Usuario representante) {
 		this.representante = representante;
 	}
 
