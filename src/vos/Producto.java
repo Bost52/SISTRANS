@@ -13,11 +13,10 @@ public class Producto {
 	}
 
 	
-	public Producto(Long id, double precio, TipoProducto tipo) {
+	public Producto(Long id, double precio) {
 		super();
 		this.id = id;
 		this.precio = precio;
-		this.tipo = tipo;
 	}
 
 	public TipoProducto getTipo() {

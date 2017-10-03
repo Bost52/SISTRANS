@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class ProductoSingular extends Producto{
 
-	private double cantidadDisponible;
+	private int cantidadDisponible;
 	
 	private String nombre;
 	
@@ -26,20 +26,15 @@ public class ProductoSingular extends Producto{
 		ENTRADA, PLATO_FUERTE, BEBIDA, POSTRE, ACOMPAÑAMIENTO
 	}
 
-	public ProductoSingular(Long id, double precio, TipoProducto tipo, double cantidadDisponible, String nombre,
-			String descripcion, String descripcionTraducida, double tiempoDePreparacion, double costoProduccion,
-			ArrayList<Ingrediente> ingredientes, ArrayList<ProductoSingular> productosEquivalentes,
-			TipoProductoSigular tipoProdSing) {
-		super(id, precio, tipo);
+	public ProductoSingular(Long id, double precio, int cantidadDisponible, String nombre,
+			String descripcion, String descripcionTraducida, double tiempoDePreparacion, double costoProduccion) {
+		super(id, precio);
 		this.cantidadDisponible = cantidadDisponible;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 		this.descripcionTraducida = descripcionTraducida;
 		this.tiempoDePreparacion = tiempoDePreparacion;
 		this.costoProduccion = costoProduccion;
-		this.ingredientes = ingredientes;
-		this.productosEquivalentes = productosEquivalentes;
-		this.tipoProdSing = tipoProdSing;
 	}
 
 	public ArrayList<ProductoSingular> getProductosEquivalentes() {
@@ -50,11 +45,11 @@ public class ProductoSingular extends Producto{
 		this.productosEquivalentes = productosEquivalentes;
 	}
 
-	public double getCantidadDisponible() {
+	public int getCantidadDisponible() {
 		return cantidadDisponible;
 	}
 
-	public void setCantidadDisponible(double cantidadDisponible) {
+	public void setCantidadDisponible(int cantidadDisponible) {
 		this.cantidadDisponible = cantidadDisponible;
 	}
 

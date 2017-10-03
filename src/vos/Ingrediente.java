@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class Ingrediente {
 
+	private Long id;
+	
 	public String nombre;
 	
 	public String descripcion;
@@ -12,13 +14,12 @@ public class Ingrediente {
 	
 	public ArrayList<Ingrediente> ingredientesEquivalentes;
 
-	public Ingrediente(String nombre, String descripcion, String descripcionTraducida,
-			ArrayList<Ingrediente> ingredientesEquivalentes) {
+	public Ingrediente(Long id, String nombre, String descripcion, String descripcionTraducida) {
 		super();
+		this.id = id;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 		this.descripcionTraducida = descripcionTraducida;
-		this.ingredientesEquivalentes = ingredientesEquivalentes;
 	}
 
 	public String getNombre() {
@@ -51,6 +52,14 @@ public class Ingrediente {
 
 	public void setIngredientesEquivalentes(ArrayList<Ingrediente> ingredientesEquivalentes) {
 		this.ingredientesEquivalentes = ingredientesEquivalentes;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	
