@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import vos.Restaurante;
-
-public class DAOTablaTipoDeComida {
+public class DAOTablaCondicionesTecnicas {
 
 	/**
 	 * Arraylits de recursos que se usan para la ejecución de sentencias SQL
@@ -24,7 +22,7 @@ public class DAOTablaTipoDeComida {
 	 * Metodo constructor que crea DAOVideo
 	 * <b>post: </b> Crea la instancia del DAO e inicializa el Arraylist de recursos
 	 */
-	public DAOTablaTipoDeComida() {
+	public DAOTablaCondicionesTecnicas() {
 		recursos = new ArrayList<Object>();
 	}
 
@@ -51,45 +49,48 @@ public class DAOTablaTipoDeComida {
 		this.conn = con;
 	}
 
-	public ArrayList<Restaurante> darRestaurantes() throws SQLException, Exception {
-		ArrayList<Restaurante> restaurantes = new ArrayList<Restaurante>();
+	public ArrayList<CondicionesTecnicas> darCondicionesTecnicas() throws SQLException, Exception {
+		ArrayList<ClienteFrecuente> resp = new ArrayList<ClienteFrecuente>();
 
-		String sql = "SELECT * FROM RESTAURANTE";
-
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
-		recursos.add(prepStmt);
-		ResultSet rs = prepStmt.executeQuery();
-
-		while (rs.next()) {
-			String tipo = rs.getString("TIPO");
-			Long id = rs.getLong("ID");
-			restaurantes.add(new Restaurante(id, name, url));
-		}
-		return restaurantes;
-	}
-
-	public ArrayList<Restaurante> buscarRestaurantesPorName(String name) throws SQLException, Exception {
-		ArrayList<Restaurante> restaurantes = new ArrayList<Restaurante>();
-
-		String sql = "SELECT * FROM RESTAURANTE WHERE NAME ='" + name + "'";
+		String sql = "SELECT * FROM CLIENTEFRECUENTE";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 
 		while (rs.next()) {
-			String name2 = rs.getString("NAME");
+			String nombre = rs.getString("NOMBRE");
 			Long id = rs.getLong("ID");
-			String url = rs.getString("URL");
-			restaurantes.add(new Restaurante(id, name2, url));
+			Long pse = rs.getLong("PSE");
+			
+			resp.add(new ClienteFrecuente(id, nombre, pse));
 		}
-
-		return restaurantes;
+		return resp;
 	}
 
-	public Restaurante buscarRestaurantePorId(Long id) throws SQLException, Exception 
+	public ArrayList<ClienteFrecuente> buscarProductoSigularPorName(String name) throws SQLException, Exception {
+		ArrayList<ClienteFrecuente> resp = new ArrayList<ClienteFrecuente>();
+
+		String sql = "SELECT * FROM CLIENTEFRECUENTE WHERE NAME ='" + name + "'";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String nombre = rs.getString("NOMBRE");
+			Long id = rs.getLong("ID");
+			Long pse = rs.getLong("PSE");
+			
+			resp.add(new ClienteFrecuente(id, nombre, pse));
+		}
+
+		return resp;
+	}
+
+	public ClienteFrecuente buscarClienteFrecuentePorId(Long id) throws SQLException, Exception 
 	{
-		Restaurante restaurante = null;
+		ClienteFrecuente resp = null;
 
 		String sql = "SELECT * FROM RESTAURANTE WHERE ID =" + id;
 
@@ -98,32 +99,37 @@ public class DAOTablaTipoDeComida {
 		ResultSet rs = prepStmt.executeQuery();
 
 		if(rs.next()) {
-			String name = rs.getString("NAME");
-			Long id2 = rs.getLong("ID");
-			String url = rs.getString("URL");
-			restaurante = new Restaurante(id2, name, url);
+			String nombre = rs.getString("NOMBRE");
+			Long idP = rs.getLong("ID");
+			String descripcion = rs.getString("DESESP");
+			String descripcionTraducida = rs.getString("DESING");
+			
+			resp = new ClienteFrecuente(id, nombre, pse);
 		}
 
-		return restaurante;
+		return resp;
 	}
 
-	public void addRestaurante(Restaurante restaurante) throws SQLException, Exception {
+	public void addClienteFrecuente(ClienteFrecuente par) throws SQLException, Exception {
 
-		String sql = "INSERT INTO VIDEO VALUES (";
-		sql += restaurante.getId() + ",'";
-		sql += restaurante.getName() + "',";
+		String sql = "INSERT INTO CLIENTEFRECUENTE VALUES (";
+		sql += par.getId() + ",'";
+		sql += par.getNombre() + "',";
+		sql += par.getCuentaPSE() + ")";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 
 	}
-	
-	public void updateRestaurante(Restaurante restaurante) throws SQLException, Exception {
 
-		String sql = "UPDATE RESTAURANTE SET ";
-		sql += "NAME='" + restaurante.getName() + "',";
-		sql += " WHERE ID = " + restaurante.getId();
+	public void updateClienteFrecuente(ClienteFrecuente par) throws SQLException, Exception {
+
+		String sql = "UPDATE CLIENTEFRECUENTE SET ";
+		sql += "ID= " + par.getId() + ",";
+		sql += "NOMBRE= '" + par.getNombre() + "',";
+		sql += "PSE= " + par.getCuentaPSE();
+
 
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -132,10 +138,10 @@ public class DAOTablaTipoDeComida {
 	}
 
 
-	public void deleteRestaurante(Restaurante video) throws SQLException, Exception {
+	public void deleteClienteFrecuente(ClienteFrecuente par) throws SQLException, Exception {
 
-		String sql = "DELETE FROM RESTAURANTE";
-		sql += " WHERE ID = " + video.getId();
+		String sql = "DELETE FROM CLIENTEFRECUENTE";
+		sql += " WHERE ID = " + par.getId();
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
