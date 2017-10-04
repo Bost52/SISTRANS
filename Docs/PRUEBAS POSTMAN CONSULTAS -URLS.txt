@@ -1,0 +1,30 @@
+PRUEBAS EN POSTMAN
+
+POST (Requerimiento 3)
+
+http://localhost:8080/RotondAndes/rest/usuarios
+
+caso: es administrador o restaurante.
+
+JSON:
+{
+	"cedula":11111111,
+	"nombre": "Pedro Perez",
+	"rol":"ADMINISTRADOR",
+	"email":"pepe@ponku.edu.co"
+}
+
+Response: 200 OK
+
+caso: es cliente
+
+JSON:
+{
+	"cedula":12222,
+	"nombre": "Pablo Perez",
+	"rol":"CLIENTE",
+	"email":"pape@ponku.edu.co"
+}
+
+Response: 403 Forbidden
+-------------------------------------------------------------------------------------------------------------------

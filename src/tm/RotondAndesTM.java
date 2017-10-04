@@ -15,6 +15,7 @@ import dao.DAOTablaRestaurantes;
 import dao.DAOTablaUsuarios;
 import vos.AgregarRestaurante;
 import vos.AgregarUsuarioCliente;
+import vos.ConsultarClientes;
 import vos.Restaurante;
 import vos.Usuario;
 
@@ -336,15 +337,23 @@ public class RotondAndesTM {
 	///////Transacciones Usuarios////////////////////
 	////////////////////////////////////////
 
-	public List<Usuario> darUsuarios() throws Exception {
+	public List<Usuario> darUsuariosAdministrador(ConsultarClientes administrador) throws Exception {
 		List<Usuario> usuarios;
-		DAOTablaUsuarios daoUsuarios = new DAOTablaUsuarios();
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
 		try 
 		{
 			//////transaccion
 			this.conn = darConexion();
-			daoUsuarios.setConn(conn);
-			usuarios = daoUsuarios.darUsuarios();
+			daoUsuario.setConn(conn);
+			if(daoUsuario.buscarUsuarioPorCedula(administrador.getCedulaAdministrador())==null)
+			{
+				throw new NoSuchElementException("no se encontro el administrador con la cedula: "+administrador.getCedulaAdministrador());
+			}
+			if(!daoUsuario.buscarUsuarioPorCedula(administrador.getCedulaAdministrador()).getRol().equals("ADMINISTRADOR"))
+			{
+				throw new PrivilegedActionException(new Exception("no se tienen los permisos para relizar esta accion"));
+			}
+			usuarios = daoUsuario.darUsuarios();
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -356,7 +365,7 @@ public class RotondAndesTM {
 			throw e;
 		} finally {
 			try {
-				daoUsuarios.cerrarRecursos();
+				daoUsuario.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -414,11 +423,11 @@ public class RotondAndesTM {
 		{
 			this.conn = darConexion();
 			daoUsuario.setConn(conn);
-			if(daoUsuario.buscarRestaurantePorCedula(usuarioCliente.getCedulaAdministrador())==null)
+			if(daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getCedulaAdministrador())==null)
 			{
 				throw new NoSuchElementException("no se encontro el administrador con la cedula: "+usuarioCliente.getCedulaAdministrador());
 			}
-			if(!daoUsuario.buscarRestaurantePorCedula(usuarioCliente.getCedulaAdministrador()).getRol().equals("ADMINISTRADOR"))
+			if(!daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getCedulaAdministrador()).getRol().equals("ADMINISTRADOR"))
 			{
 				throw new PrivilegedActionException(new Exception("no se tienen los permisos para relizar esta accion"));
 			}
@@ -460,6 +469,7 @@ public class RotondAndesTM {
 			}
 		}
 	}
+
 	//	public void addRestaurante(AgregarRestaurante usuarioCliente) throws Exception {
 	//	DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
 	//	DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
@@ -510,7 +520,4 @@ public class RotondAndesTM {
 	//		}
 	//	}
 	//}
-
-
-
 }

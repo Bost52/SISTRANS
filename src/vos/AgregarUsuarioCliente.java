@@ -10,7 +10,7 @@ public class AgregarUsuarioCliente {
 	@JsonProperty(value="usuario")
 	private Usuario usuario;
 	
-	public AgregarUsuarioCliente(@JsonProperty(value="admistrador") int cedulaAdministrador, 	@JsonProperty(value="usuario") Usuario usuario) {
+	public AgregarUsuarioCliente(@JsonProperty(value="admistrador") int cedulaAdministrador, @JsonProperty(value="usuario") Usuario usuario) {
 		this.cedulaAdministrador=cedulaAdministrador;
 		this.usuario=usuario;
 	}
