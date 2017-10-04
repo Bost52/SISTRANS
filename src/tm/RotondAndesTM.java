@@ -11,11 +11,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
+import dao.DAOTablaProductoSingular;
 import dao.DAOTablaRestaurantes;
 import dao.DAOTablaUsuarios;
 import vos.AgregarRestaurante;
 import vos.AgregarUsuarioCliente;
 import vos.ConsultarClientes;
+import vos.ConsultarProductosPorFiltros;
+import vos.Producto;
+import vos.ProductoSingular;
 import vos.Restaurante;
 import vos.Usuario;
 
@@ -470,6 +474,46 @@ public class RotondAndesTM {
 		}
 	}
 
+	public List<ProductoSingular> darProductosPorFiltros(ConsultarProductosPorFiltros filtros){
+		List<ProductoSingular> productos;
+		DAOTablaProductoSingular daoUsuario = new DAOTablaProductoSingular();
+		try 
+		{
+			//////transaccion
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			if(daoUsuario.buscarUsuarioPorCedula(administrador.getCedulaAdministrador())==null)
+			{
+				throw new NoSuchElementException("no se encontro el administrador con la cedula: "+administrador.getCedulaAdministrador());
+			}
+			if(!daoUsuario.buscarUsuarioPorCedula(administrador.getCedulaAdministrador()).getRol().equals("ADMINISTRADOR"))
+			{
+				throw new PrivilegedActionException(new Exception("no se tienen los permisos para relizar esta accion"));
+			}
+			productos = daoUsuario.darUsuarios();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+		return productos;
+		
+	}
 	//	public void addRestaurante(AgregarRestaurante usuarioCliente) throws Exception {
 	//	DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
 	//	DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();

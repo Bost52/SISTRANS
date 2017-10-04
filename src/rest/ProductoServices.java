@@ -6,9 +6,11 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import tm.VideoAndesTM;
+import tm.RotondAndesTM;
+import vos.ConsultarProductosPorFiltros;
+import vos.Producto;
+import vos.ProductoSingular;
 import vos.RotondAndes;
-import vos.Video;
 
 public class ProductoServices {
 
@@ -38,11 +40,11 @@ public class ProductoServices {
 	 * @return Json con todos los videos de la base de datos o json con 
      * el error que se produjo
 	 */
-	public Response getProductosOfrecidos() {
+	public Response getProductosSingularesConFiltros(ConsultarProductosPorFiltros filtros) {
 		RotondAndesTM tm = new RotondAndesTM(getPath());
-		List<Video> videos;
+		List<ProductoSingular> productos;
 		try {
-			videos = tm.darVideos();
+			productos = tm.darProductosPorFiltros(filtros);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
