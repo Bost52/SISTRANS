@@ -69,3 +69,45 @@ JSON:
 
 Response: 403 Forbidden
 
+-------------------------------------------------------------------------------------------------------------------
+POST (Requerimiento 5)
+
+http://localhost:8080/RotondAndes/rest/ingredientes
+
+caso: existe administrador 
+JSON:
+{
+	"cedulaAdministrador": 91273321,
+	"usuario":{ "cedula":12222,
+				"nombre": "Andrea Velasquez",
+				"rol":"CLIENTE",
+				"email":"anve@ponku.edu.co"}
+}
+
+Response: 200 OK
+
+
+caso: administrador no existe
+JSON:
+{
+	"cedulaAdministrador": 1,
+	"usuario":{ "cedula":12222,
+				"nombre": "Juan Parra",
+				"rol":"CLIENTE",
+				"email":"jupa@ponku.edu.co"}
+}
+
+Response: 404 Not Found
+
+caso: no es administrador o se intenta agregar diferente a cliente
+JSON:
+{
+	"cedulaAdministrador": 91273321,
+	"usuario":{ "cedula":12222,
+				"nombre": "Kevin Rodriguez",
+				"rol":"ADMINISTRADOR",
+				"email":"kero@ponku.edu.co"}
+}
+
+Response: 403 Forbidden
+

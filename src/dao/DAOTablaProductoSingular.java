@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import vos.ConsultarProductosPorFiltros;
 import vos.ProductoSingular;
 
 public class DAOTablaProductoSingular {
@@ -104,7 +105,7 @@ public class DAOTablaProductoSingular {
 	{
 		ProductoSingular resp = null;
 
-		String sql = "SELECT * FROM RESTAURANTE WHERE ID =" + id;
+		String sql = "SELECT * FROM PRODUCTOSINGULAR WHERE ID =" + id;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -124,6 +125,37 @@ public class DAOTablaProductoSingular {
 		}
 
 		return resp;
+	}
+	
+	
+	public ArrayList<ProductoSingular> darProductosPorFiltros(ConsultarProductosPorFiltros filtros){
+		ArrayList<ProductoSingular> productos = new ArrayList<ProductoSingular>();
+		
+		int localRest = filtros.getRestaurante().getLocal();
+		double precioMax = filtros.getPrecioMayor();
+		double precioMin = filtros.getPrecioMenor();
+		String categoria = filtros.getCategoria().toString();
+		
+		String sql = "SELECT * FROM PRODUCTO, OFRECEPRODUCTO  WHERE ID =";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if(rs.next()) {
+			String name = rs.getString("NOMBRE");
+			Long idP = rs.getLong("ID");
+			Integer cantidad = rs.getInt("CANTIDAD");
+			String descripcion = rs.getString("DESESP");
+			String descripcionTraducida = rs.getString("DESING");
+			double precio = rs.getDouble("PRECIO");
+			double tiempo = rs.getDouble("TIEMPO");
+			double costo = rs.getDouble("COSTO");
+			
+			productos.add(new ProductoSingular(idP, precio, cantidad, name, descripcion, descripcionTraducida, tiempo, costo));
+		}
+		
+		return productos;
 	}
 
 	public void addProductoSingular(ProductoSingular par) throws SQLException, Exception {

@@ -11,13 +11,16 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
+import dao.DAOTablaIngrediente;
 import dao.DAOTablaProductoSingular;
 import dao.DAOTablaRestaurantes;
 import dao.DAOTablaUsuarios;
+import vos.AgregarIngredienteRestaurante;
 import vos.AgregarRestaurante;
 import vos.AgregarUsuarioCliente;
 import vos.ConsultarClientes;
 import vos.ConsultarProductosPorFiltros;
+import vos.Ingrediente;
 import vos.Producto;
 import vos.ProductoSingular;
 import vos.Restaurante;
@@ -427,7 +430,7 @@ public class RotondAndesTM {
 		{
 			this.conn = darConexion();
 			daoUsuario.setConn(conn);
-			if(daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getCedulaAdministrador())==null)
+			if(daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getCedulaAdministrador())==null || usuarioCliente.getUsuario() == null)
 			{
 				throw new NoSuchElementException("no se encontro el administrador con la cedula: "+usuarioCliente.getCedulaAdministrador());
 			}
@@ -482,15 +485,7 @@ public class RotondAndesTM {
 			//////transaccion
 			this.conn = darConexion();
 			daoUsuario.setConn(conn);
-			if(daoUsuario.buscarUsuarioPorCedula(administrador.getCedulaAdministrador())==null)
-			{
-				throw new NoSuchElementException("no se encontro el administrador con la cedula: "+administrador.getCedulaAdministrador());
-			}
-			if(!daoUsuario.buscarUsuarioPorCedula(administrador.getCedulaAdministrador()).getRol().equals("ADMINISTRADOR"))
-			{
-				throw new PrivilegedActionException(new Exception("no se tienen los permisos para relizar esta accion"));
-			}
-			productos = daoUsuario.darUsuarios();
+			productos = daoUsuario.darUsuariosConFiltros(filtros);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -511,9 +506,61 @@ public class RotondAndesTM {
 				throw exception;
 			}
 		}
-		return productos;
-		
+		return productos;	
 	}
+	
+	public void addIngredienteRestaurante(AgregarIngredienteRestaurante userResta) throws Exception{
+		DAOTablaIngrediente daoIngrediente = new DAOTablaIngrediente();
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		try 
+		{
+			this.conn = darConexion();
+			daoIngrediente.setConn(conn);
+			if(daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaUsuarioRestaurante()) == null || userResta.getIngrediente() == null)
+			{
+				throw new NoSuchElementException("no se encontro el usuario restaurante con la cedula: "+userResta.getCedulaUsuarioRestaurante());
+			}
+			if(!daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaUsuarioRestaurante()).getRol().equals("RESTAURANTE"))
+			{
+				throw new PrivilegedActionException(new Exception("no se tienen los permisos para relizar esta accion"));
+			}
+			
+			
+			Ingrediente ingrediente = userResta.getIngrediente();
+			//////transaccion
+			
+			daoIngrediente.addIngrediente(ingrediente);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(PrivilegedActionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
 	//	public void addRestaurante(AgregarRestaurante usuarioCliente) throws Exception {
 	//	DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
 	//	DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();

@@ -48,7 +48,7 @@ public class ProductoServices {
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(videos).build();
+		return Response.status(200).entity(productos).build();
 	}
 	
 }
