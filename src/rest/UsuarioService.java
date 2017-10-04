@@ -89,6 +89,7 @@ public class UsuarioService {
 		return Response.status(200).entity(usuario).build();
 	}
 	
+
 	@POST
 	@Path("/preferencia")
 	public Response addPreferencia(Preferencia preferencia) {
@@ -106,4 +107,15 @@ public class UsuarioService {
 	}
 	
 
+//	@GET
+//	public Response getUsuariosAdministrador(ConsultarClientes administrador) {
+//		RotondAndesTM tm = new RotondAndesTM(getPath());
+//		List<Usuario> usuarios;
+//		try {
+//			usuarios = tm.darUsuariosAdministrador(administrador);
+//		} catch (Exception e) {
+//			return Response.status(500).entity(doErrorMessage(e)).build();
+//		}
+//		return Response.status(200).entity(usuarios).build();
+//	}
 }

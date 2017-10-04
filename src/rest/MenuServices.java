@@ -1,6 +1,5 @@
 package rest;
 
-import java.security.PrivilegedActionException;
 import java.util.NoSuchElementException;
 
 import javax.naming.NoPermissionException;
@@ -15,12 +14,13 @@ import javax.ws.rs.core.Response;
 
 import tm.RotondAndesTM;
 import vos.AgregarIngredienteRestaurante;
-import vos.AgregarUsuarioCliente;
+import vos.AgregarMenu;
 
-@Path("ingredientes")
+@Path("menus")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class IngredienteServices {
+public class MenuServices {
+
 
 	/**
 	 * Atributo que usa la anotacion @Context para tener el ServletContext de la conexion actual.
@@ -42,10 +42,10 @@ public class IngredienteServices {
 	}
 	
 	@POST
-	public Response addIngredienteRestaurante(AgregarIngredienteRestaurante userResta) {
+	public Response addMenuRestaurante(AgregarMenu userResta) {
 		RotondAndesTM tm = new RotondAndesTM(getPath());
 		try {
-			tm.addIngredienteRestaurante(userResta);
+			tm.addMenuRestaurante(userResta);
 		}catch(NoPermissionException e){
 			return Response.status(403).entity(doErrorMessage(e)).build();
 		}catch(NoSuchElementException e) {
@@ -55,6 +55,4 @@ public class IngredienteServices {
 		}
 		return Response.status(200).entity(userResta).build();
 	}
-	
-	
 }

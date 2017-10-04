@@ -2,24 +2,34 @@ package vos;
 
 import java.util.ArrayList;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 public class Ingrediente {
 
+	@JsonProperty(value="id")
 	private Long id;
 	
+	@JsonProperty(value="nombre")
 	public String nombre;
 	
+	@JsonProperty(value="descripcionespañol")
 	public String descripcion;
 	
+	@JsonProperty(value="descripcioningles")
 	public String descripcionTraducida;
+	
+	@JsonProperty(value="cantidad")
+	private int cantidad;
 	
 	public ArrayList<Ingrediente> ingredientesEquivalentes;
 
-	public Ingrediente(Long id, String nombre, String descripcion, String descripcionTraducida) {
+	public Ingrediente(@JsonProperty(value="id")Long id, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="descripcionespañol")String descripcion, @JsonProperty(value="descripcioningles") String descripcionTraducida, @JsonProperty(value="cantidad")int cantidad) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 		this.descripcionTraducida = descripcionTraducida;
+		this.cantidad = cantidad;
 	}
 
 	public String getNombre() {
@@ -62,5 +72,11 @@ public class Ingrediente {
 		this.id = id;
 	}
 	
+	public Integer getCantidad() {
+		return cantidad;
+	}
 	
+	public void setCantidad(Integer cantidad) {
+		this.cantidad = cantidad;
+	}
 }

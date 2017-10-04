@@ -74,39 +74,82 @@ POST (Requerimiento 5)
 
 http://localhost:8080/RotondAndes/rest/ingredientes
 
-caso: existe administrador 
+caso: existe usuario restaurante 
 JSON:
 {
-	"cedulaAdministrador": 91273321,
-	"usuario":{ "cedula":12222,
-				"nombre": "Andrea Velasquez",
-				"rol":"CLIENTE",
-				"email":"anve@ponku.edu.co"}
+	"usuarioRestaurante": 988,
+	"ingrediente":{ "idingrediente":16,
+				"nombre": "Tomate",
+				"cantidad":458555,
+				"descripcionespañol":"rojo y rico",
+				"descripcioningles" : "red and delicious"}
 }
 
 Response: 200 OK
 
 
-caso: administrador no existe
+caso: usuario restaurante no existe
 JSON:
 {
 	"cedulaAdministrador": 1,
-	"usuario":{ "cedula":12222,
-				"nombre": "Juan Parra",
-				"rol":"CLIENTE",
-				"email":"jupa@ponku.edu.co"}
+	"ingrediente":{ "idingrediente":158,
+				"nombre": "Queso",
+				"cantidad":458666,
+				"descripcionespañol":"amarillo ",
+				"descripcioningles" : "yellow"}
 }
 
 Response: 404 Not Found
 
-caso: no es administrador o se intenta agregar diferente a cliente
+caso: no es usuario restaurante o se intenta agregar diferente a cliente
 JSON:
 {
-	"cedulaAdministrador": 91273321,
-	"usuario":{ "cedula":12222,
-				"nombre": "Kevin Rodriguez",
-				"rol":"ADMINISTRADOR",
-				"email":"kero@ponku.edu.co"}
+	"ingrediente":{ "idingrediente":266,
+				"nombre": "Pan",
+				"cantidad":458777,
+				"descripcionespañol":"grade",
+				"descripcioningles" : "big"}
+}
+
+Response: 403 Forbidden
+-------------------------------------------------------------------------------------------------------------------
+POST (Requerimiento 6)
+
+http://localhost:8080/RotondAndes/rest/menus
+
+caso: existe usuario restaurante 
+JSON:
+{
+	"cedulaRestaurante": 988,
+	"menu":{ "id":16,
+				"precio": "455.16",
+				"nombre":"Combo carrilero de Rafael",
+				"local":23	}
+}
+
+Response: 200 OK
+
+
+caso: usuario restaurante no existe
+JSON:
+{
+	"cedulaRestaurante": 988,
+	"menu":{ "id":1588,
+				"precio": "45645.16",
+				"nombre":"Pastica de la casa",
+				"local": 2	}
+}
+
+Response: 404 Not Found
+
+caso: no es usuario restaurante o se intenta agregar diferente a cliente
+JSON:
+{
+	"cedulaRestaurante": 988,
+	"menu":{ "id": 568,
+				"precio": "977.01",
+				"nombre":"Sopa Mexicana con todo",
+				"local":22	}
 }
 
 Response: 403 Forbidden

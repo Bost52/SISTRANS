@@ -62,10 +62,12 @@ public class DAOTablaMenu {
 		ResultSet rs = prepStmt.executeQuery();
 
 		while (rs.next()) {
-			Long id = rs.getLong("ID");
+			Long idP = rs.getLong("IDMENU");
 			double precio = rs.getDouble("PRECIO");
+			String nombre = rs.getString("NOMBRE");
+			int local = rs.getInt("LOCAL");
 			
-			resp.add(new Menu(id, precio));
+			resp.add(new Menu(idP, precio, nombre, local));
 		}
 		return resp;
 	}
@@ -80,10 +82,12 @@ public class DAOTablaMenu {
 		ResultSet rs = prepStmt.executeQuery();
 
 		while (rs.next()) {
-			Long id = rs.getLong("ID");
+			Long idP = rs.getLong("IDMENU");
 			double precio = rs.getDouble("PRECIO");
+			String nombre = rs.getString("NOMBRE");
+			int local = rs.getInt("LOCAL");
 			
-			resp.add(new Menu(id, precio));
+			resp.add(new Menu(idP, precio, nombre, local));
 		}
 
 		return resp;
@@ -100,10 +104,12 @@ public class DAOTablaMenu {
 		ResultSet rs = prepStmt.executeQuery();
 
 		if(rs.next()) {
-			Long idP = rs.getLong("ID");
+			Long idP = rs.getLong("IDMENU");
 			double precio = rs.getDouble("PRECIO");
+			String nombre = rs.getString("NOMBRE");
+			int local = rs.getInt("LOCAL");
 			
-			resp = new Menu(idP, precio);
+			resp = new Menu(idP, precio, nombre, local);
 		}
 
 		return resp;
@@ -111,8 +117,10 @@ public class DAOTablaMenu {
 
 	public void addMenu(Menu par) throws SQLException, Exception {
 
-		String sql = "INSERT INTO MENU VALUES (";
-		sql += par.getId() + ",";
+		String sql = "INSERT INTO MENU (IDMENU, NOMBRE, LOCAL, PRECIOTOTAL) VALUES (";
+		sql += par.getId() + ",'";
+		sql += par.getNombre() + "',";
+		sql += par.getLocal() + ",";
 		sql += par.getPrecio() + ")";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
