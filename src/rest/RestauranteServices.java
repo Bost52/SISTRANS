@@ -2,7 +2,9 @@ package rest;
 
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import javax.naming.NoPermissionException;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -17,6 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import tm.RotondAndesTM;
+import vos.AgregarRestaurante;
 import vos.Restaurante;
 
 @Path("restaurantes")
@@ -44,17 +47,17 @@ public class RestauranteServices {
 	}
 	
 
-//	@GET
-//	public Response getRestaurantes() {
-//		RotondAndesTM tm = new RotondAndesTM(getPath());
-//		List<Restaurante> videos;
-//		try {
-//			videos = tm.darRestaurantes();
-//		} catch (Exception e) {
-//			return Response.status(500).entity(doErrorMessage(e)).build();
-//		}
-//		return Response.status(200).entity(videos).build();
-//	}
+	@GET
+	public Response getRestaurantes() {
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		List<Restaurante> videos;
+		try {
+			videos = tm.darRestaurantes();
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(videos).build();
+	}
 //
 //	@GET
 //	@Path( "{id: \\d+}" )
@@ -87,16 +90,20 @@ public class RestauranteServices {
 //		return Response.status(200).entity(videos).build();
 //	}
 //
-//	@POST
-//	public Response addRestaurante(Restaurante video) {
-//		RotondAndesTM tm = new RotondAndesTM(getPath());
-//		try {
-//			tm.addRestaurante(video);
-//		} catch (Exception e) {
-//			return Response.status(500).entity(doErrorMessage(e)).build();
-//		}
-//		return Response.status(200).entity(video).build();
-//	}
+	@POST
+	public Response addRestaurante(AgregarRestaurante restaurante) {
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		try {
+			tm.addRestaurante(restaurante);
+		}catch(NoPermissionException e){
+			return Response.status(403).entity(doErrorMessage(e)).build();
+		}catch(NoSuchElementException e) {
+			return Response.status(404).entity(doErrorMessage(e)).build();
+		}catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(restaurante).build();
+	}
 //	
 //	@POST
 //	@Path("/varios")

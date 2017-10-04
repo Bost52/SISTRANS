@@ -1,9 +1,9 @@
 package rest;
 
-import java.security.PrivilegedActionException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.naming.NoPermissionException;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -61,7 +61,7 @@ public class UsuarioService {
 		RotondAndesTM tm = new RotondAndesTM(getPath());
 		try {
 			tm.addUsuario(usuario);
-		}catch(PrivilegedActionException e){
+		}catch(NoPermissionException e){
 			return Response.status(403).entity(doErrorMessage(e)).build();
 		}
 		catch (Exception e) {
@@ -76,7 +76,7 @@ public class UsuarioService {
 		RotondAndesTM tm = new RotondAndesTM(getPath());
 		try {
 			tm.addUsuarioCliente(usuario);
-		}catch(PrivilegedActionException e){
+		}catch(NoPermissionException e){
 			return Response.status(403).entity(doErrorMessage(e)).build();
 		}catch(NoSuchElementException e) {
 			return Response.status(404).entity(doErrorMessage(e)).build();

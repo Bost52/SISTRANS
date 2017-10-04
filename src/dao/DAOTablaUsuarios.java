@@ -70,7 +70,7 @@ public class DAOTablaUsuarios {
 	return usuarios;
 	}
 	
-	public Usuario buscarRestaurantePorCedula(int cedula) throws SQLException, Exception 
+	public Usuario buscarUsuarioPorCedula(int cedula) throws SQLException, Exception 
 	{
 		Usuario usuario = null;
 

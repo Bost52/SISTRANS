@@ -19,14 +19,18 @@ public class Restaurante {
 	
 	@JsonProperty(value="representante")
 	private Usuario representante;
+	
+	@JsonProperty(value="zona")
+	private Zona zona;
 
-	public Restaurante(@JsonProperty(value="local")int local, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="url") String urlPagina,@JsonProperty(value="representante") Usuario representante ,@JsonProperty(value="tipoComida") TipoDeComida tipoComida) {
+	public Restaurante(@JsonProperty(value="local")int local, @JsonProperty(value="nombre")String nombre, @JsonProperty(value="url") String urlPagina,@JsonProperty(value="representante") Usuario representante ,@JsonProperty(value="tipoComida") TipoDeComida tipoComida,@JsonProperty(value="idZona")Zona zona) {
 		super();
 		this.local = local;
 		this.nombre = nombre;
 		this.urlPaginaWeb = urlPagina;
 		this.representante=representante;
 		this.tipoCom=tipoComida;
+		this.zona=zona;
 	}
 
 	public int getLocal() {
@@ -69,6 +73,14 @@ public class Restaurante {
 
 	public void setRepresentante(Usuario representante) {
 		this.representante = representante;
+	}
+	
+	public Zona getZona() {
+		return zona;
+	}
+	
+	public void setZona(Zona zona) {
+		this.zona = zona;
 	}
 
 }

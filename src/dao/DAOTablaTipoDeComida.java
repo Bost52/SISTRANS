@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import vos.Restaurante;
+import vos.TipoDeComida;
 
 public class DAOTablaTipoDeComida {
 
@@ -49,5 +49,25 @@ public class DAOTablaTipoDeComida {
 	 */
 	public void setConn(Connection con){
 		this.conn = con;
+	}
+	
+	public TipoDeComida buscarTipoComidaPorId(int id) throws SQLException, Exception 
+	{
+		TipoDeComida tipo = null;
+
+		String sql = "SELECT * FROM TIPODECOMIDA WHERE IDTIPO =" + id;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if(rs.next()) {
+			String tipo2 = rs.getString("TIPO");
+			int id2 = rs.getInt("IDTIPO");
+			
+			tipo = new TipoDeComida(id2, tipo2);
+		}
+
+		return tipo;
 	}
 }

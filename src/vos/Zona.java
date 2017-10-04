@@ -2,86 +2,20 @@ package vos;
 
 import java.util.ArrayList;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 public class Zona {
 	
-	private String nombre;
+	@JsonProperty(value="idZona")
+	private int idZona;
 	
-	private ArrayList<Restaurante> restaurantes;
-	
-	private Integer capacidadComensales;
-	
-	private boolean aptoParaPersonasEnCondicionesEspeciales;
-	
-	private String condicionesTecnicas;
-	
-	private TipoDeEspacio tipoEsp;
-	
+	@JsonProperty(value="tipoComida")
 	private TipoDeComida tipoCom;
 	
-	public enum TipoDeEspacio{
-		ABIERTO, CERRADO
-	}
-
 	
-	public Zona(String nombre, ArrayList<Restaurante> restaurantes, Integer capacidadComensales,
-			boolean aptoParaPersonasEnCondicionesEspeciales, String condicionesTecnicas, TipoDeEspacio tipoEsp,
-			TipoDeComida tipoCom) {
-		super();
-		this.nombre = nombre;
-		this.restaurantes = restaurantes;
-		this.capacidadComensales = capacidadComensales;
-		this.aptoParaPersonasEnCondicionesEspeciales = aptoParaPersonasEnCondicionesEspeciales;
-		this.condicionesTecnicas = condicionesTecnicas;
-		this.tipoEsp = tipoEsp;
-		this.tipoCom = tipoCom;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public ArrayList<Restaurante> getRestaurantes() {
-		return restaurantes;
-	}
-
-	public void setRestaurantes(ArrayList<Restaurante> restaurantes) {
-		this.restaurantes = restaurantes;
-	}
-
-	public Integer getCapacidadComensales() {
-		return capacidadComensales;
-	}
-
-	public void setCapacidadComensales(Integer capacidadComensales) {
-		this.capacidadComensales = capacidadComensales;
-	}
-
-	public boolean isAptoParaPersonasEnCondicionesEspeciales() {
-		return aptoParaPersonasEnCondicionesEspeciales;
-	}
-
-	public void setAptoParaPersonasEnCondicionesEspeciales(boolean aptoParaPersonasEnCondicionesEspeciales) {
-		this.aptoParaPersonasEnCondicionesEspeciales = aptoParaPersonasEnCondicionesEspeciales;
-	}
-
-	public String getCondicionesTecnicas() {
-		return condicionesTecnicas;
-	}
-
-	public void setCondicionesTecnicas(String condicionesTecnicas) {
-		this.condicionesTecnicas = condicionesTecnicas;
-	}
-
-	public TipoDeEspacio getTipoEsp() {
-		return tipoEsp;
-	}
-
-	public void setTipoEsp(TipoDeEspacio tipoEsp) {
-		this.tipoEsp = tipoEsp;
+	public Zona(@JsonProperty(value="idZona") int idZona,@JsonProperty(value="tipoComida") TipoDeComida tipoComida) {
+		this.idZona=idZona;
+		this.tipoCom=tipoComida;
 	}
 
 	public TipoDeComida getTipoCom() {
@@ -92,5 +26,12 @@ public class Zona {
 		this.tipoCom = tipoCom;
 	}
 	
+	public int getIdZona() {
+		return idZona;
+	}
+	
+	public void setIdZona(int idZona) {
+		this.idZona = idZona;
+	}
 	
 }
