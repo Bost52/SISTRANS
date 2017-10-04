@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import egr.DAOTablaUsuarios;
 import vos.*;
 
 /**

@@ -1,6 +1,6 @@
-/rest/
-/tm/
 /dao/
+/rest/
 /vos/
-/Login.class
-/DAOTablaCategoria.class
+/egr/
+/tm/
+/DAOTablaUsuarios.class
