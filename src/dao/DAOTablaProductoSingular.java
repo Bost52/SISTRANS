@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import vos.Categoria;
 import vos.ProductoSingular;
 
 public class DAOTablaProductoSingular {
@@ -53,8 +54,11 @@ public class DAOTablaProductoSingular {
 
 	public ArrayList<ProductoSingular> darProductos() throws SQLException, Exception {
 		ArrayList<ProductoSingular> productos = new ArrayList<ProductoSingular>();
+		
+		DAOTablaCategoria daoCategoria= new DAOTablaCategoria();
+		daoCategoria.setConn(conn);
 
-		String sql = "SELECT * FROM PRODUCTOSINGULAR";
+		String sql = "SELECT * FROM PRODUCTO";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -62,49 +66,25 @@ public class DAOTablaProductoSingular {
 
 		while (rs.next()) {
 			String name = rs.getString("NOMBRE");
-			Long id = rs.getLong("ID");
-			Integer cantidad = rs.getInt("CANTIDAD");
-			String descripcion = rs.getString("DESESP");
-			String descripcionTraducida = rs.getString("DESING");
-			double precio = rs.getDouble("PRECIO");
-			double tiempo = rs.getDouble("TIEMPO");
-			double costo = rs.getDouble("COSTO");
+			int id = rs.getInt("IDPRODUCTO");
+			String descripcion = rs.getString("DESCRIPCIONESPANOL");
+			String descripcionTraducida = rs.getString("DESCRIPCIONINGLES");
+			Categoria categoria=daoCategoria.buscarCategoria(rs.getInt("IDCATEGORIA"));
 			
-			productos.add(new ProductoSingular(id, precio, cantidad, name, descripcion, descripcionTraducida, tiempo, costo));
+			productos.add(new ProductoSingular(id, name, descripcion, descripcionTraducida, categoria));
 		}
 		return productos;
 	}
 
-	public ArrayList<ProductoSingular> buscarProductoSigularPorName(String name) throws SQLException, Exception {
-		ArrayList<ProductoSingular> productos = new ArrayList<ProductoSingular>();
-
-		String sql = "SELECT * FROM PRODUCTOSINGULAR WHERE NAME ='" + name + "'";
-
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
-		recursos.add(prepStmt);
-		ResultSet rs = prepStmt.executeQuery();
-
-		while (rs.next()) {
-			String nombre = rs.getString("NOMBRE");
-			Long id = rs.getLong("ID");
-			Integer cantidad = rs.getInt("CANTIDAD");
-			String descripcion = rs.getString("DESESP");
-			String descripcionTraducida = rs.getString("DESING");
-			double precio = rs.getDouble("PRECIO");
-			double tiempo = rs.getDouble("TIEMPO");
-			double costo = rs.getDouble("COSTO");
-			
-			productos.add(new ProductoSingular(id, precio, cantidad, nombre, descripcion, descripcionTraducida, tiempo, costo));
-		}
-
-		return productos;
-	}
-
-	public ProductoSingular buscarProductoSingularPorId(Long id) throws SQLException, Exception 
+	public ProductoSingular buscarProductoSingularPorId(int id) throws SQLException, Exception 
 	{
+		
+		DAOTablaCategoria daoCategoria= new DAOTablaCategoria();
+		daoCategoria.setConn(conn);
+		
 		ProductoSingular resp = null;
 
-		String sql = "SELECT * FROM RESTAURANTE WHERE ID =" + id;
+		String sql = "SELECT * FROM PRODUCTO WHERE IDPRODUCTO =" + id;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -112,64 +92,43 @@ public class DAOTablaProductoSingular {
 
 		if(rs.next()) {
 			String name = rs.getString("NOMBRE");
-			Long idP = rs.getLong("ID");
-			Integer cantidad = rs.getInt("CANTIDAD");
-			String descripcion = rs.getString("DESESP");
-			String descripcionTraducida = rs.getString("DESING");
-			double precio = rs.getDouble("PRECIO");
-			double tiempo = rs.getDouble("TIEMPO");
-			double costo = rs.getDouble("COSTO");
+			int idProducto = rs.getInt("IDPRODUCTO");
+			String descripcion = rs.getString("DESCRIPCIONESPANOL");
+			String descripcionTraducida = rs.getString("DESCRIPCIONINGLES");
+			Categoria categoria=daoCategoria.buscarCategoria(rs.getInt("IDCATEGORIA"));
 			
-			resp = new ProductoSingular(idP, precio, cantidad, name, descripcion, descripcionTraducida, tiempo, costo);
+			resp=new ProductoSingular(idProducto, name, descripcion, descripcionTraducida, categoria);
 		}
 
 		return resp;
 	}
 
-	public void addProductoSingular(ProductoSingular par) throws SQLException, Exception {
+	public void addProductoSingular(ProductoSingular par,int cantidad, int local, double precio, double costo) throws SQLException, Exception {
 
-		String sql = "INSERT INTO PRODUCTOSINGULAR VALUES (";
-		sql += par.getId() + ",";
-		sql += par.getPrecio() + ",";
-		sql += par.getCantidadDisponible() + ",'";
-		sql += par.getNombre() + "','";
-		sql += par.getDescripcion() + "','";
-		sql += par.getDescripcionTraducida() + "',";
-		sql += par.getTiempoDePreparacion() + ",";
-		sql += par.getCostoProduccion() ;
+		if(par.getIdProducto()!=0 && buscarProductoSingularPorId(par.getIdProducto())!=null)
+		{
+			
+			String sql = "insert into OFRECEPRODUCTO (IDPRODUCTO, LOCAL, CANTIDAD, PRECIO, COSTE) values ('"+par.getIdProducto()+"', "+local+", "+cantidad+", "+precio+", "+costo+")";
 
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
-		recursos.add(prepStmt);
-		prepStmt.executeQuery();
+			PreparedStatement prepStmt = conn.prepareStatement(sql);
+			recursos.add(prepStmt);
+			prepStmt.executeQuery();
+		}
+		else
+		{
+			String sqll = "insert into PRODUCTO (IDPRODUCTO, NOMBRE, DESCRIPCIONESPANOL, DESCRIPCIONINGLES, IDCATEGORIA) values ("+par.getIdProducto()+",'"+par.getNombre()+"', '"+par.getDescripcion()+"', '"+par.getDescripcionTraducida()+"', "+par.getCategoria().getIdCategoria()+")";
+			
+			PreparedStatement prepStmt = conn.prepareStatement(sqll);
+			recursos.add(prepStmt);
+			prepStmt.executeQuery();
+			
+			 String sql2 = "insert into OFRECEPRODUCTO (IDPRODUCTO, LOCAL, CANTIDAD, PRECIO, COSTE) values ('"+par.getIdProducto()+"', "+local+", "+cantidad+", "+precio+", "+costo+")";
+
+			 PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+			recursos.add(prepStmt2);
+			prepStmt2.executeQuery();
+		}
 
 	}
 
-	public void updateProductoSingular(ProductoSingular par) throws SQLException, Exception {
-
-		String sql = "UPDATE PRODUCTOSINGULAR SET ";
-		sql += "ID= " + par.getId() + ",";
-		sql += "PRECIO= " + par.getPrecio() + ",";
-		sql += "CANTIDAD= " + par.getCantidadDisponible() + ",";
-		sql += "NOMBRE= '" + par.getNombre() + "',";
-		sql += "DESESP= '" + par.getDescripcion() + "',";
-		sql += "DESING= '" + par.getDescripcionTraducida() + "',";
-		sql += "TIEMPO= " + par.getTiempoDePreparacion() + ",";
-		sql += "COSTO= " + par.getCostoProduccion() + "";
-
-
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
-		recursos.add(prepStmt);
-		prepStmt.executeQuery();
-	}
-
-
-	public void deleteProductoSingular(ProductoSingular par) throws SQLException, Exception {
-
-		String sql = "DELETE FROM PRODUCTOSINGULAR";
-		sql += " WHERE ID = " + par.getId();
-
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
-		recursos.add(prepStmt);
-		prepStmt.executeQuery();
-	}
 }

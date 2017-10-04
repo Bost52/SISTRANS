@@ -2,55 +2,34 @@ package vos;
 
 import java.util.ArrayList;
 
-public class ProductoSingular extends Producto{
+import org.codehaus.jackson.annotate.JsonProperty;
 
-	private int cantidadDisponible;
+public class ProductoSingular{
 	
+	@JsonProperty(value="nombre")
 	private String nombre;
 	
+	@JsonProperty(value="descripcion")
 	private String descripcion;
 	
+	@JsonProperty(value="descripcionTraducida")
 	private String descripcionTraducida;
 	
-	private double tiempoDePreparacion;
+	@JsonProperty(value="idProducto")
+	private int idProducto;
 	
-	private double costoProduccion;
+	@JsonProperty(value="categoria")
+	private Categoria categoria;
+	
+	
 
-	private ArrayList<Ingrediente> ingredientes;
-	
-	private ArrayList<ProductoSingular> productosEquivalentes;
-	
-	private TipoProductoSigular tipoProdSing;
-	
-	public enum TipoProductoSigular{
-		ENTRADA, PLATO_FUERTE, BEBIDA, POSTRE, ACOMPAÑAMIENTO
-	}
 
-	public ProductoSingular(Long id, double precio, int cantidadDisponible, String nombre,
-			String descripcion, String descripcionTraducida, double tiempoDePreparacion, double costoProduccion) {
-		super(id, precio);
-		this.cantidadDisponible = cantidadDisponible;
+	public ProductoSingular(@JsonProperty(value="idProducto") int id, @JsonProperty(value="nombre") String nombre,@JsonProperty(value="descripcion") String descripcion,@JsonProperty(value="descripcionTraducida")String descripcionTraducida,@JsonProperty(value="categoria") Categoria categoria) {
+		this.idProducto=id;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 		this.descripcionTraducida = descripcionTraducida;
-		this.tiempoDePreparacion = tiempoDePreparacion;
-		this.costoProduccion = costoProduccion;
-	}
-
-	public ArrayList<ProductoSingular> getProductosEquivalentes() {
-		return productosEquivalentes;
-	}
-
-	public void setProductosEquivalentes(ArrayList<ProductoSingular> productosEquivalentes) {
-		this.productosEquivalentes = productosEquivalentes;
-	}
-
-	public int getCantidadDisponible() {
-		return cantidadDisponible;
-	}
-
-	public void setCantidadDisponible(int cantidadDisponible) {
-		this.cantidadDisponible = cantidadDisponible;
+		this.categoria=categoria;
 	}
 
 	public String getNombre() {
@@ -76,38 +55,24 @@ public class ProductoSingular extends Producto{
 	public void setDescripcionTraducida(String descripcionTraducida) {
 		this.descripcionTraducida = descripcionTraducida;
 	}
-
-	public double getTiempoDePreparacion() {
-		return tiempoDePreparacion;
+	
+	public Categoria getCategoria() {
+		return categoria;
+	}
+	
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+	
+	public int getIdProducto() {
+		return idProducto;
+	}
+	
+	public void setIdProducto(int idProducto) {
+		this.idProducto = idProducto;
 	}
 
-	public void setTiempoDePreparacion(double tiempoDePreparacion) {
-		this.tiempoDePreparacion = tiempoDePreparacion;
-	}
 
-	public double getCostoProduccion() {
-		return costoProduccion;
-	}
-
-	public void setCostoProduccion(double costoProduccion) {
-		this.costoProduccion = costoProduccion;
-	}
-
-	public ArrayList<Ingrediente> getIngredientes() {
-		return ingredientes;
-	}
-
-	public void setIngredientes(ArrayList<Ingrediente> ingredientes) {
-		this.ingredientes = ingredientes;
-	}
-
-	public TipoProductoSigular getTipoProdSing() {
-		return tipoProdSing;
-	}
-
-	public void setTipoProdSing(TipoProductoSigular tipoProdSing) {
-		this.tipoProdSing = tipoProdSing;
-	}
 	
 	
 }
