@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package rest;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.Response;
 
 import tm.RotondAndesTM;
 import vos.AgregarUsuarioCliente;
+import vos.ConsultarClientes;
 import vos.Usuario;
 
 @Path("usuarios")
@@ -84,5 +86,16 @@ public class UsuarioService {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(usuario).build();
+	}
+	@GET
+	public Response getUsuariosAdministrador(ConsultarClientes administrador) {
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		List<Usuario> usuarios;
+		try {
+			usuarios = tm.darUsuariosAdministrador(administrador);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(usuarios).build();
 	}
 }

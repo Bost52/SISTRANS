@@ -16,9 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import egr.DAOTablaUsuarios;
 import vos.*;
+import dao.DAOTablaTipoDeComida;;
 
 /**
  * Clase DAO que se conecta la base de datos usando JDBC para resolver los requerimientos de la aplicación
@@ -71,8 +70,8 @@ public class DAOTablaRestaurantes {
 	public ArrayList<Restaurante> darRestaurantes() throws SQLException, Exception {
 		
 		DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
-		DAOTablaTipoDeComida daoTipoComida = new DAOTablaTipoDeComida();
 		DAOTablaZona daoZona= new DAOTablaZona();
+		DAOTablaTipoDeComida daoTipoComida= new DAOTablaTipoDeComida();
 		daoZona.setConn(conn);
 		daoTipoComida.setConn(conn);
 		daoUsuario.setConn(conn);

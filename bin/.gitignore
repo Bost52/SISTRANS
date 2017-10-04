@@ -1,6 +1,11 @@
 /dao/
 /rest/
 /vos/
+<<<<<<< HEAD
 /egr/
 /tm/
 /DAOTablaUsuarios.class
+=======
+/rest/
+/tm/
+>>>>>>> 1b353e2f9047d18ce256997c330def10e39ccb70

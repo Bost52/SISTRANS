@@ -14,7 +14,7 @@ import javax.naming.NoPermissionException;
 
 import dao.DAOTablaProductoSingular;
 import dao.DAOTablaRestaurantes;
-import egr.DAOTablaUsuarios;
+import dao.DAOTablaUsuarios;
 import vos.AgregarProducto;
 import vos.AgregarRestaurante;
 import vos.AgregarUsuarioCliente;
