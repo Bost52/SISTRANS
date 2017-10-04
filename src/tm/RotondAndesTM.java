@@ -18,11 +18,13 @@ import dao.DAOTablaPedido;
 import dao.DAOTablaProductoSingular;
 import dao.DAOTablaRestaurantes;
 import dao.DAOTablaUsuarios;
+import dao.DAOTablaZona;
 import vos.AgregarIngredienteRestaurante;
 import vos.AgregarMenu;
 import vos.AgregarProducto;
 import vos.AgregarRestaurante;
 import vos.AgregarUsuarioCliente;
+import vos.AgregarZona;
 import vos.Preferencia;
 import vos.Ingrediente;
 import vos.Menu;
@@ -30,6 +32,7 @@ import vos.Pedido;
 import vos.ProductoSingular;
 import vos.Restaurante;
 import vos.Usuario;
+import vos.Zona;
 
 public class RotondAndesTM {
 
@@ -465,65 +468,6 @@ public class RotondAndesTM {
 			}
 		}
 	}
-	
-	
-	
-	
-	
-	
-
-	public void addIngredienteRestaurante(AgregarIngredienteRestaurante userResta) throws Exception{
-		DAOTablaIngrediente daoIngrediente = new DAOTablaIngrediente();
-		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
-		try 
-		{
-			this.conn = darConexion();
-			daoIngrediente.setConn(conn);
-			daoUsuario.setConn(conn);
-			if(daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaUsuarioRestaurante()) == null || userResta.getIngrediente() == null)
-			{
-				throw new NoSuchElementException("no se encontro el usuario restaurante con la cedula: "+userResta.getCedulaUsuarioRestaurante());
-			}
-			if(!daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaUsuarioRestaurante()).getRol().equals("RESTAURANTE"))
-			{
-				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
-			}
-			
-			
-			Ingrediente ingrediente = userResta.getIngrediente();
-			//////transaccion
-			
-			daoIngrediente.addIngrediente(ingrediente);
-			conn.commit();
-
-		} catch (SQLException e) {
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} catch(NoPermissionException e){
-			System.err.println("privilegeException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		}catch(NoSuchElementException e) {
-			System.err.println("noSuchElementException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		}catch (Exception e) {
-			System.err.println("GeneralException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} finally {
-			try {
-				daoUsuario.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-	}
 
 	public void addMenuRestaurante(AgregarMenu userResta) throws Exception{
 		DAOTablaMenu daoMenu = new DAOTablaMenu();
@@ -622,4 +566,113 @@ public class RotondAndesTM {
 		}
 	}
 	
+	public void addIngredienteRestaurante(AgregarIngredienteRestaurante userResta) throws Exception{
+		DAOTablaIngrediente daoIngrediente = new DAOTablaIngrediente();
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		try 
+		{
+			this.conn = darConexion();
+			daoIngrediente.setConn(conn);
+			daoUsuario.setConn(conn);
+			if(daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaUsuarioRestaurante()) == null || userResta.getIngrediente() == null)
+			{
+				throw new NoSuchElementException("no se encontro el usuario restaurante con la cedula: "+userResta.getCedulaUsuarioRestaurante());
+			}
+			if(!daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaUsuarioRestaurante()).getRol().equals("RESTAURANTE"))
+			{
+				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
+			}
+			
+			
+			Ingrediente ingrediente = userResta.getIngrediente();
+			//////transaccion
+			
+			daoIngrediente.addIngrediente(ingrediente);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+
+	
+	public void addZona(AgregarZona userResta) throws Exception{
+		DAOTablaZona daoZona = new DAOTablaZona();
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		
+		try 
+		{
+			this.conn = darConexion();
+			daoZona.setConn(conn);
+			daoUsuario.setConn(conn);
+			if(daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaAdministrador()) == null || userResta.getZona() == null)
+			{
+				throw new NoSuchElementException("no se encontro el administrador con la cedula: "+userResta.getCedulaAdministrador());
+			}
+			if(!daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaAdministrador()).getRol().equals("ADMINISTRADOR"))
+			{
+				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
+			}
+
+			Zona zona = userResta.getZona();
+			//////transaccion
+			
+			daoZona.addZona(zona);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	
 }
+

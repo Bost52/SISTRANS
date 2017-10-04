@@ -18,6 +18,7 @@ public class Pedido {
 	@JsonProperty(value="cliente")
 	private Usuario cliente;
 	
+	
 	public Pedido(@JsonProperty(value="fechaHora") String date,@JsonProperty(value="idPedido") int idPedido,@JsonProperty(value="idPago") int idPago, @JsonProperty(value="cliente") Usuario cliente) {
 		this.fechaHora=date;
 		this.idPago=idPago;

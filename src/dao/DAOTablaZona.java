@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import vos.Menu;
 import vos.Restaurante;
 import vos.TipoDeComida;
 import vos.Usuario;
@@ -79,4 +80,26 @@ public class DAOTablaZona {
 		return zona;
 	}
 
+	public void addZona(Zona par) throws SQLException, Exception {
+
+		String sql = "INSERT INTO ZONA (IDZONA, IDTIPOCOMIDA) VALUES (";
+		sql += par.getIdZona() + ",";
+		sql += par.getTipoCom().getIdTipo() + ")";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+
+	}
+
+	public void updateZona(Zona par) throws SQLException, Exception {
+
+		String sql = "UPDATE MENU SET ";
+		sql += "IDZONA= " + par.getIdZona() + ",";
+		sql += "IDTIPOCOMIDA= " + par.getTipoCom().getIdTipo();
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
 }

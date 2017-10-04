@@ -83,7 +83,7 @@ public class DAOTablaPedido {
 
 		if(pedido.getCliente()!=null)
 		{
-			 sql = "insert into PEDIDO (IDPEDIDO, FECHAYHORA, CEDULA) values ("+pedido.getIdPedido()+",TO_DATE('09/02/2017 12:12:12','DD/MM/YYYY HH:MI:SS') , "+pedido.getCliente().getCedula()+")";
+			 sql = "insert into PEDIDO (IDPEDIDO, FECHAYHORA, CEDULA) values ("+pedido.getIdPedido()+",TO_DATE('"+date+"','DD/MM/YYYY HH:MI:SS') , "+pedido.getCliente().getCedula()+")";
 		}
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
