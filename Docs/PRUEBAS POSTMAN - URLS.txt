@@ -154,3 +154,69 @@ JSON:
 
 Response: 403 Forbidden
 
+-------------------------------------------------------------------------------------------------------------------
+POST (Requerimiento 7)
+
+http://localhost:8080/RotondAndes/rest/zonas
+
+caso: existe un administrador  
+JSON:
+{
+    "administrador": 91273321,
+    "zona": {
+        "idZona": 16,
+        "tipoComida": {
+            "idTipo": 5,
+            "tipo": null
+        },
+        "tipoCom": {
+            "idTipo": 5,
+            "tipo": null
+        }
+    },
+    "cedulaAdministrador": 91273321
+}
+
+Response: 200 OK
+
+
+caso: usuario restaurante no existe
+JSON:
+{
+    "administrador": 91273321,
+    "zona": {
+        "idZona": 18,
+        "tipoComida": {
+            "idTipo": 9,
+            "tipo": null
+        },
+        "tipoCom": {
+            "idTipo": 9,
+            "tipo": null
+        }
+    },
+    "cedulaAdministrador": 91273321
+}
+
+Response: 404 Not Found
+
+caso: no es usuario restaurante o se intenta agregar diferente a cliente
+JSON:
+{
+    "administrador": 91273321,
+    "zona": {
+        "idZona": 24,
+        "tipoComida": {
+            "idTipo": 1,
+            "tipo": null
+        },
+        "tipoCom": {
+            "idTipo": 1,
+            "tipo": null
+        }
+    },
+    "cedulaAdministrador": 91273321
+}
+
+Response: 403 Forbidden
+
