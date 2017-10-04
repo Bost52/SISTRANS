@@ -3,6 +3,7 @@ package rest;
 import java.security.PrivilegedActionException;
 import java.util.NoSuchElementException;
 
+import javax.naming.NoPermissionException;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -42,12 +43,11 @@ public class IngredienteServices {
 	
 	
 	@POST
-	@Path("/signup")
 	public Response addIngredienteRestaurante(AgregarIngredienteRestaurante userResta) {
 		RotondAndesTM tm = new RotondAndesTM(getPath());
 		try {
 			tm.addIngredienteRestaurante(userResta);
-		}catch(PrivilegedActionException e){
+		}catch(NoPermissionException e){
 			return Response.status(403).entity(doErrorMessage(e)).build();
 		}catch(NoSuchElementException e) {
 			return Response.status(404).entity(doErrorMessage(e)).build();
