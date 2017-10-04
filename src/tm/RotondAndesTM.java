@@ -18,6 +18,7 @@ import dao.DAOTablaUsuarios;
 import vos.AgregarProducto;
 import vos.AgregarRestaurante;
 import vos.AgregarUsuarioCliente;
+import vos.Preferencia;
 import vos.ProductoSingular;
 import vos.Restaurante;
 import vos.Usuario;
@@ -140,202 +141,7 @@ public class RotondAndesTM {
 			}
 			return restaurantes;
 		}
-	//
-	//	public List<Restaurante> buscarRestaurantesPorName(String name) throws Exception {
-	//		List<Restaurante> restaurantes;
-	//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-	//		try 
-	//		{
-	//			//////transaccion
-	//			this.conn = darConexion();
-	//			daoRestaurantes.setConn(conn);
-	//			restaurantes = daoRestaurantes.buscarRestaurantesPorName(name);
-	//
-	//		} catch (SQLException e) {
-	//			System.err.println("SQLException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} catch (Exception e) {
-	//			System.err.println("GeneralException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} finally {
-	//			try {
-	//				daoRestaurantes.cerrarRecursos();
-	//				if(this.conn!=null)
-	//					this.conn.close();
-	//			} catch (SQLException exception) {
-	//				System.err.println("SQLException closing resources:" + exception.getMessage());
-	//				exception.printStackTrace();
-	//				throw exception;
-	//			}
-	//		}
-	//		return restaurantes;
-	//	}
-	//
-	//	public Restaurante buscarRestaurantePorId(Long id) throws Exception {
-	//		Restaurante restaurante;
-	//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-	//		try 
-	//		{
-	//			//////transaccion
-	//			this.conn = darConexion();
-	//			daoRestaurantes.setConn(conn);
-	//			restaurante = daoRestaurantes.buscarRestaurantePorId(id);
-	//
-	//		} catch (SQLException e) {
-	//			System.err.println("SQLException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} catch (Exception e) {
-	//			System.err.println("GeneralException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} finally {
-	//			try {
-	//				daoRestaurantes.cerrarRecursos();
-	//				if(this.conn!=null)
-	//					this.conn.close();
-	//			} catch (SQLException exception) {
-	//				System.err.println("SQLException closing resources:" + exception.getMessage());
-	//				exception.printStackTrace();
-	//				throw exception;
-	//			}
-	//		}
-	//		return restaurante;
-	//	}
-	//	
-	//	public void addRestaurante(Restaurante restaurante) throws Exception {
-	//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-	//		try 
-	//		{
-	//			//////transaccion
-	//			this.conn = darConexion();
-	//			daoRestaurantes.setConn(conn);
-	//			daoRestaurantes.addRestaurante(restaurante);
-	//			conn.commit();
-	//
-	//		} catch (SQLException e) {
-	//			System.err.println("SQLException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} catch (Exception e) {
-	//			System.err.println("GeneralException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} finally {
-	//			try {
-	//				daoRestaurantes.cerrarRecursos();
-	//				if(this.conn!=null)
-	//					this.conn.close();
-	//			} catch (SQLException exception) {
-	//				System.err.println("SQLException closing resources:" + exception.getMessage());
-	//				exception.printStackTrace();
-	//				throw exception;
-	//			}
-	//		}
-	//	}
-	//	
-	//	public void addRestaurantes(List<Restaurante> restaurantes) throws Exception {
-	//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-	//		try 
-	//		{
-	//			//////transaccion - ACID Example
-	//			this.conn = darConexion();
-	//			conn.setAutoCommit(false);
-	//			daoRestaurantes.setConn(conn);
-	//			Iterator<Restaurante> it = restaurantes.iterator();
-	//			while(it.hasNext())
-	//			{
-	//				daoRestaurantes.addRestaurante(it.next());
-	//			}
-	//			
-	//			conn.commit();
-	//		} catch (SQLException e) {
-	//			System.err.println("SQLException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			conn.rollback();
-	//			throw e;
-	//		} catch (Exception e) {
-	//			System.err.println("GeneralException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			conn.rollback();
-	//			throw e;
-	//		} finally {
-	//			try {
-	//				daoRestaurantes.cerrarRecursos();
-	//				if(this.conn!=null)
-	//					this.conn.close();
-	//			} catch (SQLException exception) {
-	//				System.err.println("SQLException closing resources:" + exception.getMessage());
-	//				exception.printStackTrace();
-	//				throw exception;
-	//			}
-	//		}
-	//	}
-	//	
-	//
-	//	public void updateRestaurante(Restaurante restaurante) throws Exception {
-	//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-	//		try 
-	//		{
-	//			//////transaccion
-	//			this.conn = darConexion();
-	//			daoRestaurantes.setConn(conn);
-	//			daoRestaurantes.updateRestaurante(restaurante);
-	//
-	//		} catch (SQLException e) {
-	//			System.err.println("SQLException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} catch (Exception e) {
-	//			System.err.println("GeneralException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} finally {
-	//			try {
-	//				daoRestaurantes.cerrarRecursos();
-	//				if(this.conn!=null)
-	//					this.conn.close();
-	//			} catch (SQLException exception) {
-	//				System.err.println("SQLException closing resources:" + exception.getMessage());
-	//				exception.printStackTrace();
-	//				throw exception;
-	//			}
-	//		}
-	//	}
-	//
-	//	public void deleteRestaurante(Restaurante restaurante) throws Exception {
-	//		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
-	//		try 
-	//		{
-	//			//////transaccion
-	//			this.conn = darConexion();
-	//			daoRestaurantes.setConn(conn);
-	//			daoRestaurantes.deleteRestaurante(restaurante);
-	//
-	//		} catch (SQLException e) {
-	//			System.err.println("SQLException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} catch (Exception e) {
-	//			System.err.println("GeneralException:" + e.getMessage());
-	//			e.printStackTrace();
-	//			throw e;
-	//		} finally {
-	//			try {
-	//				daoRestaurantes.cerrarRecursos();
-	//				if(this.conn!=null)
-	//					this.conn.close();
-	//			} catch (SQLException exception) {
-	//				System.err.println("SQLException closing resources:" + exception.getMessage());
-	//				exception.printStackTrace();
-	//				throw exception;
-	//			}
-	//		}
-	//	}
-
-
+	
 	////////////////////////////////////////
 	///////Transacciones Usuarios////////////////////
 	////////////////////////////////////////
@@ -605,6 +411,58 @@ public class RotondAndesTM {
 			}
 		}
 	}
+	
+	
+	public void addPreferencia(Preferencia preferencia) throws Exception {
+		DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			if(daoUsuario.buscarUsuarioPorCedula(preferencia.getCedula())==null)
+			{
+				throw new NoSuchElementException("no se encontro el usuario con la cedula: "+preferencia.getCedula());
+			}
+			//////transaccion
+
+			daoUsuario.addPreferencia(preferencia.getIdPreferencia(), preferencia.getCedula(), preferencia.getIdCategoria(), preferencia.getMaximo(), preferencia.getMinimo(), preferencia.getIdZona());
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.rollback();
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
 
 
 

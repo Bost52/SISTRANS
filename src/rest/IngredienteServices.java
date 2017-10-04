@@ -41,21 +41,4 @@ public class IngredienteServices {
 	}
 	
 	
-	@POST
-	@Path("/signup")
-	public Response addIngredienteRestaurante(AgregarIngredienteRestaurante userResta) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
-		try {
-			tm.addIngredienteRestaurante(userResta);
-		}catch(PrivilegedActionException e){
-			return Response.status(403).entity(doErrorMessage(e)).build();
-		}catch(NoSuchElementException e) {
-			return Response.status(404).entity(doErrorMessage(e)).build();
-		}catch (Exception e) {
-			return Response.status(500).entity(doErrorMessage(e)).build();
-		}
-		return Response.status(200).entity(userResta).build();
-	}
-	
-	
 }

@@ -32,22 +32,4 @@ public class ProductoServices {
 		return "{ \"ERROR\": \""+ e.getMessage() + "\"}" ;
 	}
 	
-
-	/**
-	 * Metodo que expone servicio REST usando GET que da todos los videos de la base de datos.
-	 * <b>URL: </b> http://"ip o nombre de host":8080/VideoAndes/rest/videos
-	 * @return Json con todos los videos de la base de datos o json con 
-     * el error que se produjo
-	 */
-	public Response getProductosSingularesConFiltros(ConsultarProductosPorFiltros filtros) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
-		List<ProductoSingular> productos;
-		try {
-			productos = tm.darProductosPorFiltros(filtros);
-		} catch (Exception e) {
-			return Response.status(500).entity(doErrorMessage(e)).build();
-		}
-		return Response.status(200).entity(productos).build();
-	}
-	
 }
