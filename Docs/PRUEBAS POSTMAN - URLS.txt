@@ -42,7 +42,7 @@ Response: 500 ORA-00001: restricción única (ISIS2304A361720.USUARIO_PK) violada
 -------------------------------------------------------------------------------------------------------------------
 POST (Requerimiento 2)
 
-http://localhost:8080/RotondAndes/rest/usuarios
+http://localhost:8080/RotondAndes/rest/usuarios/signup
 
 caso: existe administrador 
 JSON:
@@ -81,24 +81,149 @@ JSON:
 
 Response: 403 Forbidden
 
--------------------------------------------------------------------------------------------------------------------
-POST (Requerimiento 5)
-
-http://localhost:8080/RotondAndes/rest/ingredientes
-
-caso: existe usuario restaurante 
+caso: caso cliente ya existe
 JSON:
 {
-	"usuarioRestaurante": 988,
-	"ingrediente":{ "idingrediente":16,
-				"nombre": "Tomate",
-				"cantidad":458555,
-				"descripcionespañol":"rojo y rico",
-				"descripcioningles" : "red and delicious"}
+	"cedulaAdministrador": 91273321,
+	"usuario":{ "cedula":1,
+				"nombre": "Kevin Rodriguez",
+				"rol":"CLIENTE",
+				"email":"kero@ponku.edu.co"}
+}
+
+Response: 500 ORA-00001: restricción única (ISIS2304A361720.USUARIO_PK) violada
+-------------------------------------------------------------------------------------------------------------------
+POST (Requerimiento 3)
+
+http://localhost:8080/RotondAndes/rest/restaurantes
+
+caso: existe administrador 
+JSON:
+
+    {
+	"cedulaAdministrador":91273321,
+	"restaurante":{
+		"nombre":"doña blanca",
+		"urlpaginaweb":"www.doñablanca.com",
+		"tipoComida":{
+			"idTipo":5
+		},
+		"representante":{
+			"cedula":988
+		},
+		"zona":{
+			"idZona":1
+		}
+	}
+}
 }
 
 Response: 200 OK
 
+caso: zona no existe
+JSON:
+
+    {
+	"cedulaAdministrador":91273321,
+	"restaurante":{
+		"nombre":"doña blanca",
+		"urlpaginaweb":"www.doñablanca.com",
+		"tipoComida":{
+			"idTipo":5
+		},
+		"representante":{
+			"cedula":988
+		},
+		"zona":{
+			"idZona":98
+		}
+	}
+}
+
+
+Response: 500 "ORA-02291: restricción de integridad (ISIS2304A361720.FK_IDZONA) violada - clave principal no encontrada
+
+caso: tipo no existe
+JSON:
+
+    {
+	"cedulaAdministrador":91273321,
+	"restaurante":{
+		"nombre":"doña blanca",
+		"urlpaginaweb":"www.doñablanca.com",
+		"tipoComida":{
+			"idTipo":98
+		},
+		"representante":{
+			"cedula":988
+		},
+		"zona":{
+			"idZona":5
+		}
+	}
+}
+}
+
+
+Response: 500 ORA-02291: restricción de integridad (ISIS2304A361720.FK_IDTIPOCOMIDA2) violada - clave principal no encontrada
+-------------------------------------------------------------------------------------------------------------------
+POST (Requerimiento )
+
+http://localhost:8080/RotondAndes/rest/restaurantes
+
+caso: existe administrador 
+JSON:
+
+
+
+Response: 200 OK
+-------------------------------------------------------------------------------------------------------------------
+
+POST (Requerimiento 4)
+
+http://localhost:8080/RotondAndes/rest/productos
+
+caso: existe usuario restaurante 
+JSON:
+{
+	"cedulaRestaurante":988,
+	"local":2,
+	"cantidad":20,
+	"coste":5000.65,
+	"precio":23500.13,
+	"producto":{
+		"idProducto":427,
+		"nombre":"ferrero",
+		"descripcion":"rioa",
+		"descripcionTraducida":"delicious",
+		"categoria":{
+			"idCategoria":2
+		}
+	}
+}
+
+Response: 200 OK
+
+caso: no existe local de restaurante (fk)
+
+{
+	"cedulaRestaurante":988,
+	"local":2324,
+	"cantidad":20,
+	"coste":5000.65,
+	"precio":23500.13,
+	"producto":{
+		"idProducto":427,
+		"nombre":"ferrero",
+		"descripcion":"rioa",
+		"descripcionTraducida":"delicious",
+		"categoria":{
+			"idCategoria":2
+		}
+	}
+}
+
+Response: 500 "ORA-02291: restricción de integridad (ISIS2304A361720.REST3_FK) violada - clave principal no encontrada
 
 caso: usuario restaurante no existe
 JSON:
@@ -124,6 +249,27 @@ JSON:
 }
 
 Response: 403 Forbidden
+
+caso: no existe idCategoria (fk)
+
+{
+	"cedulaRestaurante":988,
+	"local":44,
+	"cantidad":20,
+	"coste":5000.65,
+	"precio":23500.13,
+	"producto":{
+		"idProducto":427,
+		"nombre":"ferrero",
+		"descripcion":"rioa",
+		"descripcionTraducida":"delicious",
+		"categoria":{
+			"idCategoria":6
+		}
+	}
+}
+
+Response: 500 internal server error "ORA-02291: restricción de integridad (ISIS2304A361720.FK_IDCATEGORIA) violada - clave principal no encontrada
 -------------------------------------------------------------------------------------------------------------------
 POST (Requerimiento 6)
 
@@ -231,4 +377,63 @@ JSON:
 }
 
 Response: 403 Forbidden
+-------------------------------------------------------------------------------------------------------------------
+POST (Requerimiento 8)
 
+http://localhost:8080/RotondAndes/rest/preferencias
+
+caso: existe un administrador  
+JSON:
+{
+    "idPreferencia": 2018778,
+    "cedula": 1,
+    "idZona" : 25,
+    "idCategoria": 1,
+    "maximo" : 500,
+    "minimo" : 2
+ 
+}
+
+Response: 200 OK
+
+
+caso: idPreferencia ya existe (pk)
+JSON:
+{
+    "idPreferencia": 200,
+    "cedula": 1,
+    "idZona" : 24,
+    "idCategoria": 1,
+    "maximo" : 500,
+    "minimo" : 2
+ 
+}
+
+Response: 500 internal server error "ORA-00001: restricción única (ISIS2304A361720.PREFERECIAS_PK) violada
+
+caso: idZona no existe (fk)
+JSON:
+{
+    "idPreferencia": 200256,
+    "cedula": 1,
+    "idZona" : 50,
+    "idCategoria": 1,
+    "maximo" : 500,
+    "minimo" : 2
+ 
+}
+
+Response: 500 internal server error "ORA-02291: restricción de integridad (ISIS2304A361720.PREFERECIAS_FK2) violada - clave principal no encontrada
+
+caso: idCategoria no existe (fk)
+JSON:
+{
+    "idPreferencia": 200256,
+    "cedula": 1,
+    "idZona" : 50,
+    "idCategoria": 6,
+    "maximo" : 500,
+    "minimo" : 2
+ 
+}
+Response: 500 internal server error "ORA-02291: restricción de integridad (ISIS2304A361720.PREFERECIAS_FK2) violada - clave principal no encontrada
