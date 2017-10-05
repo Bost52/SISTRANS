@@ -116,6 +116,12 @@ JSON:
 		}
 	}
 }
+	"usuarioRestaurante": 988,
+	"ingrediente":{ "id":16,
+				"nombre": "Tomate",
+				"cantidad":458555,
+				"descripcionespañol":"rojo y rico",
+				"descripcioningles" : "red and delicious"}
 }
 
 Response: 200 OK
@@ -229,7 +235,7 @@ caso: usuario restaurante no existe
 JSON:
 {
 	"cedulaAdministrador": 1,
-	"ingrediente":{ "idingrediente":158,
+	"ingrediente":{ "id":158,
 				"nombre": "Queso",
 				"cantidad":458666,
 				"descripcionespañol":"amarillo ",
@@ -241,10 +247,10 @@ Response: 404 Not Found
 caso: no es usuario restaurante o se intenta agregar diferente a cliente
 JSON:
 {
-	"ingrediente":{ "idingrediente":266,
+	"ingrediente":{ "id":266,
 				"nombre": "Pan",
 				"cantidad":458777,
-				"descripcionespañol":"grade",
+				"descripcionespañol":"grande",
 				"descripcioningles" : "big"}
 }
 
@@ -270,6 +276,18 @@ caso: no existe idCategoria (fk)
 }
 
 Response: 500 internal server error "ORA-02291: restricción de integridad (ISIS2304A361720.FK_IDCATEGORIA) violada - clave principal no encontrada
+caso: ya existe ingrediente con id dado (pk) 
+JSON:
+{
+	"usuarioRestaurante": 988,
+	"ingrediente":{ "id":16,
+				"nombre": "Pasta",
+				"cantidad":45,
+				"descripcionespañol":"esponjosa",
+				"descripcioningles" : "sponge"}
+}
+
+Response: 500 internal server error "ORA-00001: restricción única (ISIS2304A361720.INGREDIENTE_PK) violada
 -------------------------------------------------------------------------------------------------------------------
 POST (Requerimiento 6)
 
@@ -312,6 +330,29 @@ JSON:
 
 Response: 403 Forbidden
 
+caso: ya existe menu con id dado (pk) 
+JSON:
+{
+	"cedulaRestaurante": 988,
+	"menu":{ "id":16,
+				"precio": "455",
+				"nombre":"Copia del combo",
+				"local":23	}
+}
+
+Response: 500 internal server error "ORA-00001: restricción única (ISIS2304A361720.MENU_PK) violada
+
+caso: se ingresa un local (fk) no existente
+
+{
+	"cedulaRestaurante": 988,
+	"menu":{ "id":16,
+				"precio": "455",
+				"nombre":"Copia del combo",
+				"local":	}
+}
+
+Response: 500 internal server error "ORA-02291: restricción de integridad (ISIS2304A361720.REST4_FK) violada - clave principal no encontrada
 -------------------------------------------------------------------------------------------------------------------
 POST (Requerimiento 7)
 
@@ -437,3 +478,52 @@ JSON:
  
 }
 Response: 500 internal server error "ORA-02291: restricción de integridad (ISIS2304A361720.PREFERECIAS_FK2) violada - clave principal no encontrada
+caso: ya existe una zona con el idZona (pk) dado
+JSON:
+{
+    "administrador": 91273321,
+    "zona": {
+        "idZona": 24,
+        "tipoComida": {
+            "idTipo": 1,
+            "tipo": null
+        },
+        "tipoCom": {
+            "idTipo": 1,
+            "tipo": null
+        }
+    },
+    "cedulaAdministrador": 91273321
+}
+
+Response: 500 internal server error "ORA-00001: restricción única (ISIS2304A361720.ZONA_PK) violada
+
+caso: el tipo de comida no existe (fk)
+JSON:
+{
+    "administrador": 91273321,
+    "zona": {
+        "idZona": 50,
+        "tipoComida": {
+            "idTipo": 16,
+            "tipo": null
+        },
+        "tipoCom": {
+            "idTipo": 16,
+            "tipo": null
+        }
+    },
+    "cedulaAdministrador": 91273321
+}
+
+Response: 500 internal server error "ORA-02291: restricción de integridad (ISIS2304A361720.FK_IDTIPOCOMIDA) violada - clave principal no encontrada
+--------------------------------------------------------------------------
+POST (Requerimiento 9)
+
+http://localhost:8080/RotondAndes/rest/
+
+caso: existe un administrador  
+JSON:
+
+
+Response: 200 OK
