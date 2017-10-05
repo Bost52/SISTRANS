@@ -18,12 +18,16 @@ public class Pedido {
 	@JsonProperty(value="cliente")
 	private Usuario cliente;
 	
+	@JsonProperty(value="servido")
+	private String servido;
 	
-	public Pedido(@JsonProperty(value="fechaHora") String date,@JsonProperty(value="idPedido") int idPedido,@JsonProperty(value="idPago") int idPago, @JsonProperty(value="cliente") Usuario cliente) {
+	
+	public Pedido(@JsonProperty(value="fechaHora") String date,@JsonProperty(value="idPedido") int idPedido,@JsonProperty(value="idPago") int idPago, @JsonProperty(value="cliente") Usuario cliente, @JsonProperty(value="servido") String servido) {
 		this.fechaHora=date;
 		this.idPago=idPago;
 		this.idPedido=idPedido;
 		this.cliente=cliente;
+		this.servido=servido;
 	}
 	
 	public String getFechaHora() {

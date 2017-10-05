@@ -566,6 +566,49 @@ public class RotondAndesTM {
 		}
 	}
 	
+	public void servirPedido(int pedido) throws Exception{
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		DAOTablaPedido daoPedido= new DAOTablaPedido();
+		
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			daoPedido.setConn(conn);
+			//////transaccion
+			
+			daoPedido.pedidoServido(daoPedido.buscarPedidoById(pedido));
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
 	public void addIngredienteRestaurante(AgregarIngredienteRestaurante userResta) throws Exception{
 		DAOTablaIngrediente daoIngrediente = new DAOTablaIngrediente();
 		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
@@ -672,6 +715,8 @@ public class RotondAndesTM {
 			}
 		}
 	}
+	
+	
 	
 	
 }

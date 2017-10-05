@@ -27,6 +27,18 @@ JSON:
 }
 
 Response: 403 Forbidden
+
+caso: ya existe cedula/(pk)
+
+JSON:
+{
+	"cedula":34254,
+	"nombre": "Pablo Perez",
+	"rol":"ADMINISTRADOR",
+	"email":"pape@ponku.edu.co"
+}
+
+Response: 500 ORA-00001: restricción única (ISIS2304A361720.USUARIO_PK) violada
 -------------------------------------------------------------------------------------------------------------------
 POST (Requerimiento 2)
 
