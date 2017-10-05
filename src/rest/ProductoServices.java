@@ -28,10 +28,11 @@ public class ProductoServices {
 	}
 	
 	
-	private String doErrorMessage(Exception e){
+	private String doErrorMessage(Exception e)
+	{
 		return "{ \"ERROR\": \""+ e.getMessage() + "\"}" ;
 	}
-	
+
 
 	/**
 	 * Metodo que expone servicio REST usando GET que da todos los videos de la base de datos.

@@ -4,13 +4,13 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class AgregarUsuarioCliente {
 
-	@JsonProperty(value="admistrador")
+	@JsonProperty(value="administrador")
 	private int cedulaAdministrador;
 	
 	@JsonProperty(value="usuario")
 	private Usuario usuario;
 	
-	public AgregarUsuarioCliente(@JsonProperty(value="admistrador") int cedulaAdministrador, 	@JsonProperty(value="usuario") Usuario usuario) {
+	public AgregarUsuarioCliente(@JsonProperty(value="administrador") int cedulaAdministrador, 	@JsonProperty(value="usuario") Usuario usuario) {
 		this.cedulaAdministrador=cedulaAdministrador;
 		this.usuario=usuario;
 	}

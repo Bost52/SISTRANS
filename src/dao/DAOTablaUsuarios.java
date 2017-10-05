@@ -102,4 +102,28 @@ public class DAOTablaUsuarios {
 		prepStmt.executeQuery();
 
 	}
+	
+	public void addPreferencia(int id,int cedula, int idCategoria, double maximo, double minimo, int idZona) throws SQLException
+	{
+		String sql = "insert into PREFERENCIAS (IDPREFERENCIA, CEDULA, IDCATEGORIA, MAXIMO, MINIMO,IDZONA) values ("+id+","+cedula+", "+idCategoria+", "+maximo+", "+minimo+", "+idZona+")";
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
+	
+	public void updatePreferencia(int id,int cedula, int idCategoria, double maximo, double minimo, int idZona) throws SQLException,Exception
+	{
+		String sql = "update PREFERENCIAS set IDCATEGORIA="+idCategoria+", MAXIMO="+maximo+", MINIMO="+minimo+",IDZONA="+idZona+" WHERE IDPREFERENCIA="+id;
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
+	
+	public void deletePreferencia(int id) throws SQLException,Exception
+	{
+		String sql = "delete from PREFERENCIAS  WHERE IDPREFERENCIA="+id;
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
 }

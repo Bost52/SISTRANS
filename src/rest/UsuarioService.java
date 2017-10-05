@@ -1,4 +1,3 @@
-
 package rest;
 
 import java.util.List;
@@ -15,9 +14,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import oracle.jdbc.proxy.annotation.Post;
 import tm.RotondAndesTM;
 import vos.AgregarUsuarioCliente;
 import vos.ConsultarClientes;
+import vos.Preferencia;
 import vos.Usuario;
 
 @Path("usuarios")
@@ -88,6 +89,24 @@ public class UsuarioService {
 		return Response.status(200).entity(usuario).build();
 	}
 	
+
+	@POST
+	@Path("/preferencia")
+	public Response addPreferencia(Preferencia preferencia) {
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		try {
+			tm.addPreferencia(preferencia);
+		}catch(NoPermissionException e){
+			return Response.status(403).entity(doErrorMessage(e)).build();
+		}catch(NoSuchElementException e) {
+			return Response.status(404).entity(doErrorMessage(e)).build();
+		}catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(preferencia).build();
+	}
+	
+
 //	@GET
 //	public Response getUsuariosAdministrador(ConsultarClientes administrador) {
 //		RotondAndesTM tm = new RotondAndesTM(getPath());
