@@ -391,7 +391,7 @@ public class RotondAndesTM {
 			}
 			//////transaccion
 
-			daoProducto.addProductoSingular(producto.getProducto(), producto.getCantidad(), producto.getLocal(), producto.getPrecio(), producto.getCoste());
+			daoProducto.addProductoSingular(producto.getProducto(), producto.getCantidad(), producto.getLocal(), producto.getPrecio(), producto.getCoste(),producto.getMax());
 			conn.commit();
 
 		} catch (SQLException e) {

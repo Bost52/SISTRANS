@@ -104,7 +104,7 @@ public class DAOTablaProductoSingular {
 		return resp;
 	}
 	
-	public void addProductoSingular(ProductoSingular par,int cantidad, int local, double precio, double costo) throws SQLException, Exception {
+	public void addProductoSingular(ProductoSingular par,int cantidad, int local, double precio, double costo, int max) throws SQLException, Exception {
 
 		if(par.getIdProducto()!=0 && buscarProductoSingularPorId(par.getIdProducto())!=null)
 		{
@@ -123,7 +123,7 @@ public class DAOTablaProductoSingular {
 			recursos.add(prepStmt);
 			prepStmt.executeQuery();
 			
-			 String sql2 = "insert into OFRECEPRODUCTO (IDPRODUCTO, LOCAL, CANTIDAD, PRECIO, COSTE) values ('"+par.getIdProducto()+"', "+local+", "+cantidad+", "+precio+", "+costo+")";
+			 String sql2 = "insert into OFRECEPRODUCTO (IDPRODUCTO, LOCAL, CANTIDAD, PRECIO, COSTE, MAX) values ('"+par.getIdProducto()+"', "+local+", "+cantidad+", "+precio+", "+costo+","+max+")";
 
 			 PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
 			recursos.add(prepStmt2);

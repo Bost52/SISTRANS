@@ -62,7 +62,7 @@ public class DAOTablaUsuarios {
 
 	while (rs.next()) {
 		String nombre = rs.getString("NOMBRE");
-		int cedula = rs.getInt("CEDULA");
+		long cedula = rs.getLong("CEDULA");
 		String email = rs.getString("EMAIL");
 		String rol = rs.getString("ROL");
 		usuarios.add(new Usuario(cedula, nombre, email, rol));
@@ -70,7 +70,7 @@ public class DAOTablaUsuarios {
 	return usuarios;
 	}
 	
-	public Usuario buscarUsuarioPorCedula(int cedula) throws SQLException, Exception 
+	public Usuario buscarUsuarioPorCedula(long cedula) throws SQLException, Exception 
 	{
 		Usuario usuario = null;
 

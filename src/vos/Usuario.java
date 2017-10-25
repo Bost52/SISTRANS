@@ -5,7 +5,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class Usuario {
 
 	@JsonProperty(value="cedula")
-	private int cedula;
+	private long cedula;
 
 	@JsonProperty(value="nombre")
 	private String nombre;
@@ -16,7 +16,7 @@ public class Usuario {
 	@JsonProperty(value="rol")
 	private String rol;
 	
-	public Usuario(@JsonProperty(value="cedula") int cedula,@JsonProperty(value="nombre") String nombre,@JsonProperty(value="email") String email,@JsonProperty(value="rol") String rol) {
+	public Usuario(@JsonProperty(value="cedula") long cedula,@JsonProperty(value="nombre") String nombre,@JsonProperty(value="email") String email,@JsonProperty(value="rol") String rol) {
 		
 		this.cedula=cedula;
 		this.email=email;
@@ -24,7 +24,7 @@ public class Usuario {
 		this.rol=rol;
 	}
 	
-	public int getCedula() {
+	public long getCedula() {
 		return cedula;
 	}
 	

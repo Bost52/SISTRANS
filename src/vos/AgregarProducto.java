@@ -21,13 +21,17 @@ public class AgregarProducto {
 	@JsonProperty(value="precio")
 	private double precio;
 	
-	public AgregarProducto(@JsonProperty(value="cedulaRestaurante") int cedulaRestaurante, 	@JsonProperty(value="producto") ProductoSingular producto,@JsonProperty(value="local") int local,@JsonProperty(value="cantidad") int cantidad,	@JsonProperty(value="precio")  double precio,	@JsonProperty(value="coste") double coste) {
+	@JsonProperty(value="max")
+	private int max;
+	
+	public AgregarProducto(@JsonProperty(value="cedulaRestaurante") int cedulaRestaurante, 	@JsonProperty(value="producto") ProductoSingular producto,@JsonProperty(value="local") int local,@JsonProperty(value="cantidad") int cantidad,	@JsonProperty(value="precio")  double precio,	@JsonProperty(value="coste") double coste,@JsonProperty(value="max")int max) {
 		this.cedulaRestaurante=cedulaRestaurante;
 		this.producto=producto;
 		this.cantidad=cantidad;
 		this.coste=coste;
 		this.local=local;
 		this.precio=precio;
+		this.max=max;
 	}
 
 	public int getCedulaRestaurante() {
@@ -76,6 +80,14 @@ public class AgregarProducto {
 	
 	public void setPrecio(double precio) {
 		this.precio = precio;
+	}
+	
+	public int getMax() {
+		return max;
+	}
+	
+	public void setMax(int max) {
+		this.max = max;
 	}
 	
 }
