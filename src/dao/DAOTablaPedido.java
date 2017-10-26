@@ -9,6 +9,7 @@ import java.util.Date;
 
 import rest.UsuarioService;
 import vos.Pedido;
+import vos.PedidoProducto;
 import vos.Restaurante;
 import vos.TipoDeComida;
 import vos.Usuario;
@@ -88,6 +89,24 @@ public class DAOTablaPedido {
 		{
 			 sql = "insert into PEDIDO (IDPEDIDO, FECHAYHORA, CEDULA) values ("+pedido.getIdPedido()+",TO_DATE('"+date+"','DD/MM/YYYY HH:MI:SS') , "+pedido.getCliente().getCedula()+")";
 		}
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
+	
+	public void addProductoPedido(PedidoProducto pedido) throws SQLException, Exception {
+
+		String sql = "insert into PEDIDOPRODUCTO (IDPEDIDO, LOCAL, IDPRODUCTO) values ("+pedido.getIdPedido()+", "+pedido.getLocal()+", "+pedido.getIdProducto()+")";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
+	
+	public void addMenuPedido(PedidoProducto pedido) throws SQLException, Exception {
+
+		String sql = "insert into PEDIDOMENU (IDPEDIDO, LOCAL, IDMENU) values ("+pedido.getIdPedido()+", "+pedido.getLocal()+", "+pedido.getIdMenu()+")";
+		
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();

@@ -58,7 +58,7 @@ public class ProductosService {
 	}
 	
 	@POST
-	public Response addUsuarioCliente(AgregarProducto producto) {
+	public Response addProducto(AgregarProducto producto) {
 		RotondAndesTM tm = new RotondAndesTM(getPath());
 		try {
 			tm.addProducto(producto);
@@ -71,4 +71,5 @@ public class ProductosService {
 		}
 		return Response.status(200).entity(producto).build();
 	}
+	
 }

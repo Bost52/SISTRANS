@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import tm.RotondAndesTM;
 import vos.AgregarUsuarioCliente;
 import vos.Pedido;
+import vos.PedidoProducto;
 import vos.Preferencia;
 import vos.Usuario;
 
@@ -61,6 +62,21 @@ public class PedidoServices {
 		return Response.status(200).entity(pedido).build();
 	}
 	
+
+	@POST
+	@Path("/producto")
+	public Response addPedidoProducto (PedidoProducto pedido) {
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		try {
+			tm.addPedidoProducto(pedido);
+		}catch(NoPermissionException e){
+			return Response.status(403).entity(doErrorMessage(e)).build();
+		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(pedido).build();
+	}
 	
 	@PUT
 	@Path("/{id: \\d+}")

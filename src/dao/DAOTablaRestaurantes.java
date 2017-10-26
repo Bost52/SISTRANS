@@ -68,7 +68,7 @@ public class DAOTablaRestaurantes {
 	}
 
 	public ArrayList<Restaurante> darRestaurantes() throws SQLException, Exception {
-		
+
 		DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
 		DAOTablaZona daoZona= new DAOTablaZona();
 		DAOTablaTipoDeComida daoTipoComida= new DAOTablaTipoDeComida();
@@ -94,6 +94,26 @@ public class DAOTablaRestaurantes {
 		}
 		return restaurantes;
 	}
+	
+	public boolean sirveProducto(int local, int idProducto) throws SQLException, Exception {
+
+		DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
+		DAOTablaZona daoZona= new DAOTablaZona();
+		DAOTablaTipoDeComida daoTipoComida= new DAOTablaTipoDeComida();
+		daoZona.setConn(conn);
+		daoTipoComida.setConn(conn);
+		daoUsuario.setConn(conn);
+		boolean existe =false;
+
+		String sql = "SELECT * FROM OFRECEPRODUCTO WHERE LOCAL="+local+" AND IDPRODUCTO="+idProducto+"";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		return existe;
+	}
+	
 	public void addRestaurante(Restaurante restaurante) throws SQLException, Exception {
 
 		String sql = "insert into Restaurante (NOMBRE, URLPAGINAWEB, IDTIPOCOMIDA, IDZONA, IDREPRESENTANTE) values ('"+restaurante.getNombre()+"', '"+restaurante.getUrlPaginaWeb()+"', "+restaurante.getTipoCom().getIdTipo()+", "+restaurante.getZona().getIdZona()+", "+restaurante.getRepresentante().getCedula()+")";
@@ -103,29 +123,20 @@ public class DAOTablaRestaurantes {
 		prepStmt.executeQuery();
 
 	}
-//	
-//	public void updateRestaurante(Restaurante restaurante) throws SQLException, Exception {
-//
-//		String sql = "UPDATE RESTAURANTE SET ";
-//		sql += "NAME='" + restaurante.getName() + "',";
-//		sql += " WHERE ID = " + restaurante.getId();
-//
-//
-//		PreparedStatement prepStmt = conn.prepareStatement(sql);
-//		recursos.add(prepStmt);
-//		prepStmt.executeQuery();
-//	}
-//
-//
-//	public void deleteRestaurante(Restaurante video) throws SQLException, Exception {
-//
-//		String sql = "DELETE FROM RESTAURANTE";
-//		sql += " WHERE ID = " + video.getId();
-//
-//		PreparedStatement prepStmt = conn.prepareStatement(sql);
-//		recursos.add(prepStmt);
-//		prepStmt.executeQuery();
-//	}
-	
 
+	public void surtirRestaurante(SurtirRestaurante restaurante) throws SQLException, Exception {
+		{
+			DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
+			daoUsuario.setConn(conn);
+
+			String sql2 = "UPDATE OFRECEPRODUCTO SET CANTIDAD=MAX WHERE LOCAL="+restaurante.getLocal()+" AND IDPRODUCTO="+restaurante.getProducto();
+
+			PreparedStatement prepStmt2= conn.prepareStatement(sql2);
+			recursos.add(prepStmt2);
+			prepStmt2.executeQuery();
+
+
+		}
+		
+	}
 }

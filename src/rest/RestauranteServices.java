@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 import tm.RotondAndesTM;
 import vos.AgregarRestaurante;
 import vos.Restaurante;
+import vos.SurtirRestaurante;
 
 @Path("restaurantes")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -104,6 +105,23 @@ public class RestauranteServices {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(restaurante).build();
+	}
+	
+	@PUT
+	@Path( "{id: \\d+}" )
+	public Response surtirRestaurante( @PathParam( "id" ) int id, SurtirRestaurante restaurante)
+	{
+		RotondAndesTM tm = new RotondAndesTM( getPath( ) );
+		try
+		{
+			restaurante.setLocal(id);
+			tm.surtirRestaurante(restaurante);
+			return Response.status( 200 ).entity( restaurante ).build( );			
+		}
+		catch( Exception e )
+		{
+			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
+		}
 	}
 //	
 //	@POST
