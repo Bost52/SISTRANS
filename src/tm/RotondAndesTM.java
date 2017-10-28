@@ -19,12 +19,15 @@ import dao.DAOTablaProductoSingular;
 import dao.DAOTablaRestaurantes;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaZona;
+import vos.AgregarEquivalenciaIngrediente;
+import vos.AgregarEquivalenciaProducto;
 import vos.AgregarIngredienteRestaurante;
 import vos.AgregarMenu;
 import vos.AgregarProducto;
 import vos.AgregarRestaurante;
 import vos.AgregarUsuarioCliente;
 import vos.AgregarZona;
+import vos.Cliente;
 import vos.Preferencia;
 import vos.Ingrediente;
 import vos.Menu;
@@ -32,6 +35,7 @@ import vos.Pedido;
 import vos.PedidoProducto;
 import vos.ProductoSingular;
 import vos.Restaurante;
+import vos.ServirPedidoProducto;
 import vos.SurtirRestaurante;
 import vos.Usuario;
 import vos.Zona;
@@ -123,38 +127,38 @@ public class RotondAndesTM {
 	////////////////////////////////////////
 
 
-		public List<Restaurante> darRestaurantes() throws Exception {
-			List<Restaurante> restaurantes;
-			DAOTablaRestaurantes daoVideos = new DAOTablaRestaurantes();
-			try 
-			{
-				//////transaccion
-				this.conn = darConexion();
-				daoVideos.setConn(conn);
-				restaurantes = daoVideos.darRestaurantes();
-	
-			} catch (SQLException e) {
-				System.err.println("SQLException:" + e.getMessage());
-				e.printStackTrace();
-				throw e;
-			} catch (Exception e) {
-				System.err.println("GeneralException:" + e.getMessage());
-				e.printStackTrace();
-				throw e;
-			} finally {
-				try {
-					daoVideos.cerrarRecursos();
-					if(this.conn!=null)
-						this.conn.close();
-				} catch (SQLException exception) {
-					System.err.println("SQLException closing resources:" + exception.getMessage());
-					exception.printStackTrace();
-					throw exception;
-				}
+	public List<Restaurante> darRestaurantes() throws Exception {
+		List<Restaurante> restaurantes;
+		DAOTablaRestaurantes daoVideos = new DAOTablaRestaurantes();
+		try 
+		{
+			//////transaccion
+			this.conn = darConexion();
+			daoVideos.setConn(conn);
+			restaurantes = daoVideos.darRestaurantes();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoVideos.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
 			}
-			return restaurantes;
 		}
-	
+		return restaurantes;
+	}
+
 	////////////////////////////////////////
 	///////Transacciones Usuarios////////////////////
 	////////////////////////////////////////
@@ -341,7 +345,7 @@ public class RotondAndesTM {
 			}
 		}
 	}
-	
+
 	public List<ProductoSingular> darProductos() throws Exception {
 		List<ProductoSingular> productos;
 		DAOTablaProductoSingular daoProductos = new DAOTablaProductoSingular();
@@ -374,7 +378,7 @@ public class RotondAndesTM {
 		return productos;
 	}
 
-	
+
 	public void addProducto(AgregarProducto producto) throws Exception {
 		DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
 		DAOTablaProductoSingular daoProducto= new DAOTablaProductoSingular();
@@ -391,6 +395,7 @@ public class RotondAndesTM {
 			{
 				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
 			}
+
 			//////transaccion
 
 			daoProducto.addProductoSingular(producto.getProducto(), producto.getCantidad(), producto.getLocal(), producto.getPrecio(), producto.getCoste(),producto.getMax());
@@ -424,8 +429,8 @@ public class RotondAndesTM {
 			}
 		}
 	}
-	
-	
+
+
 	public void addPreferencia(Preferencia preferencia) throws Exception {
 		DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
 		try 
@@ -462,7 +467,7 @@ public class RotondAndesTM {
 				daoUsuario.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.rollback();
-					this.conn.close();
+				this.conn.close();
 			} catch (SQLException exception) {
 				System.err.println("SQLException closing resources:" + exception.getMessage());
 				exception.printStackTrace();
@@ -474,7 +479,7 @@ public class RotondAndesTM {
 	public void addMenuRestaurante(AgregarMenu userResta) throws Exception{
 		DAOTablaMenu daoMenu = new DAOTablaMenu();
 		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
-		
+
 		try 
 		{
 			this.conn = darConexion();
@@ -488,11 +493,11 @@ public class RotondAndesTM {
 			{
 				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
 			}
-			
-			
+
+
 			Menu menu = userResta.getMenu();
 			//////transaccion
-			
+
 			daoMenu.addMenu(menu);
 			conn.commit();
 
@@ -524,18 +529,18 @@ public class RotondAndesTM {
 			}
 		}
 	}
-	
+
 	public void addPedido(Pedido pedido) throws Exception{
 		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
 		DAOTablaPedido daoPedido= new DAOTablaPedido();
-		
+
 		try 
 		{
 			this.conn = darConexion();
 			daoUsuario.setConn(conn);
 			daoPedido.setConn(conn);
 			//////transaccion
-			
+
 			daoPedido.addPedido(pedido);
 			conn.commit();
 
@@ -567,18 +572,18 @@ public class RotondAndesTM {
 			}
 		}
 	}
-	
+
 	public void addPedidoProducto(PedidoProducto pedido) throws Exception{
 		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
 		DAOTablaPedido daoPedido= new DAOTablaPedido();
-		
+
 		try 
 		{
 			this.conn = darConexion();
 			daoUsuario.setConn(conn);
 			daoPedido.setConn(conn);
 			//////transaccion
-			
+
 			if(pedido.getIdMenu()>0 && pedido.getIdProducto()>0)
 			{
 				throw new NoPermissionException("No se puede agregar un menu y un producto a la vez");
@@ -621,19 +626,78 @@ public class RotondAndesTM {
 			}
 		}
 	}
-	
+
 	public void servirPedido(int pedido) throws Exception{
 		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
 		DAOTablaPedido daoPedido= new DAOTablaPedido();
-		
+
 		try 
 		{
 			this.conn = darConexion();
 			daoUsuario.setConn(conn);
 			daoPedido.setConn(conn);
 			//////transaccion
-			
+
 			daoPedido.pedidoServido(daoPedido.buscarPedidoById(pedido));
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} 
+		catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
+		catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+
+	public void servirPedidoProducto(ServirPedidoProducto pedido) throws Exception{
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		DAOTablaPedido daoPedido= new DAOTablaPedido();
+
+		try 
+		{
+
+
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			daoPedido.setConn(conn);
+			//////transaccion
+
+
+			if(pedido.getIdMenu()>0 && pedido.getIdProducto()>0)
+			{
+				throw new NoPermissionException("No se puede agregar un menu y un producto a la vez");
+			}
+			if(pedido.getIdMenu()>0)
+			{
+				daoPedido.pedidoServidoMenu(pedido);
+			}
+			else if(pedido.getIdProducto()>0)
+			{
+				daoPedido.pedidoServidoProducto(pedido);
+			}
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -664,7 +728,7 @@ public class RotondAndesTM {
 			}
 		}
 	}
-	
+
 	public void addIngredienteRestaurante(AgregarIngredienteRestaurante userResta) throws Exception{
 		DAOTablaIngrediente daoIngrediente = new DAOTablaIngrediente();
 		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
@@ -681,11 +745,11 @@ public class RotondAndesTM {
 			{
 				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
 			}
-			
-			
+
+
 			Ingrediente ingrediente = userResta.getIngrediente();
 			//////transaccion
-			
+
 			daoIngrediente.addIngrediente(ingrediente);
 			conn.commit();
 
@@ -718,11 +782,11 @@ public class RotondAndesTM {
 		}
 	}
 
-	
+
 	public void addZona(AgregarZona userResta) throws Exception{
 		DAOTablaZona daoZona = new DAOTablaZona();
 		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
-		
+
 		try 
 		{
 			this.conn = darConexion();
@@ -739,7 +803,7 @@ public class RotondAndesTM {
 
 			Zona zona = userResta.getZona();
 			//////transaccion
-			
+
 			daoZona.addZona(zona);
 			conn.commit();
 
@@ -771,7 +835,7 @@ public class RotondAndesTM {
 			}
 		}
 	}
-	
+
 	public void surtirRestaurante(SurtirRestaurante restaurante) throws Exception{
 		DAOTablaRestaurantes daoRestaurante = new DAOTablaRestaurantes();
 		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
@@ -793,7 +857,7 @@ public class RotondAndesTM {
 				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
 			}
 			//////transaccion
-			
+
 			daoRestaurante.surtirRestaurante(restaurante);
 			conn.commit();
 
@@ -825,7 +889,205 @@ public class RotondAndesTM {
 			}
 		}
 	}
-	
-	
+
+	public void addEquivalenciaIngrediente(int id, AgregarEquivalenciaIngrediente userResta) throws Exception {
+		DAOTablaIngrediente daoIngrediente = new DAOTablaIngrediente();
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		try 
+		{
+			this.conn = darConexion();
+			daoIngrediente.setConn(conn);
+			daoUsuario.setConn(conn);
+			if(daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaUsuarioRestaurante()) == null || userResta.getIdIngrediente() == 0)
+			{
+				throw new NoSuchElementException("no se encontro el usuario restaurante con la cedula: "+userResta.getCedulaUsuarioRestaurante());
+			}
+			if(!daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaUsuarioRestaurante()).getRol().equals("RESTAURANTE"))
+			{
+				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
+			}
+			if(userResta.getIdIngrediente()==id)
+			{
+				throw new NoPermissionException("No se puede agregar una rquivalencia con el mismo ingrediente");
+			}
+
+			//////transaccion
+
+			daoIngrediente.addEquivalenciaIngrediente(id,userResta.getIdIngrediente(),userResta.getLocal());
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+
+	public void addEquivalenciaProducto(int id, AgregarEquivalenciaProducto userResta) throws Exception {
+		DAOTablaProductoSingular daoIngrediente = new DAOTablaProductoSingular();
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		try 
+		{
+			this.conn = darConexion();
+			daoIngrediente.setConn(conn);
+			daoUsuario.setConn(conn);
+			if(daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaUsuarioRestaurante()) == null || userResta.getIdProducto() == 0)
+			{
+				throw new NoSuchElementException("no se encontro el usuario restaurante con la cedula: "+userResta.getCedulaUsuarioRestaurante());
+			}
+			if(!daoUsuario.buscarUsuarioPorCedula(userResta.getCedulaUsuarioRestaurante()).getRol().equals("RESTAURANTE"))
+			{
+				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
+			}
+			if(userResta.getIdProducto()==id)
+			{
+				throw new NoPermissionException("No se puede agregar una equivalencia con el mismo producto");
+			}
+
+			//////transaccion
+
+			daoIngrediente.addEquivalenciaProducto(id,userResta.getIdProducto(),userResta.getLocal());
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+
+	public Cliente getInfoCliente(int id) throws Exception {
+			DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+			try 
+			{
+				this.conn = darConexion();
+				daoUsuario.setConn(conn);
+				Cliente cliente=null;
+				//////transaccion
+				if(daoUsuario.buscarUsuarioPorCedula(id)==null)
+				{
+					throw new NoSuchElementException("no existe el usuario con la cedula dada");
+				}
+				if(!daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("CLIENTE"))
+				{
+					throw new NoPermissionException("no se puede obtener la informacion de este usuario");
+				}
+				
+				cliente=daoUsuario.getInfoUsuario(id);
+				
+				conn.commit();
+				
+				return cliente;
+			} catch (SQLException e) {
+				System.err.println("SQLException:" + e.getMessage());
+				e.printStackTrace();
+				throw e;
+			} catch(NoPermissionException e){
+				System.err.println("privilegeException:" + e.getMessage());
+				e.printStackTrace();
+				throw e;
+			}catch(NoSuchElementException e) {
+				System.err.println("noSuchElementException:" + e.getMessage());
+				e.printStackTrace();
+				throw e;
+			}catch (Exception e) {
+				System.err.println("GeneralException:" + e.getMessage());
+				e.printStackTrace();
+				throw e;
+			} finally {
+				try {
+					daoUsuario.cerrarRecursos();
+					if(this.conn!=null)
+						this.conn.close();
+				} catch (SQLException exception) {
+					System.err.println("SQLException closing resources:" + exception.getMessage());
+					exception.printStackTrace();
+					throw exception;
+				}
+			}
+		}
+
+	public ProductoSingular darProductoMasOfrecido() throws Exception{
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			ProductoSingular producto=null;
+			//////transaccion
+			
+//			producto=daoUsuario.getInfoUsuario(id);
+			
+			conn.commit();
+			
+			return producto;
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}	
 }
 

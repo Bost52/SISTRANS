@@ -131,5 +131,16 @@ public class DAOTablaProductoSingular {
 		}
 
 	}
+	
+	public void addEquivalenciaProducto(int idPrincipal,int idProducto, int local) throws SQLException {
+		String sql = "INSERT INTO SIMILITUDESPRODUCTO  ( IDPROD1, IDPROD2, LOCAL) VALUES (";
+		sql += idPrincipal + ",";
+		sql += idProducto + ",";
+		sql +=local + ")";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
 
 }

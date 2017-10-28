@@ -20,11 +20,23 @@ public class Menu {
 	@JsonProperty(value="local")
 	private int local;
 	
-	public Menu(@JsonProperty(value="id")Long id, @JsonProperty(value="precio")double precio,@JsonProperty(value="nombre") String nombre,@JsonProperty(value="local") int local) {
+	@JsonProperty(value="max")
+	private int max;
+	
+	@JsonProperty(value="cantidad")
+	private int cantidad;
+	
+	@JsonProperty(value="coste")
+	private double coste;
+	
+	public Menu(@JsonProperty(value="coste") double coste,@JsonProperty(value="cantidad") int cantidad,@JsonProperty(value="max") int max,@JsonProperty(value="id")Long id, @JsonProperty(value="precio")double precio,@JsonProperty(value="nombre") String nombre,@JsonProperty(value="local") int local) {
 		this.id = id;
 		this.precio = precio;
 		this.nombre = nombre;
 		this.local = local;
+		this.coste=coste;
+		this.cantidad=cantidad;
+		this.max=max;
 	}
 
 	public ArrayList<ProductoSingular> getProductos() {
@@ -66,6 +78,31 @@ public class Menu {
 	public void setPrecio(double precio) {
 		this.precio = precio;
 	}
+
+	public int getMax() {
+		return max;
+	}
+
+	public void setMax(int max) {
+		this.max = max;
+	}
+
+	public int getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public double getCoste() {
+		return coste;
+	}
+
+	public void setCoste(double coste) {
+		this.coste = coste;
+	}
+	
 	
 	
 }

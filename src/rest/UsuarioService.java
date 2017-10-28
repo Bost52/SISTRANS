@@ -9,6 +9,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.Response;
 import oracle.jdbc.proxy.annotation.Post;
 import tm.RotondAndesTM;
 import vos.AgregarUsuarioCliente;
+import vos.Cliente;
 import vos.ConsultarClientes;
 import vos.Preferencia;
 import vos.Usuario;
@@ -106,6 +108,21 @@ public class UsuarioService {
 		return Response.status(200).entity(preferencia).build();
 	}
 	
+	@GET
+	@Path("cliente/{id: \\d+}")
+	public Response getInfoCliente(@PathParam("id")int id)
+	{
+		Cliente cliente=null;
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		try {
+			cliente=tm.getInfoCliente(id);
+		}catch(NoSuchElementException e) {
+			return Response.status(404).entity(doErrorMessage(e)).build();
+		}catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(cliente).build();		
+	}
 
 //	@GET
 //	public Response getUsuariosAdministrador(ConsultarClientes administrador) {

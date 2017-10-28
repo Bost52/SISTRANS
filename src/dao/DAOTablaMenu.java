@@ -66,8 +66,11 @@ public class DAOTablaMenu {
 			double precio = rs.getDouble("PRECIO");
 			String nombre = rs.getString("NOMBRE");
 			int local = rs.getInt("LOCAL");
+			int cantidad= rs.getInt("CANTIDAD");
+			double coste=rs.getFloat("COSTE");
+			int max= rs.getInt("MAX");
 			
-			resp.add(new Menu(idP, precio, nombre, local));
+			resp.add(new Menu(coste, cantidad, max, idP, precio, nombre, local));
 		}
 		return resp;
 	}
@@ -86,8 +89,11 @@ public class DAOTablaMenu {
 			double precio = rs.getDouble("PRECIO");
 			String nombre = rs.getString("NOMBRE");
 			int local = rs.getInt("LOCAL");
+			int cantidad= rs.getInt("CANTIDAD");
+			double coste=rs.getFloat("COSTE");
+			int max= rs.getInt("MAX");
 			
-			resp.add(new Menu(idP, precio, nombre, local));
+			resp.add(new Menu(coste, cantidad, max, idP, precio, nombre, local));
 		}
 
 		return resp;
@@ -97,7 +103,7 @@ public class DAOTablaMenu {
 	{
 		Menu resp = null;
 
-		String sql = "SELECT * FROM RESTAURANTE WHERE ID =" + id;
+		String sql = "SELECT * FROM MENU WHERE ID =" + id;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -108,8 +114,12 @@ public class DAOTablaMenu {
 			double precio = rs.getDouble("PRECIO");
 			String nombre = rs.getString("NOMBRE");
 			int local = rs.getInt("LOCAL");
+			int cantidad= rs.getInt("CANTIDAD");
+			double coste=rs.getFloat("COSTE");
+			int max= rs.getInt("MAX");
 			
-			resp = new Menu(idP, precio, nombre, local);
+			
+			resp = new Menu(coste, cantidad, max, idP, precio, nombre, local);
 		}
 
 		return resp;
@@ -117,11 +127,14 @@ public class DAOTablaMenu {
 
 	public void addMenu(Menu par) throws SQLException, Exception {
 
-		String sql = "INSERT INTO MENU (IDMENU, NOMBRE, LOCAL, PRECIOTOTAL) VALUES (";
+		String sql = "INSERT INTO MENU (IDMENU, NOMBRE, LOCAL, PRECIOTOTAL, COSTE, CANTIDAD,MAX) VALUES (";
 		sql += par.getId() + ",'";
 		sql += par.getNombre() + "',";
 		sql += par.getLocal() + ",";
-		sql += par.getPrecio() + ")";
+		sql += par.getPrecio() + ",";
+		sql += par.getCoste() + ",";
+		sql += par.getCantidad() + ",";
+		sql += par.getMax() + ")";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);

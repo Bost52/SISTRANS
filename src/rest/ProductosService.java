@@ -1,5 +1,7 @@
 package rest;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -9,12 +11,15 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import tm.RotondAndesTM;
+import vos.AgregarEquivalenciaIngrediente;
+import vos.AgregarEquivalenciaProducto;
 import vos.AgregarProducto;
 import vos.AgregarUsuarioCliente;
 import vos.ProductoSingular;
@@ -57,6 +62,20 @@ public class ProductosService {
 		return Response.status(200).entity(productos).build();
 	}
 	
+	@GET
+	@Path("ofrecido")
+	public Response getProductoMasOfrecida()
+	{
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		ProductoSingular producto=null;
+		try {
+			producto = tm.darProductoMasOfrecido();
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(producto).build();
+	}
+	
 	@POST
 	public Response addProducto(AgregarProducto producto) {
 		RotondAndesTM tm = new RotondAndesTM(getPath());
@@ -70,6 +89,22 @@ public class ProductosService {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(producto).build();
+	}
+	
+	@POST
+	@Path( "{id: \\d+}" )
+	public Response addEquivalenciaIngrediente(@PathParam( "id" ) int id,AgregarEquivalenciaProducto userResta) {
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		try {
+			tm.addEquivalenciaProducto(id, userResta);
+		}catch(NoPermissionException e){
+			return Response.status(403).entity(doErrorMessage(e)).build();
+		}catch(NoSuchElementException e) {
+			return Response.status(404).entity(doErrorMessage(e)).build();
+		}catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(userResta).build();
 	}
 	
 }

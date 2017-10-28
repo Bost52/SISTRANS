@@ -21,13 +21,14 @@ import vos.AgregarUsuarioCliente;
 import vos.Pedido;
 import vos.PedidoProducto;
 import vos.Preferencia;
+import vos.ServirPedidoProducto;
 import vos.Usuario;
 
 @Path("pedidos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class PedidoServices {
-	
+
 	/**
 	 * Atributo que usa la anotacion @Context para tener el ServletContext de la conexion actual.
 	 */
@@ -41,13 +42,13 @@ public class PedidoServices {
 	private String getPath() {
 		return context.getRealPath("WEB-INF/ConnectionData");
 	}
-	
-	
+
+
 	private String doErrorMessage(Exception e){
 		return "{ \"ERROR\": \""+ e.getMessage() + "\"}" ;
 	}
-	
-	
+
+
 	@POST
 	public Response addPedido(Pedido pedido) {
 		RotondAndesTM tm = new RotondAndesTM(getPath());
@@ -61,7 +62,7 @@ public class PedidoServices {
 		}
 		return Response.status(200).entity(pedido).build();
 	}
-	
+
 
 	@POST
 	@Path("/producto")
@@ -77,13 +78,29 @@ public class PedidoServices {
 		}
 		return Response.status(200).entity(pedido).build();
 	}
-	
+
 	@PUT
 	@Path("/{id: \\d+}")
-	public Response servirPedido(@PathParam("id") int id) {
+	public Response servirPedidoProducto(@PathParam("id") int id, ServirPedidoProducto pedido) {
 		RotondAndesTM tm = new RotondAndesTM(getPath());
 		try {
-			tm.servirPedido(id);
+			pedido.setIdPedido(id);
+			if(pedido.getIdProducto()>0 && pedido.getIdMenu()>0)
+			{
+				throw new NoPermissionException("sdad");
+			}
+			if(pedido.getIdProducto()>0)
+			{
+				tm.servirPedidoProducto(pedido);
+			}
+			else if(pedido.getIdMenu()>0)
+			{
+				tm.servirPedidoProducto(pedido);
+			}
+			else
+			{
+				tm.servirPedido(id);
+			}
 		}catch(NoPermissionException e){
 			return Response.status(403).entity(doErrorMessage(e)).build();
 		}
@@ -92,4 +109,6 @@ public class PedidoServices {
 		}
 		return Response.status(200).entity(id).build();
 	}
+
+
 }

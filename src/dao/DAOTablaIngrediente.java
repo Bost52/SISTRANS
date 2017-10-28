@@ -156,4 +156,15 @@ public class DAOTablaIngrediente {
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 	}
+
+	public void addEquivalenciaIngrediente(int idPrincipal,int idIngrediente, int local) throws SQLException {
+		String sql = "INSERT INTO SIMILITUDESINGREDIENTE  ( IDINGR1, IDINGR2, LOCAL) VALUES (";
+		sql += idPrincipal + ",";
+		sql += idIngrediente + ",";
+		sql +=local + ")";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
 }
