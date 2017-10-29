@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import tm.RotondAndesTM;
 import vos.AgregarUsuarioCliente;
 import vos.Pedido;
+import vos.PedidoMesa;
 import vos.PedidoProducto;
 import vos.Preferencia;
 import vos.ServirPedidoProducto;
@@ -59,6 +60,18 @@ public class PedidoServices {
 			return Response.status(403).entity(doErrorMessage(e)).build();
 		}
 		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(pedido).build();
+	}
+	
+	@POST
+	@Path("/mesa")
+	public Response addPedidoMesa(PedidoMesa pedido) {
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		try {
+			tm.addPedidoMesa(pedido);
+		}catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(pedido).build();
@@ -118,6 +131,23 @@ public class PedidoServices {
 		try {
 
 			tm.cancelarPedido(id);
+
+		}catch(NoPermissionException e){
+			return Response.status(403).entity(doErrorMessage(e)).build();
+		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(id).build();
+	}
+	
+	@DELETE
+	@Path("/{id: \\d+}/producto/{id2: \\\\d+}")
+	public Response cancelarPedidoProducto(@PathParam("id") int id,@PathParam("id2") int id2) {
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		try {
+
+			tm.cancelarPedidoProducto(id,id2);
 
 		}catch(NoPermissionException e){
 			return Response.status(403).entity(doErrorMessage(e)).build();

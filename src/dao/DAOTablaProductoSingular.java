@@ -175,7 +175,7 @@ public class DAOTablaProductoSingular {
 		}
 		return null;
 	}
-	
+
 	public boolean existEquiv(int id1, int id2, int local) throws SQLException
 	{
 
@@ -184,19 +184,35 @@ public class DAOTablaProductoSingular {
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
-		
+
 		String sql2 = "SELECT * FROM SIMILITUDESPRODUCTO WHERE IDPROD1="+id2 +" AND IDPROD2="+id1+" AND LOCAL="+ local;
 
 		PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
 		recursos.add(prepStmt2);
 		ResultSet rs2 = prepStmt2.executeQuery();
-		
+
 		if(rs.next()||rs2.next())
 		{
 			return true;
 		}
 
 		return false;
+	}
+
+	public double precioProducto(int local, int idProducto) throws SQLException
+	{
+
+
+		String sql = "SELECT PRECIO FROM OFRECEPRODUCTO WHERE LOCAL="+local+" AND IDPRODUCTO="+ idProducto;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		if(rs.next())
+		{
+			return rs.getDouble("PRECIO");
+		}
+		return 0;
 	}
 
 }

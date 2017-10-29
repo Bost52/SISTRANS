@@ -6,9 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import vos.Categoria;
 import vos.Cliente;
+import vos.ConsultarConsumoCliente;
+import vos.Menu;
 import vos.Pedido;
 import vos.Preferencia;
+import vos.ProductoSingular;
 import vos.Usuario;
 
 public class DAOTablaUsuarios {
@@ -131,7 +135,6 @@ public class DAOTablaUsuarios {
 	}
 
 	public Cliente getInfoUsuario(int id) throws Exception {
-		// TODO Auto-generated method stub
 		Cliente cliente =new Cliente( );
 		String sql = "SELECT * FROM USUARIO WHERE CEDULA="+id;
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -164,7 +167,7 @@ public class DAOTablaUsuarios {
 		ArrayList<Pedido> pedidos= new ArrayList<>();	
 		
 		while(rs3.next()) {
-			Pedido ped= new Pedido(rs3.getDate("FECHAYHORA").toString(), rs3.getInt("IDPEDIDO"), rs3.getInt("IDPAGO"), this.buscarUsuarioPorCedula(id), rs3.getString("SERVIDO"));
+			Pedido ped= new Pedido(null, rs3.getDate("FECHAYHORA").toString(), rs3.getInt("IDPEDIDO"), rs3.getInt("IDPAGO"), this.buscarUsuarioPorCedula(id), rs3.getString("SERVIDO"));
 			pedidos.add(ped);
 		}
 		
@@ -174,5 +177,67 @@ public class DAOTablaUsuarios {
 		
 
 		return cliente;
+	}
+
+	public ConsultarConsumoCliente getConsumoUsuario(long id) throws SQLException {
+		ConsultarConsumoCliente cliente =new ConsultarConsumoCliente();
+		String sql = "SELECT * FROM ((PEDIDO NATURAL JOIN PEDIDOPRODUCTO)Natural join producto)natural join CATEGORIAPRODUCTO WHERE CEDULA ="+id;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+		cliente.setProductos(new ArrayList<>());
+		cliente.setProductosMesa(new ArrayList<>());
+		cliente.setCedula(id);
+		cliente.setMenus(new ArrayList<>());
+		cliente.setMenusMesa(new ArrayList<>());
+
+		while(rs.next()) {
+			Categoria cat = new Categoria(rs.getInt("IDCATEGORIA"), rs.getString("CATEGORIA"));
+			ProductoSingular prod= new ProductoSingular(rs.getInt("IDPRODUCTO"), rs.getString("NOMBRE"), rs.getString("DESCRIPCIONESPANOL"), rs.getString("DESCRIPCIONINGLES"), cat);
+			if(rs.getInt("IDMESA")>0 )
+			{
+				cliente.getProductosMesa().add(prod);
+			}
+			else {
+				cliente.getProductos().add(prod);
+			}
+		}
+		
+		String sql2 = "SELECT * FROM (PEDIDO NATURAL JOIN PEDIDOMENU) natural join Menu WHERE CEDULA ="+id;
+
+		PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+		recursos.add(prepStmt2);
+		ResultSet rs2=prepStmt2.executeQuery();
+
+		while(rs2.next()) {
+			Menu menu=new Menu(rs2.getDouble("COSTE"), rs2.getInt("CANTIDAD"), rs2.getInt("MAX"), rs2.getLong("IDMENU"), rs2.getDouble("PRECIOTOTAL"), rs2.getString("NOMBRE"), rs2.getInt("LOCAL"));
+			if(rs2.getInt("IDMESA")>0 )
+			{
+				cliente.getMenusMesa().add(menu);
+			}
+			else {
+				cliente.getMenus().add(menu);
+			}
+		}
+		
+		return cliente;
+	}
+
+	public ArrayList<ConsultarConsumoCliente> getConsumoUsuarios() throws SQLException {
+		
+		ArrayList<ConsultarConsumoCliente> lista= new ArrayList<>();
+		String sql = "SELECT * FROM USUARIO WHERE ROL='CLIENTE'";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+		
+		while(rs.next())
+		{
+			lista.add(getConsumoUsuario(rs.getLong("CEDULA")));
+		}
+		
+		return lista;
 	}
 }

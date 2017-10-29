@@ -103,7 +103,7 @@ public class DAOTablaMenu {
 	{
 		Menu resp = null;
 
-		String sql = "SELECT * FROM MENU WHERE ID =" + id;
+		String sql = "SELECT * FROM MENU WHERE IDMENU =" + id;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -111,7 +111,7 @@ public class DAOTablaMenu {
 
 		if(rs.next()) {
 			Long idP = rs.getLong("IDMENU");
-			double precio = rs.getDouble("PRECIO");
+			double precio = rs.getDouble("PRECIOTOTAL");
 			String nombre = rs.getString("NOMBRE");
 			int local = rs.getInt("LOCAL");
 			int cantidad= rs.getInt("CANTIDAD");

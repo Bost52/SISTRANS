@@ -20,9 +20,6 @@ public class ProductoSingular{
 	
 	@JsonProperty(value="categoria")
 	private Categoria categoria;
-	
-	
-
 
 	public ProductoSingular(@JsonProperty(value="idProducto") int id, @JsonProperty(value="nombre") String nombre,@JsonProperty(value="descripcion") String descripcion,@JsonProperty(value="descripcionTraducida")String descripcionTraducida,@JsonProperty(value="categoria") Categoria categoria) {
 		this.idProducto=id;
@@ -31,7 +28,7 @@ public class ProductoSingular{
 		this.descripcionTraducida = descripcionTraducida;
 		this.categoria=categoria;
 	}
-
+	
 	public String getNombre() {
 		return nombre;
 	}

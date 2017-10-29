@@ -6,10 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import rest.UsuarioService;
 import vos.Pedido;
+import vos.PedidoMesa;
 import vos.PedidoProducto;
 import vos.Restaurante;
 import vos.ServirPedidoProducto;
@@ -78,19 +80,29 @@ public class DAOTablaPedido {
 			Date fecha = rs.getDate("FECHAYHORA");
 			Usuario cliente = daoUsuario.buscarUsuarioPorCedula((rs.getInt("CEDULA")));
 			String servido=rs.getString("SERVIDO");
-			pedidos.add(new Pedido(fecha.toString(), id, idPago, cliente,servido));
+
+			pedidos.add(new Pedido(null,fecha.toString(), id, idPago, cliente,servido));
 		}
 		return pedidos;
 	}
-	public void addPedido(Pedido pedido) throws SQLException, Exception {
+	public void addPedido(Pedido pedido, double totalValue) throws SQLException, Exception {
 
-		String date= pedido.getFechaHora().toString();
-		String sql = "insert into PEDIDO (IDPEDIDO, FECHAYHORA) values ("+pedido.getIdPedido()+",TO_DATE('"+date+"','YYYY-MM-DD HH:MI:SS') )";
+		String sql = "insert into PEDIDO (IDPEDIDO, FECHAYHORA, PRECIOPEDIDO) values ("+pedido.getIdPedido()+",SYSDATE, "+totalValue+")";
 
 		if(pedido.getCliente()!=null)
 		{
-			sql = "insert into PEDIDO (IDPEDIDO, FECHAYHORA, CEDULA) values ("+pedido.getIdPedido()+",TO_DATE('"+date+"','DD/MM/YYYY HH:MI:SS') , "+pedido.getCliente().getCedula()+")";
+			sql = "insert into PEDIDO (IDPEDIDO, FECHAYHORA, CEDULA, PRECIOPEDIDO) values ("+pedido.getIdPedido()+",SYSDATE , "+pedido.getCliente().getCedula()+", "+totalValue+")";
 		}
+		if(pedido.getIdMesa()>0)
+		{
+			sql = "insert into PEDIDO (IDPEDIDO, FECHAYHORA, PRECIOPEDIDO, IDMESA) values ("+pedido.getIdPedido()+",SYSDATE, "+totalValue+", "+pedido.getIdMesa()+")";
+		}
+		if(pedido.getCliente()!=null && pedido.getIdMesa()>0)
+		{
+			sql = "insert into PEDIDO (IDPEDIDO, FECHAYHORA, CEDULA, PRECIOPEDIDO, IDMESA) values ("+pedido.getIdPedido()+",SYSDATE , "+pedido.getCliente().getCedula()+", "+totalValue+", "+pedido.getIdMesa()+")";
+		}
+
+
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
@@ -103,7 +115,7 @@ public class DAOTablaPedido {
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
-		
+
 		for(int i=0;i<pedido.getEquivalencias().size();i++) {
 			String sql2 = "insert into PEDIDO_EQUIVALENCIAPRODUCTO (IDPEDIDO, IDPROD1, IDPROD2, IDMENU) values ("+pedido.getIdPedido()+", "+pedido.getIdProducto()+", "+pedido.getEquivalencias().get(i)+", 0)";
 			PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
@@ -129,7 +141,7 @@ public class DAOTablaPedido {
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs=prepStmt.executeQuery();
-		
+
 		int local = 0;
 		if(rs.next())
 		{
@@ -138,7 +150,7 @@ public class DAOTablaPedido {
 		else {
 			throw new NoSuchElementException("Este pedido no contiene el producto dado");
 		}
-		
+
 		String sql2 = "UPDATE OFRECEPRODUCTO SET CANTIDAD=CANTIDAD-1 WHERE LOCAL="+local+" AND IDPRODUCTO="+pedido.getIdProducto();
 
 		PreparedStatement prepStmt2= conn.prepareStatement(sql2);
@@ -153,7 +165,7 @@ public class DAOTablaPedido {
 		recursos.add(prepStmt3);
 		prepStmt3.executeQuery();
 	}
-	
+
 	public void pedidoServidoMenu(ServirPedidoProducto pedido) throws Exception
 	{
 
@@ -192,7 +204,7 @@ public class DAOTablaPedido {
 			String date = rs.getString("FECHAYHORA");
 
 
-			usuario = new Pedido(date, idPedido, idPago, cliente, servido);
+			usuario = new Pedido(null,date, idPedido, idPago, cliente, servido);
 		}
 
 		return usuario;
@@ -202,7 +214,7 @@ public class DAOTablaPedido {
 	{
 		DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
 		daoUsuario.setConn(conn);
-		
+
 		String sql = "SELECT IDMENU FROM PEDIDOMENU P1 WHERE IDPEDIDO="+pedido.getIdPedido();
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -213,7 +225,7 @@ public class DAOTablaPedido {
 			ServirPedidoProducto ped =new ServirPedidoProducto(pedido.getIdPedido(), 0, rs.getInt("IDMENU"));
 			pedidoServidoMenu(ped);
 		}
-		
+
 		String sql2 = "SELECT IDPRODUCTO FROM PEDIDOPRODUCTO P1 WHERE IDPEDIDO="+pedido.getIdPedido();
 
 		PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
@@ -224,7 +236,7 @@ public class DAOTablaPedido {
 			ServirPedidoProducto ped =new ServirPedidoProducto(pedido.getIdPedido(), rs2.getInt("IDPRODUCTO"), 0);
 			pedidoServidoProducto(ped);
 		}
-		
+
 		String sql3 = "UPDATE PEDIDO SET SERVIDO='T' WHERE IDPEDIDO="+pedido.getIdPedido();
 
 		PreparedStatement prepStmt3= conn.prepareStatement(sql3);
@@ -240,7 +252,7 @@ public class DAOTablaPedido {
 		recursos.add(prepStmt);
 		ResultSet rs=prepStmt.executeQuery();
 	}
-	
+
 	public void cancelarPedidoEquivalencias(Pedido pedido) throws SQLException {
 		String sql = "DELETE FROM PEDIDO_EQUIVALENCIAPRODUCTO WHERE IDPEDIDO="+pedido.getIdPedido();
 
@@ -248,7 +260,7 @@ public class DAOTablaPedido {
 		recursos.add(prepStmt);
 		ResultSet rs=prepStmt.executeQuery();
 	}
-	
+
 	public void cancelarPedidoMenu(Pedido pedido) throws SQLException {
 		String sql = "DELETE FROM PEDIDOMENU WHERE IDPEDIDO="+pedido.getIdPedido();
 
@@ -256,7 +268,7 @@ public class DAOTablaPedido {
 		recursos.add(prepStmt);
 		ResultSet rs=prepStmt.executeQuery();
 	}
-	
+
 	public void cancelarPedido(Pedido pedido) throws SQLException {
 		cancelarPedidoProducto(pedido);
 		cancelarPedidoMenu(pedido);
@@ -266,4 +278,52 @@ public class DAOTablaPedido {
 		recursos.add(prepStmt);
 		ResultSet rs=prepStmt.executeQuery();
 	}
+
+	public void cancelarPedidoProducto(int id, int id2) throws SQLException {
+		cancelarPedidoEquivalencias(id,id2);
+		String sql = "DELETE FROM PEDIDOPRODUCTO WHERE IDPEDIDO="+id+" AND IDPRODUCTO=" +id2;
+
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();		
+	}
+
+	private void cancelarPedidoEquivalencias(int id, int id2) throws SQLException {
+		String sql = "DELETE FROM PEDIDO_EQUIVALENCIAPRODUCTO WHERE IDPEDIDO="+id+" AND IDPROD1="+id2;
+
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+	}
+
+	public double precioPedido(int idPedido) throws SQLException {
+		String sql = "SELECT PRECIOPEDIDO FROM PEDIDO WHERE IDPEDIDO="+idPedido;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		if(rs.next())
+		{
+			return rs.getDouble("PRECIOPEDIDO");
+		}
+		return 0;	
+	}
+
+	public void addPedidoMesa(PedidoMesa pedido) throws SQLException {
+		String sql = "insert into PEDIDOMESA (IDMESA, PRECIOTOTAL) values ("+pedido.getIdMesa()+", "+0+")";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
+
+	public void setPrecioMesa(double totalValue, int id) throws SQLException {
+		String sql3 = "UPDATE PEDIDOMESA SET PRECIOTOTAL="+totalValue+" WHERE IDMESA="+id;
+
+		PreparedStatement prepStmt3= conn.prepareStatement(sql3);
+		recursos.add(prepStmt3);
+		prepStmt3.executeQuery();		
+	}
+	
+	
 }

@@ -1,5 +1,6 @@
 package rest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -20,6 +21,7 @@ import tm.RotondAndesTM;
 import vos.AgregarUsuarioCliente;
 import vos.Cliente;
 import vos.ConsultarClientes;
+import vos.ConsultarConsumoCliente;
 import vos.Preferencia;
 import vos.Usuario;
 
@@ -116,6 +118,22 @@ public class UsuarioService {
 		RotondAndesTM tm = new RotondAndesTM(getPath());
 		try {
 			cliente=tm.getInfoCliente(id);
+		}catch(NoSuchElementException e) {
+			return Response.status(404).entity(doErrorMessage(e)).build();
+		}catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(cliente).build();		
+	}
+	
+	@GET
+	@Path("consumoCliente/{id: \\d+}")
+	public Response getConsumoCliente(@PathParam("id")long id)
+	{
+		ArrayList<ConsultarConsumoCliente> cliente=null;
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		try {
+			cliente=tm.getConsumoCliente(id);
 		}catch(NoSuchElementException e) {
 			return Response.status(404).entity(doErrorMessage(e)).build();
 		}catch (Exception e) {

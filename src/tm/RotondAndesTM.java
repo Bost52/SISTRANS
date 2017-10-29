@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -28,10 +29,12 @@ import vos.AgregarRestaurante;
 import vos.AgregarUsuarioCliente;
 import vos.AgregarZona;
 import vos.Cliente;
+import vos.ConsultarConsumoCliente;
 import vos.Preferencia;
 import vos.Ingrediente;
 import vos.Menu;
 import vos.Pedido;
+import vos.PedidoMesa;
 import vos.PedidoProducto;
 import vos.ProductoSingular;
 import vos.Restaurante;
@@ -533,15 +536,49 @@ public class RotondAndesTM {
 	public void addPedido(Pedido pedido) throws Exception{
 		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
 		DAOTablaPedido daoPedido= new DAOTablaPedido();
-
+		DAOTablaProductoSingular daoTablaProductoSingular= new DAOTablaProductoSingular();
+		DAOTablaMenu daoTablaMenu=new DAOTablaMenu();
+		
 		try 
 		{
 			this.conn = darConexion();
 			daoUsuario.setConn(conn);
 			daoPedido.setConn(conn);
+			daoTablaProductoSingular.setConn(conn);
+			daoTablaMenu.setConn(conn);
+			
 			//////transaccion
-
-			daoPedido.addPedido(pedido);
+			
+			if(pedido.getProductos()!=null)
+			{
+				double totalValue=0;
+				for(int i =0; i<pedido.getProductos().size();i++)
+				{
+					PedidoProducto ped = pedido.getProductos().get(i);
+					if(ped.getIdProducto()>0)
+					{
+						totalValue+=daoTablaProductoSingular.precioProducto(ped.getLocal(), ped.getIdProducto());
+					}
+					if(ped.getIdMenu()>0)
+					{
+						totalValue+=daoTablaMenu.buscarMenuPorId((long)ped.getIdMenu()).getPrecio();
+					}
+				}
+				
+				daoPedido.addPedido(pedido, totalValue);
+				Iterator<PedidoProducto> iter= pedido.getProductos().iterator();
+				
+				while(iter.hasNext())
+				{
+					PedidoProducto ped=iter.next();
+					ped.setIdPedido(pedido.getIdPedido());
+					addPedidoProducto(ped);
+				}
+			}
+			else {
+				throw new NoPermissionException("no se puede agregar un pedido de ningun producto");
+			}
+			this.conn = darConexion();
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -596,6 +633,7 @@ public class RotondAndesTM {
 			}
 			else if(pedido.getIdProducto()>0)
 			{
+				if(pedido.getEquivalencias()!=null) {
 				for(int i=0;i<pedido.getEquivalencias().size();i++) {
 					if(pedido.getIdPedido()==pedido.getEquivalencias().get(i))
 					{
@@ -603,6 +641,7 @@ public class RotondAndesTM {
 					}
 				}
 				daoPedido.addProductoPedido(pedido);
+				}
 			}
 			conn.commit();
 
@@ -1147,6 +1186,189 @@ public class RotondAndesTM {
 				throw exception;
 			}
 		}		
-	}	
+	}
+
+	public void cancelarPedidoProducto(int id, int id2) throws Exception {
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		DAOTablaPedido daoPedido= new DAOTablaPedido();
+
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			daoPedido.setConn(conn);
+			//////transaccion
+			
+			Pedido ped= daoPedido.buscarPedidoById(id);
+			if(ped.getServido().equals("T"))
+			{
+				throw new NoPermissionException("no se puede cancelar un pedido ya servido");
+			}
+
+			daoPedido.cancelarPedidoProducto(id,id2);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} 
+		catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
+		catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}		
+	}
+
+	public void addPedidoMesa(PedidoMesa pedido) throws Exception {
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		DAOTablaPedido daoPedido= new DAOTablaPedido();
+		DAOTablaProductoSingular daoTablaProductoSingular= new DAOTablaProductoSingular();
+		DAOTablaMenu daoTablaMenu=new DAOTablaMenu();
+		
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			daoPedido.setConn(conn);
+			daoTablaProductoSingular.setConn(conn);
+			daoTablaMenu.setConn(conn);
+			
+			//////transaccion
+			
+			if(pedido.getPedidos()!=null)
+			{	
+				daoPedido.addPedidoMesa(pedido);
+				Iterator<Pedido> iter= pedido.getPedidos().iterator();
+				
+				while(iter.hasNext())
+				{
+					Pedido ped=iter.next();
+					ped.setIdMesa(pedido.getIdMesa());
+					addPedido(ped);
+				}
+				
+				double totalValue=0;
+				for(int i =0; i<pedido.getPedidos().size();i++)
+				{
+					Pedido ped = pedido.getPedidos().get(i);
+					if(ped.getIdPedido()>0)
+					{
+						totalValue+=daoPedido.precioPedido(ped.getIdPedido());
+					}
+				}
+				
+				daoPedido.setPrecioMesa(totalValue, pedido.getIdMesa());
+			}
+			else {
+				throw new NoPermissionException("no se puede agregar un pedido de ningun producto");
+			}
+			this.conn = darConexion();
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+
+	public ArrayList<ConsultarConsumoCliente> getConsumoCliente(long id) throws Exception {
+
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			ArrayList<ConsultarConsumoCliente> cliente=new ArrayList<>();
+			//////transaccion
+			if(daoUsuario.buscarUsuarioPorCedula(id)==null)
+			{
+				throw new NoSuchElementException("no existe el usuario con la cedula dada");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("RESTAURANTE"))
+			{
+				throw new NoPermissionException("no puede obtener la informacion un usuario restaurante");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("CLIENTE"))
+			{
+			cliente.add(daoUsuario.getConsumoUsuario(id));
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("ADMINISTRADOR"))
+			{
+				cliente=daoUsuario.getConsumoUsuarios(); 
+			}
+			
+			conn.commit();
+			
+			return cliente;
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}	}	
 }
 
