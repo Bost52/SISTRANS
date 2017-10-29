@@ -93,7 +93,7 @@ public class ProductosService {
 	
 	@POST
 	@Path( "{id: \\d+}" )
-	public Response addEquivalenciaIngrediente(@PathParam( "id" ) int id,AgregarEquivalenciaProducto userResta) {
+	public Response addEquivalenciaProducto(@PathParam( "id" ) int id,AgregarEquivalenciaProducto userResta) {
 		RotondAndesTM tm = new RotondAndesTM(getPath());
 		try {
 			tm.addEquivalenciaProducto(id, userResta);

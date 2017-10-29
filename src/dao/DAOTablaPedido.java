@@ -103,6 +103,13 @@ public class DAOTablaPedido {
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
+		
+		for(int i=0;i<pedido.getEquivalencias().size();i++) {
+			String sql2 = "insert into PEDIDO_EQUIVALENCIAPRODUCTO (IDPEDIDO, IDPROD1, IDPROD2, IDMENU) values ("+pedido.getIdPedido()+", "+pedido.getIdProducto()+", "+pedido.getEquivalencias().get(i)+", 0)";
+			PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+			recursos.add(prepStmt2);
+			prepStmt2.executeQuery();
+		}
 	}
 
 	public void addMenuPedido(PedidoProducto pedido) throws SQLException, Exception {
@@ -223,5 +230,40 @@ public class DAOTablaPedido {
 		PreparedStatement prepStmt3= conn.prepareStatement(sql3);
 		recursos.add(prepStmt3);
 		prepStmt3.executeQuery();
+	}
+
+	public void cancelarPedidoProducto(Pedido pedido) throws SQLException {
+		cancelarPedidoEquivalencias(pedido);
+		String sql = "DELETE FROM PEDIDOPRODUCTO WHERE IDPEDIDO="+pedido.getIdPedido();
+
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+	}
+	
+	public void cancelarPedidoEquivalencias(Pedido pedido) throws SQLException {
+		String sql = "DELETE FROM PEDIDO_EQUIVALENCIAPRODUCTO WHERE IDPEDIDO="+pedido.getIdPedido();
+
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+	}
+	
+	public void cancelarPedidoMenu(Pedido pedido) throws SQLException {
+		String sql = "DELETE FROM PEDIDOMENU WHERE IDPEDIDO="+pedido.getIdPedido();
+
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+	}
+	
+	public void cancelarPedido(Pedido pedido) throws SQLException {
+		cancelarPedidoProducto(pedido);
+		cancelarPedidoMenu(pedido);
+		String sql = "DELETE FROM PEDIDO WHERE IDPEDIDO="+pedido.getIdPedido();
+
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
 	}
 }

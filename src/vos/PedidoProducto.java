@@ -1,5 +1,7 @@
 package vos;
 
+import java.util.ArrayList;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public class PedidoProducto {
@@ -15,13 +17,17 @@ public class PedidoProducto {
 	
 	@JsonProperty(value="pedido")
 	private int idPedido;
+	
+	@JsonProperty(value="equivalencias")
+	private ArrayList<Integer> equivalencias;
 
-	public PedidoProducto(@JsonProperty(value="producto") int idProducto,@JsonProperty(value="menu") int idMenu,@JsonProperty(value="pedido") int idPedido,@JsonProperty(value="local") int local) {
+	public PedidoProducto(@JsonProperty(value="equivalencias") ArrayList<Integer> equivalencias,@JsonProperty(value="producto") int idProducto,@JsonProperty(value="menu") int idMenu,@JsonProperty(value="pedido") int idPedido,@JsonProperty(value="local") int local) {
 
 		this.idMenu=idMenu;
 		this.local=local;
 		this.idPedido=idPedido;
 		this.idProducto=idProducto;
+		this.equivalencias=equivalencias;
 	}
 	
 	public int getIdMenu() {
@@ -56,4 +62,11 @@ public class PedidoProducto {
 		this.local = local;
 	}
 	
+	public ArrayList<Integer> getEquivalencias() {
+		return equivalencias;
+	}
+	
+	public void setEquivalencias(ArrayList<Integer> equivalencias) {
+		this.equivalencias = equivalencias;
+	}
 }

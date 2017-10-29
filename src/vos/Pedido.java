@@ -61,4 +61,12 @@ public class Pedido {
 	public void setCliente(Usuario cliente) {
 		this.cliente = cliente;
 	}
+	
+	public String getServido() {
+		return servido;
+	}
+	
+	public void setServido(String servido) {
+		this.servido = servido;
+	}
 }

@@ -576,10 +576,12 @@ public class RotondAndesTM {
 	public void addPedidoProducto(PedidoProducto pedido) throws Exception{
 		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
 		DAOTablaPedido daoPedido= new DAOTablaPedido();
+		DAOTablaProductoSingular daoTablaProductoSingular= new DAOTablaProductoSingular();
 
 		try 
 		{
 			this.conn = darConexion();
+			daoTablaProductoSingular.setConn(conn);
 			daoUsuario.setConn(conn);
 			daoPedido.setConn(conn);
 			//////transaccion
@@ -594,6 +596,12 @@ public class RotondAndesTM {
 			}
 			else if(pedido.getIdProducto()>0)
 			{
+				for(int i=0;i<pedido.getEquivalencias().size();i++) {
+					if(pedido.getIdPedido()==pedido.getEquivalencias().get(i))
+					{
+						throw new NoSuchElementException("no existe una equivalencia del producto con el de id: "+pedido.getEquivalencias().get(i) );
+					}
+				}
 				daoPedido.addProductoPedido(pedido);
 			}
 			conn.commit();
@@ -1052,15 +1060,15 @@ public class RotondAndesTM {
 		}
 
 	public ProductoSingular darProductoMasOfrecido() throws Exception{
-		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		DAOTablaProductoSingular daoProducto = new DAOTablaProductoSingular();
 		try 
 		{
 			this.conn = darConexion();
-			daoUsuario.setConn(conn);
+			daoProducto.setConn(conn);
 			ProductoSingular producto=null;
 			//////transaccion
 			
-//			producto=daoUsuario.getInfoUsuario(id);
+			producto=daoProducto.getProductoMasOfrecido();
 			
 			conn.commit();
 			
@@ -1079,7 +1087,7 @@ public class RotondAndesTM {
 			throw e;
 		} finally {
 			try {
-				daoUsuario.cerrarRecursos();
+				daoProducto.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -1088,6 +1096,57 @@ public class RotondAndesTM {
 				throw exception;
 			}
 		}
+	}
+
+	public void cancelarPedido(int id) throws Exception {
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		DAOTablaPedido daoPedido= new DAOTablaPedido();
+
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			daoPedido.setConn(conn);
+			//////transaccion
+			
+			Pedido ped= daoPedido.buscarPedidoById(id);
+			if(ped.getServido().equals("T"))
+			{
+				throw new NoPermissionException("no se puede cancelar un pedido ya servido");
+			}
+
+			daoPedido.cancelarPedido(ped);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} 
+		catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
+		catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}		
 	}	
 }
 

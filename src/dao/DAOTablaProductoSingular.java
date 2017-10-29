@@ -54,7 +54,7 @@ public class DAOTablaProductoSingular {
 
 	public ArrayList<ProductoSingular> darProductos() throws SQLException, Exception {
 		ArrayList<ProductoSingular> productos = new ArrayList<ProductoSingular>();
-		
+
 		DAOTablaCategoria daoCategoria= new DAOTablaCategoria();
 		daoCategoria.setConn(conn);
 
@@ -70,7 +70,7 @@ public class DAOTablaProductoSingular {
 			String descripcion = rs.getString("DESCRIPCIONESPANOL");
 			String descripcionTraducida = rs.getString("DESCRIPCIONINGLES");
 			Categoria categoria=daoCategoria.buscarCategoria(rs.getInt("IDCATEGORIA"));
-			
+
 			productos.add(new ProductoSingular(id, name, descripcion, descripcionTraducida, categoria));
 		}
 		return productos;
@@ -78,10 +78,10 @@ public class DAOTablaProductoSingular {
 
 	public ProductoSingular buscarProductoSingularPorId(int id) throws SQLException, Exception 
 	{
-		
+
 		DAOTablaCategoria daoCategoria= new DAOTablaCategoria();
 		daoCategoria.setConn(conn);
-		
+
 		ProductoSingular resp = null;
 
 		String sql = "SELECT * FROM PRODUCTO WHERE IDPRODUCTO =" + id;
@@ -97,18 +97,18 @@ public class DAOTablaProductoSingular {
 			String descripcion = rs.getString("DESCRIPCIONESPANOL");
 			String descripcionTraducida = rs.getString("DESCRIPCIONINGLES");
 			Categoria categoria=daoCategoria.buscarCategoria(rs.getInt("IDCATEGORIA"));
-			
+
 			resp=new ProductoSingular(idProducto, name, descripcion, descripcionTraducida, categoria);
 		}
 
 		return resp;
 	}
-	
+
 	public void addProductoSingular(ProductoSingular par,int cantidad, int local, double precio, double costo, int max) throws SQLException, Exception {
 
 		if(par.getIdProducto()!=0 && buscarProductoSingularPorId(par.getIdProducto())!=null)
 		{
-			
+
 			String sql = "insert into OFRECEPRODUCTO (IDPRODUCTO, LOCAL, CANTIDAD, PRECIO, COSTE) values ('"+par.getIdProducto()+"', "+local+", "+cantidad+", "+precio+", "+costo+")";
 
 			PreparedStatement prepStmt = conn.prepareStatement(sql);
@@ -118,20 +118,20 @@ public class DAOTablaProductoSingular {
 		else
 		{
 			String sqll = "insert into PRODUCTO (IDPRODUCTO, NOMBRE, DESCRIPCIONESPANOL, DESCRIPCIONINGLES, IDCATEGORIA) values ("+par.getIdProducto()+",'"+par.getNombre()+"', '"+par.getDescripcion()+"', '"+par.getDescripcionTraducida()+"', "+par.getCategoria().getIdCategoria()+")";
-			
+
 			PreparedStatement prepStmt = conn.prepareStatement(sqll);
 			recursos.add(prepStmt);
 			prepStmt.executeQuery();
-			
-			 String sql2 = "insert into OFRECEPRODUCTO (IDPRODUCTO, LOCAL, CANTIDAD, PRECIO, COSTE, MAX) values ('"+par.getIdProducto()+"', "+local+", "+cantidad+", "+precio+", "+costo+","+max+")";
 
-			 PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+			String sql2 = "insert into OFRECEPRODUCTO (IDPRODUCTO, LOCAL, CANTIDAD, PRECIO, COSTE, MAX) values ('"+par.getIdProducto()+"', "+local+", "+cantidad+", "+precio+", "+costo+","+max+")";
+
+			PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
 			recursos.add(prepStmt2);
 			prepStmt2.executeQuery();
 		}
 
 	}
-	
+
 	public void addEquivalenciaProducto(int idPrincipal,int idProducto, int local) throws SQLException {
 		String sql = "INSERT INTO SIMILITUDESPRODUCTO  ( IDPROD1, IDPROD2, LOCAL) VALUES (";
 		sql += idPrincipal + ",";
@@ -141,6 +141,62 @@ public class DAOTablaProductoSingular {
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
+	}
+
+	public ProductoSingular getProductoMasOfrecido() throws SQLException {
+		String sql = "SELECT * \r\n" + 
+				"FROM PRODUCTO NATURAL JOIN(SELECT * \r\n" + 
+				"FROM (SELECT  MAX(TOTALMENUS) AS TOTALMENUS\r\n" + 
+				"FROM(SELECT IDPRODUCTO, COUNT(IDMENU) AS TOTALMENUS\r\n" + 
+				"FROM (PRODUCTO P NATURAL JOIN TIENEPRODUCTO T) GROUP BY IDPRODUCTO)) NATURAL JOIN (SELECT IDPRODUCTO, COUNT(IDMENU) AS TOTALMENUS\r\n" + 
+				"FROM (PRODUCTO P NATURAL JOIN TIENEPRODUCTO T) GROUP BY IDPRODUCTO))";
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+
+		if(rs.next())
+		{
+			String sql2 = "SElECT * FROM CATEGORIAPRODUCTO WHERE IDCATEGORIA="+rs.getInt("IDCATEGORIA");
+
+
+			PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+			recursos.add(prepStmt2);
+			ResultSet rs2=prepStmt2.executeQuery();
+
+			if(rs2.next())
+			{
+				Categoria cat= new Categoria(rs.getInt("IDCATEGORIA"), rs2.getString("CATEGORIA"));
+
+
+				ProductoSingular producto=new ProductoSingular(rs.getInt("IDPRODUCTO"), rs.getString("NOMBRE"), rs.getString("DESCRIPCIONESPANOL"), rs.getString("DESCRIPCIONINGLES"), cat);
+
+				return producto;
+			}
+		}
+		return null;
+	}
+	
+	public boolean existEquiv(int id1, int id2, int local) throws SQLException
+	{
+
+		String sql = "SELECT * FROM SIMILITUDESPRODUCTO WHERE IDPROD1="+id1 +" AND IDPROD2="+id2+" AND LOCAL="+ local;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		
+		String sql2 = "SELECT * FROM SIMILITUDESPRODUCTO WHERE IDPROD1="+id2 +" AND IDPROD2="+id1+" AND LOCAL="+ local;
+
+		PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+		recursos.add(prepStmt2);
+		ResultSet rs2 = prepStmt2.executeQuery();
+		
+		if(rs.next()||rs2.next())
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 }

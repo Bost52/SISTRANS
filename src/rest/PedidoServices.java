@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import javax.naming.NoPermissionException;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -110,5 +111,21 @@ public class PedidoServices {
 		return Response.status(200).entity(id).build();
 	}
 
+	@DELETE
+	@Path("/{id: \\d+}")
+	public Response cancelarPedido(@PathParam("id") int id) {
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		try {
+
+			tm.cancelarPedido(id);
+
+		}catch(NoPermissionException e){
+			return Response.status(403).entity(doErrorMessage(e)).build();
+		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(id).build();
+	}
 
 }
