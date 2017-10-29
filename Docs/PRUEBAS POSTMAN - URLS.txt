@@ -231,6 +231,43 @@ caso: no existe local de restaurante (fk)
 
 Response: 500 "ORA-02291: restricción de integridad (ISIS2304A361720.REST3_FK) violada - clave principal no encontrada
 
+caso: no existe idCategoria (fk)
+
+{
+	"cedulaRestaurante":988,
+	"local":44,
+	"cantidad":20,
+	"coste":5000.65,
+	"precio":23500.13,
+	"producto":{
+		"idProducto":427,
+		"nombre":"ferrero",
+		"descripcion":"rioa",
+		"descripcionTraducida":"delicious",
+		"categoria":{
+			"idCategoria":6
+		}
+	}
+}
+
+Response: 500 internal server error "ORA-02291: restricción de integridad (ISIS2304A361720.FK_IDCATEGORIA) violada - clave principal no encontrada
+
+-------------------------------------------------------------------------------------------------------------------
+POST (Requerimiento 5)
+http://localhost:8080/RotondAndes/rest/ingredientes
+caso: existe usuario restaurante 
+JSON:
+{
+	"cedulaAdministrador": 988,
+	"ingrediente":{ "id":158,
+				"nombre": "Queso",
+				"cantidad":458666,
+				"descripcionespañol":"amarillo ",
+				"descripcioningles" : "yellow"}
+}
+Response: 200 OK
+
+
 caso: usuario restaurante no existe
 JSON:
 {
@@ -256,26 +293,6 @@ JSON:
 
 Response: 403 Forbidden
 
-caso: no existe idCategoria (fk)
-
-{
-	"cedulaRestaurante":988,
-	"local":44,
-	"cantidad":20,
-	"coste":5000.65,
-	"precio":23500.13,
-	"producto":{
-		"idProducto":427,
-		"nombre":"ferrero",
-		"descripcion":"rioa",
-		"descripcionTraducida":"delicious",
-		"categoria":{
-			"idCategoria":6
-		}
-	}
-}
-
-Response: 500 internal server error "ORA-02291: restricción de integridad (ISIS2304A361720.FK_IDCATEGORIA) violada - clave principal no encontrada
 caso: ya existe ingrediente con id dado (pk) 
 JSON:
 {
