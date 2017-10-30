@@ -48,7 +48,7 @@ caso: existe administrador
 JSON:
 {
 	"cedulaAdministrador": 91273321,
-	"usuario":{ "cedula":12222,
+	"usuario":{ "cedula":121342666,
 				"nombre": "Andrea Velasquez",
 				"rol":"CLIENTE",
 				"email":"anve@ponku.edu.co"}
@@ -115,7 +115,8 @@ JSON:
 			"idZona":1
 		}
 	}
-}
+	}
+{
 	"usuarioRestaurante": 988,
 	"ingrediente":{ "id":16,
 				"nombre": "Tomate",
@@ -172,17 +173,6 @@ JSON:
 
 
 Response: 500 ORA-02291: restricción de integridad (ISIS2304A361720.FK_IDTIPOCOMIDA2) violada - clave principal no encontrada
--------------------------------------------------------------------------------------------------------------------
-POST (Requerimiento )
-
-http://localhost:8080/RotondAndes/rest/restaurantes
-
-caso: existe administrador 
-JSON:
-
-
-
-Response: 200 OK
 -------------------------------------------------------------------------------------------------------------------
 
 POST (Requerimiento 4)
@@ -537,10 +527,308 @@ Response: 500 internal server error "ORA-02291: restricción de integridad (ISIS2
 --------------------------------------------------------------------------
 POST (Requerimiento 9)
 
-http://localhost:8080/RotondAndes/rest/
+http://localhost:8080/RotondAndes/rest/pedidos/producto
 
-caso: existe un administrador  
+caso: el producto existe
+
 JSON:
-
+{
+"local" : 28,
+"producto" : 42,
+"pedido" : 6
+}
 
 Response: 200 OK
+
+caso: alguna fk no existe
+
+JSON:
+{
+"local" : 16,
+"producto" : 42,
+"pedido" : 1
+}
+
+Response: 500 internal server error 
+
+caso: Ya se registro dicho producto
+
+JSON:
+{
+"local" : 28,
+"producto" : 42,
+"pedido" : 3
+}
+
+Response:500 internal server error  "ERROR": "ORA-00001: restricción única (ISIS2304A361720.PEDIDOPRODUCTO_PK) violada
+--------------------------------------------------------------------------
+POST (Requerimiento 10)
+
+http://localhost:8080/RotondAndes/rest/pedidos/producto
+
+caso: el producto existe
+
+JSON:
+{
+"local" : 28,
+"producto" : 123,
+"pedido" : 6
+}
+
+Response: 200 OK
+
+caso: alguna fk no existe
+
+JSON:
+{
+"local" : 16,
+"producto" : 42,
+"pedido" : 1
+}
+
+Response: 500 internal server error 
+
+caso: Ya se registro dicho producto
+
+JSON:
+{
+"local" : 28,
+"producto" : 42,
+"pedido" : 3
+}
+
+Response:500 internal server error  "ERROR": "ORA-00001: restricción única (ISIS2304A361720.PEDIDOPRODUCTO_PK) violada
+--------------------------------------------------------------------------
+POST (Requerimiento 11)
+
+http://localhost:8080/RotondAndes/rest/ingredientes/8
+
+caso: los dos ingredientes existen
+
+JSON:
+{
+	"usuarioRestaurante" : 3424,
+	"local" : 2,
+	"idIngrediente" : 2
+}
+
+Response: 200 OK
+
+caso: algun ingrediente no existe
+
+JSON:
+{
+	"usuarioRestaurante" : 3424,
+	"local" : 2,
+	"idIngrediente" : 1
+}
+
+Response: 500 internal server error 
+
+caso: el ingrediente es el mismo
+
+JSON:
+{
+	"usuarioRestaurante" : 3424,
+	"local" : 2,
+	"idIngrediente" : 8
+}
+
+Response: 403 Forbidden
+
+--------------------------------------------------------------------------
+POST (Requerimiento 12)
+
+http://localhost:8080/RotondAndes/rest/productos/1
+
+caso: los dos productos existen
+
+JSON:
+{
+	"usuarioRestaurante" : 3424,
+	"local" : 2,
+	"idProducto" : 42
+}
+
+Response: 200 OK
+
+caso: algun ingrediente no existe
+
+JSON:
+{
+	"usuarioRestaurante" : 3424,
+	"local" : 2,
+	"idProducto" : 16
+}
+
+Response: 500 internal server error 
+
+caso: el ingrediente es el mismo
+
+JSON:
+{
+	"usuarioRestaurante" : 3424,
+	"local" : 2,
+	"idProducto" : 1
+}
+
+Response: 403 Forbidden
+
+--------------------------------------------------------------------------
+PUT (Requerimiento 13)
+
+http://localhost:8080/RotondAndes/rest/restaurantes/2
+
+caso: los dos productos existen
+
+JSON:
+{
+	"usuarioRestaurante" : 3424,
+	"producto" : 876
+}
+
+Response: 200 OK
+
+caso: no es un usuario restaurante 
+
+JSON:
+{
+	"usuarioRestaurante" : 24234,
+	"producto" : 876
+}
+
+Response: 500 internal server error 
+
+--------------------------------------------------------------------------
+POST (Requerimiento 14)
+
+http://localhost:8080/RotondAndes/rest/pedidos/producto
+
+caso: los dos productos existen
+
+JSON:
+{
+"local" : 28,
+"producto" : 42,
+"pedido" : 1,
+"equivalencias" : [876]
+}
+
+Response: 200 OK
+
+caso: alguna fk no existe
+
+JSON:
+{
+"local" : 16,
+"producto" : 42,
+"pedido" : 1,
+"equivalencias" : [876]
+}
+
+Response: 500 internal server error 
+
+caso: Ya se registro dicho producto
+
+JSON:
+{
+"local" : 28,
+"producto" : 42,
+"pedido" : 3,
+"equivalencias" : [123]
+}
+
+Response:500 internal server error  "ERROR": "ORA-00001: restricción única (ISIS2304A361720.PEDIDOPRODUCTO_PK) violada
+
+--------------------------------------------------------------------------
+POST (Requerimiento 15)
+
+http://localhost:8080/RotondAndes/rest/pedidos/mesa
+
+caso: los dos productos existen
+
+{
+ "idMesa":3,
+ "pedidos":[{ "idPedido":10,
+ "productos":[{"local":2,"idProducto":876,"equivalencias":[253]},
+ {"local":2,"idProducto":253},
+ {"local":2,"idMenu":1}]},
+ {"idPedido":11,
+ "productos":[{"local":2,"idProducto":876,"equivalencias":[253]},
+ {"local":2,"idProducto":253},
+ {"local":2,"idMenu":1}]}]
+}
+
+Response: 200 OK
+
+caso: El idMesa y/o idPedido ya existe
+
+{
+ "idMesa":1,
+ "pedidos":[{ "idPedido": 6,
+ "productos":[{"local":2,"idProducto":876,"equivalencias":[253]},
+ {"local":2,"idProducto":253},
+ {"local":2,"idMenu":1}]},
+ {"idPedido":1,
+ "productos":[{"local":2,"idProducto":876,"equivalencias":[253]},
+ {"local":2,"idProducto":253},
+ {"local":2,"idMenu":1}]}]
+}
+
+Response: 500 internal server error ("ERROR": "ORA-00001: restricción única (ISIS2304A361720.PEDIDOMESA_PK) violada")
+
+caso: el pedido ya fue servido
+
+{
+ "idMesa":3,
+ "pedidos":[{ "idPedido": 5,
+ "productos":[{"local":2,"idProducto":876,"equivalencias":[253]},
+ {"local":2,"idProducto":253},
+ {"local":2,"idMenu":1}]}]
+}
+
+Response: 500 internal server error ("ERROR": "ORA-00001: restricción única (ISIS2304A361720.PEDIDO_PK) violada")
+--------------------------------------------------------------------------
+PUT (Requerimiento 16)
+
+http://localhost:8080/RotondAndes/rest/pedidos/6
+
+caso: todo lo del pedido 6 no esta servido aun
+
+{
+}
+
+Response: 200 OK
+
+caso: el pedido no existe (ruta terminada en 10)
+
+JSON:
+{
+}
+
+Response: 500 internal server error 
+
+caso: el pedido ya fue servido (ruta terminada en 5)
+
+JSON:
+{
+}
+
+Response: 200 OK
+
+--------------------------------------------------------------------------
+DELETE (Requerimiento 17)
+
+http://localhost:8080/RotondAndes/rest/pedidos/3
+
+caso: todo lo del pedido 3 no esta servido aun
+
+Response: 200 OK
+
+caso: el pedido no existe (ruta finalizada en 2)
+
+Response: 500 internal server error ("null") 
+
+caso: el pedido ya fue servido (ruta terminada en 5)
+
+Response: 403 Forbidden
