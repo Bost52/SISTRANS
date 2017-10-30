@@ -562,7 +562,7 @@ JSON:
 
 Response:500 internal server error  "ERROR": "ORA-00001: restricción única (ISIS2304A361720.PEDIDOPRODUCTO_PK) violada
 --------------------------------------------------------------------------
-POST (Requerimiento 10)
+PUT (Requerimiento 10)
 
 http://localhost:8080/RotondAndes/rest/pedidos/producto
 
