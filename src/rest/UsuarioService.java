@@ -141,6 +141,22 @@ public class UsuarioService {
 		}
 		return Response.status(200).entity(cliente).build();		
 	}
+	
+	@GET
+	@Path("buenosCliente/{id: \\d+}")
+	public Response getBuenosClientes(@PathParam("id")long id)
+	{
+		ArrayList<Usuario> cliente=null;
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		try {
+			cliente=tm.getBuenosClientes(id);
+		}catch(NoSuchElementException e) {
+			return Response.status(404).entity(doErrorMessage(e)).build();
+		}catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(cliente).build();		
+	}
 
 //	@GET
 //	public Response getUsuariosAdministrador(ConsultarClientes administrador) {

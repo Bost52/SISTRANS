@@ -1500,6 +1500,7 @@ public class RotondAndesTM {
 		{
 			this.conn = darConexion();
 			daoUsuario.setConn(conn);
+			daoPedido.setConn(conn);
 			FuncionamientoRotonda[] cliente=null;
 			//////transaccion
 			if(daoUsuario.buscarUsuarioPorCedula(id)==null)
@@ -1550,6 +1551,64 @@ public class RotondAndesTM {
 				throw exception;
 			}
 		}	
-	}	
+	}
+	
+	public ArrayList<Usuario> getBuenosClientes(long id) throws Exception{
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			ArrayList<Usuario> cliente=null;
+			//////transaccion
+			if(daoUsuario.buscarUsuarioPorCedula(id)==null)
+			{
+				throw new NoSuchElementException("no existe el usuario con la cedula dada");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("RESTAURANTE"))
+			{
+
+				throw new NoPermissionException("no puede obtener la informacion un usuario restaurante");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("CLIENTE"))
+			{
+				throw new NoPermissionException("no puede obtener la informacion un usuario cliente");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("ADMINISTRADOR"))
+			{
+				cliente=daoUsuario.getBuenosUsuarios();
+			}
+
+			conn.commit();
+
+			return cliente;
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}	
+	}
 }
 

@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import rest.UsuarioService;
+import vos.Categoria;
 import vos.FuncionamientoRotonda;
 import vos.Pedido;
 import vos.PedidoMesa;
@@ -327,43 +328,75 @@ public class DAOTablaPedido {
 		prepStmt3.executeQuery();		
 	}
 
-	public FuncionamientoRotonda[] getFuncionamiento() {
+	public FuncionamientoRotonda[] getFuncionamiento() throws Exception {
 
-		return null;
+		FuncionamientoRotonda[] funs= new FuncionamientoRotonda[7];
+		String[] dias= {"LUN","MAR","MIE","JUV","VIE","SAB","DOM"};
+		for (int i = 0; i < dias.length; i++) {
+			FuncionamientoRotonda fun=new FuncionamientoRotonda(getMasVendido(dias[i]), getMasFrecuentado(dias[i]), getMenosVendido(dias[i]), getMenosFrecuentado(dias[i]), dias[i]);
+			funs[i]=fun;
+		}
+		return funs;
 	}
 	
-//	private ProductoSingular getMasVendido(String dia) throws SQLException {
-//		String sql = " SELECT * FROM(SELECT IDPRODUCTO, COUNT(IDPRODUCTO) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN PRODUCTO  WHERE DY='"+dia+"'  GROUP BY IDPRODUCTO)NATURAL JOIN(SELECT  MAX(TOTAL)AS TOTAL  FROM(SELECT IDPRODUCTO, COUNT(IDPRODUCTO) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN PRODUCTO  WHERE DY='"+dia+"'  GROUP BY IDPRODUCTO) )";
-//
-//		PreparedStatement prepStmt = conn.prepareStatement(sql);
-//		recursos.add(prepStmt);
-//		prepStmt.executeQuery();
-//	}
-//	
-//	private ProductoSingular getMenosVendido(String dia) throws SQLException {
-//		String sql = "SELECT * FROM(SELECT LOCAL, COUNT(LOCAL) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN RESTAURANTE  WHERE DY='"+dia+"'  GROUP BY LOCAL)NATURAL JOIN(SELECT  MAX(TOTAL)AS TOTAL  FROM(SELECT LOCAL, COUNT(LOCAL) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN RESTAURANTE  WHERE DY='"+dia+"'  GROUP BY LOCAL) )";
-//
-//		PreparedStatement prepStmt = conn.prepareStatement(sql);
-//		recursos.add(prepStmt);
-//		prepStmt.executeQuery();
-//	}
-//	
-//	private Restaurante getMasFrecuentado(String dia) throws SQLException {
-//		String sql = "SELECT * FROM(SELECT IDPRODUCTO, COUNT(IDPRODUCTO) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN PRODUCTO  WHERE DY='DOM'  GROUP BY IDPRODUCTO)NATURAL JOIN(SELECT  MIN(TOTAL)AS TOTAL  FROM(SELECT IDPRODUCTO, COUNT(IDPRODUCTO) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN PRODUCTO  WHERE DY='DOM'  GROUP BY IDPRODUCTO) );";
-//
-//		PreparedStatement prepStmt = conn.prepareStatement(sql);
-//		recursos.add(prepStmt);
-//		prepStmt.executeQuery();
-//	}
-//	
-//	private Restaurante getMenossFrecuentado(String dia) throws SQLException {
-//		String sql = "";
-//
-//		PreparedStatement prepStmt = conn.prepareStatement(sql);
-//		recursos.add(prepStmt);
-//		prepStmt.executeQuery();
-//	}
-//	
+	private ProductoSingular getMasVendido(String dia) throws Exception {
+		String sql = " SELECT * FROM(SELECT IDPRODUCTO, COUNT(IDPRODUCTO) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN PRODUCTO  WHERE DY='"+dia+"'  GROUP BY IDPRODUCTO)NATURAL JOIN(SELECT  MAX(TOTAL)AS TOTAL  FROM(SELECT IDPRODUCTO, COUNT(IDPRODUCTO) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN PRODUCTO  WHERE DY='"+dia+"'  GROUP BY IDPRODUCTO) )";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+		DAOTablaCategoria categoria= new DAOTablaCategoria();
+		categoria.setConn(conn);
+		Categoria cat = categoria.buscarCategoria(rs.getInt("IDCATEGORIA"));
+		ProductoSingular prod=new ProductoSingular(rs.getInt("IDPRODUCTO"), rs.getString("NOMBRE"), rs.getString("DESCRIPCIONESPAÑOL"), rs.getString("DESCRIPCIONINGLES"),cat );
+		return prod;
+	}
+	
+	private ProductoSingular getMenosVendido(String dia) throws Exception {
+		String sql = "SELECT * FROM(SELECT LOCAL, COUNT(LOCAL) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN RESTAURANTE  WHERE DY='"+dia+"'  GROUP BY LOCAL)NATURAL JOIN(SELECT  MAX(TOTAL)AS TOTAL  FROM(SELECT LOCAL, COUNT(LOCAL) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN RESTAURANTE  WHERE DY='"+dia+"'  GROUP BY LOCAL) )";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+		DAOTablaCategoria categoria= new DAOTablaCategoria();
+		categoria.setConn(conn);
+		Categoria cat = categoria.buscarCategoria(rs.getInt("IDCATEGORIA"));
+		ProductoSingular prod=new ProductoSingular(rs.getInt("IDPRODUCTO"), rs.getString("NOMBRE"), rs.getString("DESCRIPCIONESPAÑOL"), rs.getString("DESCRIPCIONINGLES"),cat );
+		return prod;
+		}
+	
+	private Restaurante getMasFrecuentado(String dia) throws Exception {
+		String sql = "SELECT * FROM(SELECT IDPRODUCTO, COUNT(IDPRODUCTO) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN PRODUCTO  WHERE DY='"+dia+"'  GROUP BY IDPRODUCTO)NATURAL JOIN(SELECT  MIN(TOTAL)AS TOTAL  FROM(SELECT IDPRODUCTO, COUNT(IDPRODUCTO) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN PRODUCTO  WHERE DY='"+dia+"'  GROUP BY IDPRODUCTO) )";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+		DAOTablaUsuarios daou= new DAOTablaUsuarios();
+		daou.setConn(conn);
+		DAOTablaTipoDeComida daot= new DAOTablaTipoDeComida();
+		daot.setConn(conn);
+		DAOTablaZona daoz = new DAOTablaZona();
+		daoz.setConn(conn);
+		Restaurante rest = new Restaurante(rs.getInt("LOCAL"), rs.getString("NOMBRE"), rs.getString("URLPAGINAWEB"), daou.buscarUsuarioPorCedula(rs.getInt("IDREPRESENTANTE")), daot.buscarTipoComidaPorId(rs.getInt("IDTIPO")), daoz.buscarZonaPorId(rs.getInt("IDZONA")));
+		return rest;
+	}
+	
+	private Restaurante getMenosFrecuentado(String dia) throws Exception {
+		String sql = " SELECT * FROM(SELECT LOCAL, COUNT(LOCAL) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN RESTAURANTE  WHERE DY='"+dia+"'  GROUP BY LOCAL)NATURAL JOIN(SELECT  MIN(TOTAL)AS TOTAL  FROM(SELECT LOCAL, COUNT(LOCAL) AS TOTAL FROM ((SELECT IDPEDIDO, TO_CHAR(FECHAYHORA,'DY' ) AS DY FROM PEDIDO )NATURAL JOIN PEDIDOPRODUCTO) NATURAL JOIN RESTAURANTE  WHERE DY='"+dia+"'  GROUP BY LOCAL) )";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+		DAOTablaUsuarios daou= new DAOTablaUsuarios();
+		daou.setConn(conn);
+		DAOTablaTipoDeComida daot= new DAOTablaTipoDeComida();
+		daot.setConn(conn);
+		DAOTablaZona daoz = new DAOTablaZona();
+		daoz.setConn(conn);
+		Restaurante rest = new Restaurante(rs.getInt("LOCAL"), rs.getString("NOMBRE"), rs.getString("URLPAGINAWEB"), daou.buscarUsuarioPorCedula(rs.getInt("IDREPRESENTANTE")), daot.buscarTipoComidaPorId(rs.getInt("IDTIPO")), daoz.buscarZonaPorId(rs.getInt("IDZONA")));
+		return rest;
+	}
+	
 	
 	
 }
