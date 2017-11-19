@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import vos.Categoria;
 import vos.Cliente;
 import vos.ConsultarConsumoCliente;
+import vos.ConsumoCliente;
+import vos.ConsumoRotonda;
 import vos.Menu;
 import vos.Pedido;
 import vos.Preferencia;
@@ -89,7 +91,7 @@ public class DAOTablaUsuarios {
 
 		if(rs.next()) {
 			String nombre = rs.getString("NOMBRE");
-			int id = rs.getInt("CEDULA");
+			long id = rs.getLong("CEDULA");
 			String email = rs.getString("EMAIL");
 			String rol = rs.getString("ROL");
 
@@ -239,5 +241,77 @@ public class DAOTablaUsuarios {
 		}
 		
 		return lista;
+	}
+
+	public ArrayList<ConsumoCliente> getConsumo(int local,String fechaInicio, String fechaFin) throws SQLException {
+		ArrayList<ConsumoCliente> cliente =new ArrayList<>();
+		String sql = "SELECT CEDULA, NOMBRE, ROL, EMAIL FROM ( SELECT IDPRODUCTO, LOCAL FROM (OFRECEPRODUCTO NATURAL JOIN RESTAURANTE))a1 INNER JOIN(SELECT USUARIO.CEDULA, NOMBRE, ROL, EMAIL, IDPRODUCTO, LOCAL, IDPEDIDO FROM (USUARIO RIGHT OUTER JOIN PEDIDO ON USUARIO.CEDULA= PEDIDO.CEDULA) NATURAL JOIN PEDIDOPRODUCTO WHERE ROL='CLIENTE' AND (FECHAYHORA BETWEEN  TO_DATE('"+fechaInicio+"') AND TO_DATE('"+fechaFin+"')))us ON a1.IDPRODUCTO=us.IDPRODUCTO WHERE A1.LOCAL = "+local+" AND us.LOCAL="+local+" GROUP BY CEDULA, NOMBRE, ROL, EMAIL";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+		while(rs.next())
+		{
+			ConsumoCliente con= new ConsumoCliente(rs.getString("EMAIL"), rs.getString("ROL"), rs.getString("NOMBRE"), rs.getLong("CEDULA"));
+			cliente.add(con);
+		}
+		
+		return cliente;
+	}
+
+	public ArrayList<ConsumoCliente> getConsumo(ConsumoRotonda consumo) throws SQLException {
+		ArrayList<ConsumoCliente> lista= new ArrayList<>();
+		String sql = "SELECT * FROM RESTAURANTE";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+		
+		while(rs.next())
+		{
+			ArrayList<ConsumoCliente> con=getConsumo(rs.getInt("LOCAL"), consumo.getFechaInicio(), consumo.getFechaFin());
+			for(int i=0;i<con.size();i++)
+			{
+				lista.add(con.get(i));
+			}
+		}
+		
+		return lista;
+	}
+	
+	public ArrayList<ConsumoCliente> getNoConsumo(ConsumoRotonda consumo) throws SQLException {
+		ArrayList<ConsumoCliente> lista= new ArrayList<>();
+		String sql = "SELECT * FROM RESTAURANTE";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+		
+		while(rs.next())
+		{
+			ArrayList<ConsumoCliente> con=getNoConsumo(rs.getInt("LOCAL"), consumo.getFechaInicio(), consumo.getFechaFin());
+			for(int i=0;i<con.size();i++)
+			{
+				lista.add(con.get(i));
+			}
+		}
+		
+		return lista;
+	}
+	
+	public ArrayList<ConsumoCliente> getNoConsumo(int local,String fechaInicio, String fechaFin) throws SQLException {
+		ArrayList<ConsumoCliente> cliente =new ArrayList<>();
+		String sql = "SELECT CEDULA, NOMBRE, ROL, EMAIL FROM USUARIO WHERE ROL='CLIENTE' AND CEDULA NOT IN (SELECT CEDULA FROM ( SELECT IDPRODUCTO, LOCAL FROM (OFRECEPRODUCTO NATURAL JOIN RESTAURANTE))a1 INNER JOIN(SELECT USUARIO.CEDULA, NOMBRE, ROL, EMAIL, IDPRODUCTO, LOCAL, IDPEDIDO FROM (USUARIO RIGHT OUTER JOIN PEDIDO ON USUARIO.CEDULA= PEDIDO.CEDULA) NATURAL JOIN PEDIDOPRODUCTO WHERE ROL='CLIENTE' AND (FECHAYHORA BETWEEN  TO_DATE('"+fechaInicio+"') AND TO_DATE('"+fechaFin+"')))us ON a1.IDPRODUCTO=us.IDPRODUCTO WHERE A1.LOCAL ="+local+" AND us.LOCAL="+local+" GROUP BY CEDULA, NOMBRE, ROL, EMAIL)";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+		while(rs.next())
+		{
+			ConsumoCliente con= new ConsumoCliente(rs.getString("EMAIL"), rs.getString("ROL"), rs.getString("NOMBRE"), rs.getLong("CEDULA"));
+			cliente.add(con);
+		}
+		
+		return cliente;
 	}
 }

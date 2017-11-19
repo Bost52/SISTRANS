@@ -1,6 +1,7 @@
 package rest;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -21,6 +22,8 @@ import javax.ws.rs.core.Response;
 
 import tm.RotondAndesTM;
 import vos.AgregarRestaurante;
+import vos.ConsumoCliente;
+import vos.ConsumoRotonda;
 import vos.Restaurante;
 import vos.SurtirRestaurante;
 
@@ -60,22 +63,39 @@ public class RestauranteServices {
 		}
 		return Response.status(200).entity(videos).build();
 	}
+	
+	@PUT
+	@Path( "/consumo" )
+	public Response getConsumoRestaurante(ConsumoRotonda consumo )
+	{
+		RotondAndesTM tm = new RotondAndesTM( getPath( ) );
+		try
+		{
+			ArrayList<ConsumoCliente> v = tm.getConsumoRotanda(consumo);
+			return Response.status( 200 ).entity( v ).build( );			
+		}
+		catch( Exception e )
+		{
+			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
+		}
+	}
+	
+	@PUT
+	@Path( "/noConsumo" )
+	public Response getNoConsumoRestaurante(ConsumoRotonda consumo )
+	{
+		RotondAndesTM tm = new RotondAndesTM( getPath( ) );
+		try
+		{
+			ArrayList<ConsumoCliente> v = tm.getNoConsumoRotanda(consumo);
+			return Response.status( 200 ).entity( v ).build( );			
+		}
+		catch( Exception e )
+		{
+			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
+		}
+	}
 //
-//	@GET
-//	@Path( "{id: \\d+}" )
-//	public Response getRestaurante( @PathParam( "id" ) Long id )
-//	{
-//		RotondAndesTM tm = new RotondAndesTM( getPath( ) );
-//		try
-//		{
-//			Restaurante v = tm.buscarRestaurantePorId( id );
-//			return Response.status( 200 ).entity( v ).build( );			
-//		}
-//		catch( Exception e )
-//		{
-//			return Response.status( 500 ).entity( doErrorMessage( e ) ).build( );
-//		}
-//	}
 //
 //	@GET
 //	@Path( "{nombre}" )

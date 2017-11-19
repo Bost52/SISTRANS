@@ -30,6 +30,9 @@ import vos.AgregarUsuarioCliente;
 import vos.AgregarZona;
 import vos.Cliente;
 import vos.ConsultarConsumoCliente;
+import vos.ConsumoCliente;
+import vos.ConsumoRotonda;
+import vos.FuncionamientoRotonda;
 import vos.Preferencia;
 import vos.Ingrediente;
 import vos.Menu;
@@ -538,7 +541,7 @@ public class RotondAndesTM {
 		DAOTablaPedido daoPedido= new DAOTablaPedido();
 		DAOTablaProductoSingular daoTablaProductoSingular= new DAOTablaProductoSingular();
 		DAOTablaMenu daoTablaMenu=new DAOTablaMenu();
-		
+
 		try 
 		{
 			this.conn = darConexion();
@@ -546,9 +549,9 @@ public class RotondAndesTM {
 			daoPedido.setConn(conn);
 			daoTablaProductoSingular.setConn(conn);
 			daoTablaMenu.setConn(conn);
-			
+
 			//////transaccion
-			
+
 			if(pedido.getProductos()!=null)
 			{
 				double totalValue=0;
@@ -564,10 +567,10 @@ public class RotondAndesTM {
 						totalValue+=daoTablaMenu.buscarMenuPorId((long)ped.getIdMenu()).getPrecio();
 					}
 				}
-				
+
 				daoPedido.addPedido(pedido, totalValue);
 				Iterator<PedidoProducto> iter= pedido.getProductos().iterator();
-				
+
 				while(iter.hasNext())
 				{
 					PedidoProducto ped=iter.next();
@@ -634,13 +637,13 @@ public class RotondAndesTM {
 			else if(pedido.getIdProducto()>0)
 			{
 				if(pedido.getEquivalencias()!=null) {
-				for(int i=0;i<pedido.getEquivalencias().size();i++) {
-					if(pedido.getIdPedido()==pedido.getEquivalencias().get(i))
-					{
-						throw new NoSuchElementException("no existe una equivalencia del producto con el de id: "+pedido.getEquivalencias().get(i) );
+					for(int i=0;i<pedido.getEquivalencias().size();i++) {
+						if(pedido.getIdPedido()==pedido.getEquivalencias().get(i))
+						{
+							throw new NoSuchElementException("no existe una equivalencia del producto con el de id: "+pedido.getEquivalencias().get(i) );
+						}
 					}
-				}
-				daoPedido.addProductoPedido(pedido);
+					daoPedido.addProductoPedido(pedido);
 				}
 			}
 			conn.commit();
@@ -1048,55 +1051,55 @@ public class RotondAndesTM {
 	}
 
 	public Cliente getInfoCliente(int id) throws Exception {
-			DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
-			try 
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			Cliente cliente=null;
+			//////transaccion
+			if(daoUsuario.buscarUsuarioPorCedula(id)==null)
 			{
-				this.conn = darConexion();
-				daoUsuario.setConn(conn);
-				Cliente cliente=null;
-				//////transaccion
-				if(daoUsuario.buscarUsuarioPorCedula(id)==null)
-				{
-					throw new NoSuchElementException("no existe el usuario con la cedula dada");
-				}
-				if(!daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("CLIENTE"))
-				{
-					throw new NoPermissionException("no se puede obtener la informacion de este usuario");
-				}
-				
-				cliente=daoUsuario.getInfoUsuario(id);
-				
-				conn.commit();
-				
-				return cliente;
-			} catch (SQLException e) {
-				System.err.println("SQLException:" + e.getMessage());
-				e.printStackTrace();
-				throw e;
-			} catch(NoPermissionException e){
-				System.err.println("privilegeException:" + e.getMessage());
-				e.printStackTrace();
-				throw e;
-			}catch(NoSuchElementException e) {
-				System.err.println("noSuchElementException:" + e.getMessage());
-				e.printStackTrace();
-				throw e;
-			}catch (Exception e) {
-				System.err.println("GeneralException:" + e.getMessage());
-				e.printStackTrace();
-				throw e;
-			} finally {
-				try {
-					daoUsuario.cerrarRecursos();
-					if(this.conn!=null)
-						this.conn.close();
-				} catch (SQLException exception) {
-					System.err.println("SQLException closing resources:" + exception.getMessage());
-					exception.printStackTrace();
-					throw exception;
-				}
+				throw new NoSuchElementException("no existe el usuario con la cedula dada");
+			}
+			if(!daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("CLIENTE"))
+			{
+				throw new NoPermissionException("no se puede obtener la informacion de este usuario");
+			}
+
+			cliente=daoUsuario.getInfoUsuario(id);
+
+			conn.commit();
+
+			return cliente;
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
 			}
 		}
+	}
 
 	public ProductoSingular darProductoMasOfrecido() throws Exception{
 		DAOTablaProductoSingular daoProducto = new DAOTablaProductoSingular();
@@ -1106,11 +1109,11 @@ public class RotondAndesTM {
 			daoProducto.setConn(conn);
 			ProductoSingular producto=null;
 			//////transaccion
-			
+
 			producto=daoProducto.getProductoMasOfrecido();
-			
+
 			conn.commit();
-			
+
 			return producto;
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -1147,7 +1150,7 @@ public class RotondAndesTM {
 			daoUsuario.setConn(conn);
 			daoPedido.setConn(conn);
 			//////transaccion
-			
+
 			Pedido ped= daoPedido.buscarPedidoById(id);
 			if(ped.getServido().equals("T"))
 			{
@@ -1198,7 +1201,7 @@ public class RotondAndesTM {
 			daoUsuario.setConn(conn);
 			daoPedido.setConn(conn);
 			//////transaccion
-			
+
 			Pedido ped= daoPedido.buscarPedidoById(id);
 			if(ped.getServido().equals("T"))
 			{
@@ -1244,7 +1247,7 @@ public class RotondAndesTM {
 		DAOTablaPedido daoPedido= new DAOTablaPedido();
 		DAOTablaProductoSingular daoTablaProductoSingular= new DAOTablaProductoSingular();
 		DAOTablaMenu daoTablaMenu=new DAOTablaMenu();
-		
+
 		try 
 		{
 			this.conn = darConexion();
@@ -1252,21 +1255,21 @@ public class RotondAndesTM {
 			daoPedido.setConn(conn);
 			daoTablaProductoSingular.setConn(conn);
 			daoTablaMenu.setConn(conn);
-			
+
 			//////transaccion
-			
+
 			if(pedido.getPedidos()!=null)
 			{	
 				daoPedido.addPedidoMesa(pedido);
 				Iterator<Pedido> iter= pedido.getPedidos().iterator();
-				
+
 				while(iter.hasNext())
 				{
 					Pedido ped=iter.next();
 					ped.setIdMesa(pedido.getIdMesa());
 					addPedido(ped);
 				}
-				
+
 				double totalValue=0;
 				for(int i =0; i<pedido.getPedidos().size();i++)
 				{
@@ -1276,7 +1279,7 @@ public class RotondAndesTM {
 						totalValue+=daoPedido.precioPedido(ped.getIdPedido());
 					}
 				}
-				
+
 				daoPedido.setPrecioMesa(totalValue, pedido.getIdMesa());
 			}
 			else {
@@ -1333,15 +1336,15 @@ public class RotondAndesTM {
 			}
 			if(daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("CLIENTE"))
 			{
-			cliente.add(daoUsuario.getConsumoUsuario(id));
+				cliente.add(daoUsuario.getConsumoUsuario(id));
 			}
 			if(daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("ADMINISTRADOR"))
 			{
 				cliente=daoUsuario.getConsumoUsuarios(); 
 			}
-			
+
 			conn.commit();
-			
+
 			return cliente;
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -1369,6 +1372,184 @@ public class RotondAndesTM {
 				exception.printStackTrace();
 				throw exception;
 			}
-		}	}	
+		}	
+	}	
+
+	public ArrayList<ConsumoCliente> getConsumoRotanda(ConsumoRotonda consumo) throws Exception {
+
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			ArrayList<ConsumoCliente> cliente=new ArrayList<>();
+			//////transaccion
+			if(daoUsuario.buscarUsuarioPorCedula(consumo.getCedula())==null)
+			{
+				throw new NoSuchElementException("no existe el usuario con la cedula dada");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(consumo.getCedula()).getRol().equals("RESTAURANTE"))
+			{
+
+				cliente=daoUsuario.getConsumo(consumo.getLocal(),consumo.getFechaInicio(),consumo.getFechaFin());
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(consumo.getCedula()).getRol().equals("CLIENTE"))
+			{
+				throw new NoPermissionException("no puede obtener la informacion un usuario restaurante");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(consumo.getCedula()).getRol().equals("ADMINISTRADOR"))
+			{
+				cliente=daoUsuario.getConsumo(consumo);
+			}
+
+			conn.commit();
+
+			return cliente;
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}	
+	}	
+
+	public ArrayList<ConsumoCliente> getNoConsumoRotanda(ConsumoRotonda consumo) throws Exception {
+
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			ArrayList<ConsumoCliente> cliente=new ArrayList<>();
+			//////transaccion
+			if(daoUsuario.buscarUsuarioPorCedula(consumo.getCedula())==null)
+			{
+				throw new NoSuchElementException("no existe el usuario con la cedula dada");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(consumo.getCedula()).getRol().equals("RESTAURANTE"))
+			{
+
+				cliente=daoUsuario.getNoConsumo(consumo.getLocal(),consumo.getFechaInicio(),consumo.getFechaFin());
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(consumo.getCedula()).getRol().equals("CLIENTE"))
+			{
+				throw new NoPermissionException("no puede obtener la informacion un usuario restaurante");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(consumo.getCedula()).getRol().equals("ADMINISTRADOR"))
+			{
+				cliente=daoUsuario.getNoConsumo(consumo);
+			}
+
+			conn.commit();
+
+			return cliente;
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}	
+	}
+
+	public FuncionamientoRotonda[] getFuncionamiento(long id) throws Exception{
+		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
+		DAOTablaPedido daoPedido = new DAOTablaPedido();
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			FuncionamientoRotonda[] cliente=null;
+			//////transaccion
+			if(daoUsuario.buscarUsuarioPorCedula(id)==null)
+			{
+				throw new NoSuchElementException("no existe el usuario con la cedula dada");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("RESTAURANTE"))
+			{
+
+				throw new NoPermissionException("no puede obtener la informacion un usuario restaurante");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("CLIENTE"))
+			{
+				throw new NoPermissionException("no puede obtener la informacion un usuario cliente");
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(id).getRol().equals("ADMINISTRADOR"))
+			{
+				cliente=daoPedido.getFuncionamiento();
+			}
+
+			conn.commit();
+
+			return cliente;
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}	
+	}	
 }
 

@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 
 import tm.RotondAndesTM;
 import vos.AgregarUsuarioCliente;
+import vos.FuncionamientoRotonda;
 import vos.Pedido;
 import vos.PedidoMesa;
 import vos.PedidoProducto;
@@ -157,5 +158,22 @@ public class PedidoServices {
 		}
 		return Response.status(200).entity(id).build();
 	}
+	
+	@GET
+	@Path("/funcionamiento/{id : \\d+}")
+	public Response getFuncionamiento(@PathParam("id") long id) {
+		RotondAndesTM tm = new RotondAndesTM(getPath());
+		FuncionamientoRotonda[] v =null;
+		try {
 
+			v=tm.getFuncionamiento(id);
+
+		}catch(NoPermissionException e){
+			return Response.status(403).entity(doErrorMessage(e)).build();
+		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(v).build();
+	}
 }
