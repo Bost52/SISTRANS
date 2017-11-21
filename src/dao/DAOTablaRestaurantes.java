@@ -94,7 +94,7 @@ public class DAOTablaRestaurantes {
 		}
 		return restaurantes;
 	}
-	
+
 	public boolean sirveProducto(int local, int idProducto) throws SQLException, Exception {
 
 		DAOTablaUsuarios daoUsuario= new DAOTablaUsuarios();
@@ -113,7 +113,7 @@ public class DAOTablaRestaurantes {
 
 		return existe;
 	}
-	
+
 	public void addRestaurante(Restaurante restaurante) throws SQLException, Exception {
 
 		String sql = "insert into Restaurante (NOMBRE, URLPAGINAWEB, IDTIPOCOMIDA, IDZONA, IDREPRESENTANTE) values ('"+restaurante.getNombre()+"', '"+restaurante.getUrlPaginaWeb()+"', "+restaurante.getTipoCom().getIdTipo()+", "+restaurante.getZona().getIdZona()+", "+restaurante.getRepresentante().getCedula()+")";
@@ -137,6 +137,23 @@ public class DAOTablaRestaurantes {
 
 
 		}
-		
+	}
+	
+	public Restaurante buscarRest(int local) throws Exception
+	{
+		String sql = "SELECT * FROM RESTAURANTE WHERE LOCAL="+local;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs=prepStmt.executeQuery();
+		if(!rs.next())return null;;
+		DAOTablaUsuarios daou= new DAOTablaUsuarios();
+		daou.setConn(conn);
+		DAOTablaTipoDeComida daot= new DAOTablaTipoDeComida();
+		daot.setConn(conn);
+		DAOTablaZona daoz = new DAOTablaZona();
+		daoz.setConn(conn);
+		Restaurante rest = new Restaurante(rs.getInt("LOCAL"), rs.getString("NOMBRE"), rs.getString("URLPAGINAWEB"), daou.buscarUsuarioPorCedula(rs.getInt("IDREPRESENTANTE")), daot.buscarTipoComidaPorId(rs.getInt("IDTIPOCOMIDA")), daoz.buscarZonaPorId(rs.getInt("IDZONA")));
+		return rest;
 	}
 }
