@@ -21,7 +21,11 @@ public class FuncionamientoRotonda {
 	
 	public FuncionamientoRotonda(@JsonProperty(value="productoMasConsumido")  ProductoSingular productoMasConsumido,@JsonProperty(value="restauranteMasFrecuentado") Restaurante restauranteMasFrecuentado,@JsonProperty(value="productoMenosConsumido") ProductoSingular productoMenosConsumido,@JsonProperty(value="restauranteMenosFrecuentado") Restaurante restauranteMenosFrecuentado,@JsonProperty(value="dia") String dia)
 	{
-		
+		this.dia=dia;
+		this.productoMasConsumido=productoMasConsumido;
+		this.productoMenosConsumido=productoMenosConsumido;
+		this.restauranteMasFrecuentado=restauranteMasFrecuentado;
+		this.restauranteMenosFrecuentado=restauranteMenosFrecuentado;
 	}
 
 	public ProductoSingular getProductoMasConsumido() {
