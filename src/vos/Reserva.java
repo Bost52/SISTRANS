@@ -6,43 +6,55 @@ import java.sql.Date;
 
 public class Reserva {
 
-	private Date fechaYHora;
+	private Integer idCliente;
 	
-	private Integer numeroComensales;
+	private Integer idHospedaje;
 	
-	private Menu menu;
+	private Date fechaInicio;
+	
+	private Date fechaFin;
 
-	public Reserva(Date fechaYHora, Integer numeroComensales, Menu menu) {
+	public Reserva(Integer cli, Integer hosp, Date inic, Date fin) {
 		super();
-		this.fechaYHora = fechaYHora;
-		this.numeroComensales = numeroComensales;
-		this.menu = menu;
+		idCliente = cli;
+		idHospedaje = hosp;
+		fechaInicio = inic;
+		fechaFin = fin;
 	}
 
-	public Date getFechaYHora() {
-		return fechaYHora;
+	public Integer getIdCliente() {
+		return idCliente;
 	}
 
-	public void setFechaYHora(Date fechaYHora) {
-		this.fechaYHora = fechaYHora;
+	public void setIdCliente(Integer idCliente) {
+		this.idCliente = idCliente;
 	}
 
-	public Integer getNumeroComensales() {
-		return numeroComensales;
+	public Integer getIdHospedaje() {
+		return idHospedaje;
 	}
 
-	public void setNumeroComensales(Integer numeroComensales) {
-		this.numeroComensales = numeroComensales;
+	public void setIdHospedaje(Integer idHospedaje) {
+		this.idHospedaje = idHospedaje;
 	}
 
-	public Menu getMenu() {
-		return menu;
+	public Date getFechaInicio() {
+		return fechaInicio;
 	}
 
-	public void setMenu(Menu menu) {
-		this.menu = menu;
+	public void setFechaInicio(Date fechaInicio) {
+		this.fechaInicio = fechaInicio;
 	}
-	
+
+	public Date getFechaFin() {
+		return fechaFin;
+	}
+
+	public void setFechaFin(Date fechaFin) {
+		this.fechaFin = fechaFin;
+	}
+
+
 	
 	
 }
