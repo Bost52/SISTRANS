@@ -1620,31 +1620,21 @@ public class AlohAndesTM {
 
 	public void addReserva(AgregarReserva reserva){
 		DAOTablaReserva daoReserva= new DAOTablaReserva();
-		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
+		//DAOTablaCliente daoClientes = new DAOTablaClientes();
 		try 
 		{
 			this.conn = darConexion();
-			daoUsuario.setConn(conn);
-			daoRestaurantes.setConn(conn);
-			if(daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getCedulaAdministrador())==null)
-			{
-				throw new NoSuchElementException("no se encontro el administrador con la cedula: "+usuarioCliente.getCedulaAdministrador());
+			daoReserva.setConn(conn);
+			//daoClientes.setConn(conn);
+			Cliente cli = daoClientes.buscarClientePorCedula(reserva.getIdCliente());
+			if(daoClientes.buscarClientePorCedula(reserva.getIdCliente()) != null){
+				throw new NoSuchElementException("No se encontró el cliente con la cedula: " + reserva.getIdCliente());
 			}
-			if(daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getRestaurante().getRepresentante().getCedula())==null)
-			{
-				throw new NoSuchElementException("no se encontro el usuario con la cedula: "+usuarioCliente.getRestaurante().getRepresentante().getCedula());
-			}
-			if(!daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getCedulaAdministrador()).getRol().equals("ADMINISTRADOR"))
-			{
-				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
-			}
-			if(!daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getRestaurante().getRepresentante().getCedula()).getRol().equals("RESTAURANTE")){
-				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
-			}
+
 			Restaurante restaurante = usuarioCliente.getRestaurante();
 			//////transaccion
 
-			daoRestaurantes.addRestaurante(restaurante);;
+			daoReserva.addReserva(reserva);;
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -1663,9 +1653,11 @@ public class AlohAndesTM {
 			System.err.println("GeneralException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
+
+
 		} finally {
 			try {
-				daoUsuario.cerrarRecursos();
+				daoReserva.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {

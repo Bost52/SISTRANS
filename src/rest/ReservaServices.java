@@ -48,8 +48,8 @@ public class ReservaServices {
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addReserva(reserva);
-		}catch(NoPermissionException e){
-			return Response.status(403).entity(doErrorMessage(e)).build();
+//		}catch(NoPermissionException e){
+//			return Response.status(403).entity(doErrorMessage(e)).build();
 		}catch(NoSuchElementException e) {
 			return Response.status(404).entity(doErrorMessage(e)).build();
 		}catch (Exception e) {
