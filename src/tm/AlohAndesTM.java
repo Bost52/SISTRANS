@@ -17,6 +17,7 @@ import dao.DAOTablaIngrediente;
 import dao.DAOTablaMenu;
 import dao.DAOTablaPedido;
 import dao.DAOTablaProductoSingular;
+import dao.DAOTablaReserva;
 import dao.DAOTablaRestaurantes;
 import dao.DAOTablaUsuarios;
 import dao.DAOTablaZona;
@@ -25,6 +26,7 @@ import vos.AgregarEquivalenciaProducto;
 import vos.AgregarIngredienteRestaurante;
 import vos.AgregarMenu;
 import vos.AgregarProducto;
+import vos.AgregarReserva;
 import vos.AgregarRestaurante;
 import vos.AgregarUsuarioCliente;
 import vos.AgregarZona;
@@ -1552,7 +1554,7 @@ public class AlohAndesTM {
 			}
 		}	
 	}
-	
+
 	public ArrayList<Usuario> getBuenosClientes(long id) throws Exception{
 		DAOTablaUsuarios daoUsuario = new DAOTablaUsuarios();
 		try 
@@ -1609,13 +1611,69 @@ public class AlohAndesTM {
 				throw exception;
 			}
 		}
-		
-		
-		
-		
+
+
+
+
 	}
-	
-	
-	public void addReserva()
+
+
+	public void addReserva(AgregarReserva reserva){
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		DAOTablaRestaurantes daoRestaurantes = new DAOTablaRestaurantes();
+		try 
+		{
+			this.conn = darConexion();
+			daoUsuario.setConn(conn);
+			daoRestaurantes.setConn(conn);
+			if(daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getCedulaAdministrador())==null)
+			{
+				throw new NoSuchElementException("no se encontro el administrador con la cedula: "+usuarioCliente.getCedulaAdministrador());
+			}
+			if(daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getRestaurante().getRepresentante().getCedula())==null)
+			{
+				throw new NoSuchElementException("no se encontro el usuario con la cedula: "+usuarioCliente.getRestaurante().getRepresentante().getCedula());
+			}
+			if(!daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getCedulaAdministrador()).getRol().equals("ADMINISTRADOR"))
+			{
+				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
+			}
+			if(!daoUsuario.buscarUsuarioPorCedula(usuarioCliente.getRestaurante().getRepresentante().getCedula()).getRol().equals("RESTAURANTE")){
+				throw new NoPermissionException("no se tienen los permisos para relizar esta accion");
+			}
+			Restaurante restaurante = usuarioCliente.getRestaurante();
+			//////transaccion
+
+			daoRestaurantes.addRestaurante(restaurante);;
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoUsuario.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
 }
 
