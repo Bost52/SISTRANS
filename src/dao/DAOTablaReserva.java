@@ -64,4 +64,17 @@ public class DAOTablaReserva {
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 	}
+	
+	public void deleteReserva(Reserva reserva) throws SQLException, Exception {
+		Integer idCli = reserva.getIdCliente();
+		Integer idHosp = reserva.getIdHospedaje();
+		Date inic = reserva.getFechaInicio();
+		Date fin = reserva.getFechaFin();
+		
+		String sql = "DELETE FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = "+inic+" AND FECHA_FINAL = "+fin;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
 }
