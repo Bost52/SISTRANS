@@ -14,7 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import tm.RotondAndesTM;
+import tm.AlohAndesTM;
 import vos.AgregarEquivalenciaIngrediente;
 import vos.AgregarIngredienteRestaurante;
 import vos.AgregarUsuarioCliente;
@@ -45,7 +45,7 @@ public class IngredienteServices {
 	
 	@POST
 	public Response addIngredienteRestaurante(AgregarIngredienteRestaurante userResta) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addIngredienteRestaurante(userResta);
 		}catch(NoPermissionException e){
@@ -61,7 +61,7 @@ public class IngredienteServices {
 	@POST
 	@Path( "{id: \\d+}" )
 	public Response addEquivalenciaIngrediente(@PathParam( "id" ) int id,AgregarEquivalenciaIngrediente userResta) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addEquivalenciaIngrediente(id,userResta);
 		}catch(NoPermissionException e){

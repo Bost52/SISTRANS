@@ -46,7 +46,7 @@ import vos.SurtirRestaurante;
 import vos.Usuario;
 import vos.Zona;
 
-public class RotondAndesTM {
+public class AlohAndesTM {
 
 
 	/**
@@ -92,7 +92,7 @@ public class RotondAndesTM {
 	 * inicializa los atributos que se usan par la conexion a la base de datos.
 	 * @param contextPathP - path absoluto en el servidor del contexto del deploy actual
 	 */
-	public RotondAndesTM(String contextPathP) {
+	public AlohAndesTM(String contextPathP) {
 		connectionDataPath = contextPathP + CONNECTION_DATA_FILE_NAME_REMOTE;
 		initConnectionData();
 	}

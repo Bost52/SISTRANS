@@ -12,7 +12,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import tm.RotondAndesTM;
+import tm.AlohAndesTM;
 import vos.AgregarIngredienteRestaurante;
 import vos.AgregarMenu;
 
@@ -43,7 +43,7 @@ public class MenuServices {
 	
 	@POST
 	public Response addMenuRestaurante(AgregarMenu userResta) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addMenuRestaurante(userResta);
 		}catch(NoPermissionException e){

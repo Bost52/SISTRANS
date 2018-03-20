@@ -17,7 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import tm.RotondAndesTM;
+import tm.AlohAndesTM;
 import vos.AgregarUsuarioCliente;
 import vos.FuncionamientoRotonda;
 import vos.Pedido;
@@ -54,7 +54,7 @@ public class PedidoServices {
 
 	@POST
 	public Response addPedido(Pedido pedido) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addPedido(pedido);
 		}catch(NoPermissionException e){
@@ -69,7 +69,7 @@ public class PedidoServices {
 	@POST
 	@Path("/mesa")
 	public Response addPedidoMesa(PedidoMesa pedido) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addPedidoMesa(pedido);
 		}catch (Exception e) {
@@ -82,7 +82,7 @@ public class PedidoServices {
 	@POST
 	@Path("/producto")
 	public Response addPedidoProducto (PedidoProducto pedido) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addPedidoProducto(pedido);
 		}catch(NoPermissionException e){
@@ -97,7 +97,7 @@ public class PedidoServices {
 	@PUT
 	@Path("/{id: \\d+}")
 	public Response servirPedidoProducto(@PathParam("id") int id, ServirPedidoProducto pedido) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			pedido.setIdPedido(id);
 			if(pedido.getIdProducto()>0 && pedido.getIdMenu()>0)
@@ -128,7 +128,7 @@ public class PedidoServices {
 	@DELETE
 	@Path("/{id: \\d+}")
 	public Response cancelarPedido(@PathParam("id") int id) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 
 			tm.cancelarPedido(id);
@@ -145,7 +145,7 @@ public class PedidoServices {
 	@DELETE
 	@Path("/{id: \\d+}/producto/{id2: \\\\d+}")
 	public Response cancelarPedidoProducto(@PathParam("id") int id,@PathParam("id2") int id2) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 
 			tm.cancelarPedidoProducto(id,id2);
@@ -162,7 +162,7 @@ public class PedidoServices {
 	@GET
 	@Path("/funcionamiento/{id : \\d+}")
 	public Response getFuncionamiento(@PathParam("id") long id) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		FuncionamientoRotonda[] v =null;
 		try {
 

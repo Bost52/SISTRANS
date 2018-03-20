@@ -17,7 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import tm.RotondAndesTM;
+import tm.AlohAndesTM;
 import vos.AgregarEquivalenciaIngrediente;
 import vos.AgregarEquivalenciaProducto;
 import vos.AgregarProducto;
@@ -52,7 +52,7 @@ public class ProductosService {
 	
 	@GET
 	public Response getProductos() {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		List<ProductoSingular> productos;
 		try {
 			productos = tm.darProductos();
@@ -66,7 +66,7 @@ public class ProductosService {
 	@Path("ofrecido")
 	public Response getProductoMasOfrecida()
 	{
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		ProductoSingular producto=null;
 		try {
 			producto = tm.darProductoMasOfrecido();
@@ -78,7 +78,7 @@ public class ProductosService {
 	
 	@POST
 	public Response addProducto(AgregarProducto producto) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addProducto(producto);
 		}catch(NoPermissionException e){
@@ -94,7 +94,7 @@ public class ProductosService {
 	@POST
 	@Path( "{id: \\d+}" )
 	public Response addEquivalenciaProducto(@PathParam( "id" ) int id,AgregarEquivalenciaProducto userResta) {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addEquivalenciaProducto(id, userResta);
 		}catch(NoPermissionException e){

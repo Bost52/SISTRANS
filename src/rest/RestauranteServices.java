@@ -54,7 +54,7 @@ public class RestauranteServices {
 
 	@GET
 	public Response getRestaurantes() {
-		RotondAndesTM tm = new RotondAndesTM(getPath());
+		AlohAndesTM tm = new AlohAndesTM(getPath());
 		List<Restaurante> videos;
 		try {
 			videos = tm.darRestaurantes();
@@ -68,7 +68,7 @@ public class RestauranteServices {
 	@Path( "/consumo" )
 	public Response getConsumoRestaurante(ConsumoRotonda consumo )
 	{
-		RotondAndesTM tm = new RotondAndesTM( getPath( ) );
+		AlohAndesTM tm = new RotondAndesTM( getPath( ) );
 		try
 		{
 			ArrayList<ConsumoCliente> v = tm.getConsumoRotanda(consumo);
