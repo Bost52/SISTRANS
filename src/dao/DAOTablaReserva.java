@@ -58,7 +58,7 @@ public class DAOTablaReserva {
 		Date inic = reserva.getFechaInicio();
 		Date fin = reserva.getFechaFin();
 		
-		String sql = "insert into RESERVA (IDPEDIDO, IDMENU) values ("+pedido.getIdPedido()+", "+pedido.getIdMenu()+")";
+		String sql = "insert into RESERVA (ID_CLIENTE, ID_HOSPEDAJE, FECHA_INICIO, FECHA_FINAL) values ("+ idCli+ ", "+ idHosp+", "+ inic + ", " + fin+")";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
