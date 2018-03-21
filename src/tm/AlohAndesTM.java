@@ -210,8 +210,8 @@ public class AlohAndesTM {
 		}		
 	}
 
-
 	public void eliminarHospedaje(Integer id) throws SQLException{
+
 		DAOTablaHospedaje daoHospedaje= new DAOTablaHospedaje();
 		try 
 		{
@@ -348,4 +348,5 @@ public class AlohAndesTM {
 			}
 		}		
 	}
+
 }
