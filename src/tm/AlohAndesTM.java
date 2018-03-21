@@ -257,5 +257,47 @@ public class AlohAndesTM {
 			}
 		}	
 	}
+	
+	public Hospedaje[] getHospedajesPopulares() throws SQLException{
+		DAOTablaReserva daoReserva = new DAOTablaReserva();
+		try 
+		{
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+			Hospedaje[] resp =null;
+			//////transaccion
+			resp=daoReserva.darVeinteHospedajesPopulares();
+
+			conn.commit();
+
+			return resp;
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+//		} catch(NoPermissionException e){
+//			System.err.println("privilegeException:" + e.getMessage());
+//			e.printStackTrace();
+//			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
 }
 
