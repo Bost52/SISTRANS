@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,7 +46,16 @@ public class DAOTablaHospedaje {
 		}
 	}
 	
-	public Hospedaje buscarHospedajePorCedula(int id) throws SQLException{
+	/**
+	 * Metodo que inicializa la connection del DAO a la base de datos con la conexión que entra como parametro.
+	 * @param con  - connection a la base de datos
+	 */
+	public void setConn(Connection con){
+		this.conn = con;
+	}
+	
+	
+	public Hospedaje buscarHospedaje(Integer id) throws SQLException{
 		Hospedaje hospedaje = null;
 
 		String sql = "SELECT * FROM HOSPEDAJE WHERE ID =" + id;
@@ -63,5 +73,16 @@ public class DAOTablaHospedaje {
 		return hospedaje;
 	}
 	
+	
+	public void deleteHospedaje(Hospedaje hospedaje) throws SQLException{
+		Integer id = hospedaje.getId();
+		String tipo = hospedaje.getTipo();
+
+		String sql = "DELETE FROM HOSPEDAJE WHERE ID = "+id+" AND TIPO = "+tipo;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
 	
 }
