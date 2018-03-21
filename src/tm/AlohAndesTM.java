@@ -18,6 +18,7 @@ import javax.naming.NoPermissionException;
 
 import dao.DAOTablaCliente;
 import dao.DAOTablaHospedaje;
+import dao.DAOTablaIngresosParAnios;
 import dao.DAOTablaReserva;
 import vos.AgregarReserva;
 import vos.Cliente;
@@ -301,21 +302,15 @@ public class AlohAndesTM {
 		}
 	}
 
-	public void ingresosPorOperadorUltimoParAnios(Reserva reserva) throws Exception {
-		DAOTablaReserva daoReserva= new DAOTablaReserva();
+	public void ingresosPorOperadorUltimoParAnios() throws Exception {
+		DAOTablaIngresosParAnios daoIngresos= new DAOTablaIngresosParAnios();
 		try 
 		{
 			this.conn = darConexion();
-			daoReserva.setConn(conn);
+			daoIngresos.setConn(conn);
 			//////transaccion
 
-			Reserva res= daoReserva.buscarReserva(reserva);
-			if(res==null)
-			{
-				throw new NoSuchElementException("no se puede cancelar una reserva inexistente");
-			}
-
-			daoReserva.deleteReserva(res);
+			daoIngresos.dineroRecibidoPorProveedorParAnios();
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -338,7 +333,7 @@ public class AlohAndesTM {
 			throw e;
 		} finally {
 			try {
-				daoReserva.cerrarRecursos();
+				daoIngresos.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {

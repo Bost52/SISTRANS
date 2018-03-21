@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import vos.IngresosParAnios;
 import vos.Reserva;
 
 public class DAOTablaIngresosParAnios {
@@ -52,7 +53,11 @@ public class DAOTablaIngresosParAnios {
 		this.conn = con;
 	}
 	
-	public void dineroRecibidoPorProveedorParAnios() throws SQLException, Exception {
+	public IngresosParAnios dineroRecibidoPorProveedorParAnios() throws SQLException, Exception {
+		
+		Integer idOperador;
+		Integer ingresos;
+		IngresosParAnios rpta = null;
 		
 		String sql = "SELECT ID, SUM(INGRESOS) AS INGRESOS_TOTALES" + 
 				"FROM((SELECT HOSTAL.ID_EMPRESA AS ID, SUM(T2.RECIBIDO) AS INGRESOS" + 
@@ -94,8 +99,8 @@ public class DAOTablaIngresosParAnios {
 		
 		ResultSet rs = prepStmt.executeQuery();
 		if(rs.next()) {
-			Integer idOperador = rs.getInt("ID");
-			Integer ingresos = rs.getInt("INGRESOS_TOTALES");
+			idOperador = rs.getInt("ID");
+			ingresos = rs.getInt("INGRESOS_TOTALES");
 			rpta = new IngresosParAnios(idOperador, ingresos);
 		}
 
