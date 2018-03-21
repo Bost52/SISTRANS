@@ -211,8 +211,8 @@ public class AlohAndesTM {
 		}		
 	}
 
+	public void eliminarHospedaje(Integer id) throws SQLException{
 
-	public void eliminarHospedaje(Hospedaje hospedaje) throws SQLException{
 		DAOTablaHospedaje daoHospedaje= new DAOTablaHospedaje();
 		try 
 		{
@@ -220,13 +220,13 @@ public class AlohAndesTM {
 			daoHospedaje.setConn(conn);
 			//////transaccion
 
-			Hospedaje res= daoHospedaje.buscarHospedaje(hospedaje.getId());
+			Hospedaje res= daoHospedaje.buscarHospedaje(id);
 			if(res==null)
 			{
 				throw new NoSuchElementException("no se puede cancelar una reserva inexistente");
 			}
 
-			daoHospedaje.deleteHospedaje(hospedaje);
+			daoHospedaje.deleteHospedaje(id);
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -343,5 +343,5 @@ public class AlohAndesTM {
 			}
 		}		
 	}
-}
 
+}

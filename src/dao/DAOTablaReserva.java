@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import vos.Hospedaje;
 
 import vos.Reserva;
@@ -104,7 +103,6 @@ public class DAOTablaReserva {
 
 		return reserva;
 	}
-	
 
 	public Hospedaje[] darVeinteHospedajesPopulares() throws SQLException{
 		Hospedaje[] resp = new Hospedaje[20];

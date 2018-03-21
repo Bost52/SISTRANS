@@ -58,7 +58,7 @@ public class DAOTablaHospedaje {
 	public Hospedaje buscarHospedaje(Integer id) throws SQLException{
 		Hospedaje hospedaje = null;
 
-		String sql = "SELECT * FROM HOSPEDAJE WHERE ID =" + id;
+		String sql = "SELECT * FROM HOSPEDAJE WHERE ID = " + id;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -74,11 +74,8 @@ public class DAOTablaHospedaje {
 	}
 	
 	
-	public void deleteHospedaje(Hospedaje hospedaje) throws SQLException{
-		Integer id = hospedaje.getId();
-		String tipo = hospedaje.getTipo();
-
-		String sql = "DELETE FROM HOSPEDAJE WHERE ID = "+id+" AND TIPO = "+tipo;
+	public void deleteHospedaje(Integer id) throws SQLException{
+		String sql = "DELETE FROM HOSPEDAJE WHERE ID = "+id;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
