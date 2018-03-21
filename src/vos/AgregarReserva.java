@@ -18,7 +18,7 @@ public class AgregarReserva {
 	@JsonProperty(value="fechaFin")
 	private Date fechaFin;
 	
-	public AgregarReserva(@JsonProperty(value="cedulaRestaurante") Integer idCli, 	@JsonProperty(value="idHospedaje") Integer idHosp, @JsonProperty(value="fechaInicio") Date fecIn, 	@JsonProperty(value="fechaFin") Date feFin) {
+	public AgregarReserva(@JsonProperty(value="idCliente") Integer idCli, @JsonProperty(value="idHospedaje") Integer idHosp, @JsonProperty(value="fechaInicio") Date fecIn, @JsonProperty(value="fechaFin") Date feFin) {
 		this.idCliente = idCli;
 		this.idHospedaje = idHosp;
 		this.fechaInic = fecIn;

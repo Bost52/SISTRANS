@@ -1,13 +1,16 @@
 package vos;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 public class Cliente {
 
-	
+	@JsonProperty(value="id")
 	private Integer id;
 	
+	@JsonProperty(value="nombre")
 	private String nombre;
 	
-	public Cliente(Integer id, String nom){
+	public Cliente(@JsonProperty(value="id")Integer id,@JsonProperty(value="nombre") String nom){
 		this.id = id;
 		this.nombre = nom;
 	}
