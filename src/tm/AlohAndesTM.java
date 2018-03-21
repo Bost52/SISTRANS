@@ -97,16 +97,6 @@ public class AlohAndesTM {
 		}
 	}
 
-	/**
-	 * Metodo que  retorna la conexion a la base de datos
-	 * @return Connection - la conexion a la base de datos
-	 * @throws SQLException - Cualquier error que se genere durante la conexion a la base de datos
-	 */
-	private Connection darConexion() throws SQLException {
-		System.out.println("Connecting to: " + url + " With user: " + user);
-		return DriverManager.getConnection(url, user, password);
-	}
-
 	////////////////////////////////////////
 	///////Transacciones De AlohAndes////////////////////
 	////////////////////////////////////////
@@ -119,7 +109,7 @@ public class AlohAndesTM {
 		{
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
-			//daoClientes.setConn(conn);
+			daoClientes.setConn(conn);
 			Cliente cli = daoClientes.buscarClientePorCedula(reserva.getIdCliente());
 			if(cli != null){
 				throw new NoSuchElementException("No se encontró el cliente con la cedula: " + reserva.getIdCliente());
@@ -151,6 +141,7 @@ public class AlohAndesTM {
 		} finally {
 			try {
 				daoReserva.cerrarRecursos();
+				daoClientes.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -160,7 +151,17 @@ public class AlohAndesTM {
 			}
 		}
 	}
-	
+
+	/**
+	 * Metodo que  retorna la conexion a la base de datos
+	 * @return Connection - la conexion a la base de datos
+	 * @throws SQLException - Cualquier error que se genere durante la conexion a la base de datos
+	 */
+	private Connection darConexion() throws SQLException {
+		System.out.println("Connecting to: " + url + " With user: " + user);
+		return DriverManager.getConnection(url, user, password);
+	}
+
 	public void cancelarReserva(Reserva reserva) throws Exception {
 		DAOTablaReserva daoReserva= new DAOTablaReserva();
 		try 
@@ -208,9 +209,9 @@ public class AlohAndesTM {
 			}
 		}		
 	}
-	
-	
-	public void eliminarHospedaje(Hospedaje hospedaje) throws SQLException{
+
+
+	public void eliminarHospedaje(Integer id) throws SQLException{
 		DAOTablaHospedaje daoHospedaje= new DAOTablaHospedaje();
 		try 
 		{
@@ -218,13 +219,13 @@ public class AlohAndesTM {
 			daoHospedaje.setConn(conn);
 			//////transaccion
 
-			Hospedaje res= daoHospedaje.buscarHospedaje(hospedaje.getId());
+			Hospedaje res= daoHospedaje.buscarHospedaje(id);
 			if(res==null)
 			{
 				throw new NoSuchElementException("no se puede cancelar una reserva inexistente");
 			}
 
-			daoHospedaje.deleteHospedaje(hospedaje);
+			daoHospedaje.deleteHospedaje(id);
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -232,11 +233,11 @@ public class AlohAndesTM {
 			e.printStackTrace();
 			throw e;
 		} 
-//		catch(NoPermissionException e){
-//			System.err.println("privilegeException:" + e.getMessage());
-//			e.printStackTrace();
-//			throw e;
-//		}
+		//		catch(NoPermissionException e){
+		//			System.err.println("privilegeException:" + e.getMessage());
+		//			e.printStackTrace();
+		//			throw e;
+		//		}
 		catch(NoSuchElementException e) {
 			System.err.println("noSuchElementException:" + e.getMessage());
 			e.printStackTrace();
@@ -257,7 +258,7 @@ public class AlohAndesTM {
 			}
 		}	
 	}
-	
+
 	public Hospedaje[] getHospedajesPopulares() throws SQLException{
 		DAOTablaReserva daoReserva = new DAOTablaReserva();
 		try 
@@ -275,10 +276,10 @@ public class AlohAndesTM {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();
 			throw e;
-//		} catch(NoPermissionException e){
-//			System.err.println("privilegeException:" + e.getMessage());
-//			e.printStackTrace();
-//			throw e;
+			//		} catch(NoPermissionException e){
+			//			System.err.println("privilegeException:" + e.getMessage());
+			//			e.printStackTrace();
+			//			throw e;
 		}catch(NoSuchElementException e) {
 			System.err.println("noSuchElementException:" + e.getMessage());
 			e.printStackTrace();
@@ -299,5 +300,52 @@ public class AlohAndesTM {
 			}
 		}
 	}
-}
 
+	public void ingresosPorOperadorUltimoParAnios(Reserva reserva) throws Exception {
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+			//////transaccion
+
+			Reserva res= daoReserva.buscarReserva(reserva);
+			if(res==null)
+			{
+				throw new NoSuchElementException("no se puede cancelar una reserva inexistente");
+			}
+
+			daoReserva.deleteReserva(res);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} 
+		catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
+		catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}		
+	}
+}
