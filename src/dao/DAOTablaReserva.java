@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -76,5 +77,28 @@ public class DAOTablaReserva {
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
+	}
+	
+	public Reserva buscarReserva(Reserva reserva) throws SQLException, Exception {
+		Integer idCli = reserva.getIdCliente();
+		Integer idHosp = reserva.getIdHospedaje();
+		Date inic = reserva.getFechaInicio();
+		Date fin = reserva.getFechaFin();
+		
+		String sql = "SELECT * FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = "+inic+" AND FECHA_FINAL = "+fin;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+		ResultSet rs = prepStmt.executeQuery();
+		if(rs.next()) {
+			Integer idCliente = rs.getInt("ID_CLIENTE");
+			Integer idHospedaje = rs.getInt("ID_HOSPEDAJE");
+			Date fechaInicio = rs.getDate("FECHA_INICIO");
+			Date fechaFinal = rs.getDate("FECHA_TERMINACION");			
+			reserva = new Reserva(idCliente, idHospedaje, fechaInicio, fechaFinal);
+		}
+
+		return reserva;
 	}
 }
