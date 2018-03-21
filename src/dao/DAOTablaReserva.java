@@ -102,12 +102,5 @@ public class DAOTablaReserva {
 		return reserva;
 	}
 	
-	public void dineroRecibidoPorProveedor(Date ahora) throws SQLException, Exception {
-		
-		String sql = "DELETE FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = "+inic+" AND FECHA_FINAL = "+fin;
-
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
-		recursos.add(prepStmt);
-		prepStmt.executeQuery();
-	}
+	
 }

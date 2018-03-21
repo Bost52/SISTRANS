@@ -1720,6 +1720,53 @@ public class AlohAndesTM {
 		}		
 	}
 	
+	public void ingresosPorOperadorUltimoParAnios(Reserva reserva) throws Exception {
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+			//////transaccion
+
+			Reserva res= daoReserva.buscarReserva(reserva);
+			if(res==null)
+			{
+				throw new NoSuchElementException("no se puede cancelar una reserva inexistente");
+			}
+
+			daoReserva.deleteReserva(res);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} 
+		catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
+		catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}		
+	}
 	
 }
 
