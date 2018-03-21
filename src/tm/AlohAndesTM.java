@@ -13,6 +13,7 @@ import java.util.Properties;
 
 import javax.naming.NoPermissionException;
 
+import dao.DAOTablaCliente;
 import dao.DAOTablaIngrediente;
 import dao.DAOTablaMenu;
 import dao.DAOTablaPedido;
@@ -42,6 +43,7 @@ import vos.Pedido;
 import vos.PedidoMesa;
 import vos.PedidoProducto;
 import vos.ProductoSingular;
+import vos.Reserva;
 import vos.Restaurante;
 import vos.ServirPedidoProducto;
 import vos.SurtirRestaurante;
@@ -1618,9 +1620,9 @@ public class AlohAndesTM {
 	}
 
 
-	public void addReserva(AgregarReserva reserva){
+	public void addReserva(AgregarReserva reserva) throws Exception{
 		DAOTablaReserva daoReserva= new DAOTablaReserva();
-		//DAOTablaCliente daoClientes = new DAOTablaClientes();
+		DAOTablaCliente daoClientes = new DAOTablaCliente();
 		try 
 		{
 			this.conn = darConexion();
@@ -1631,10 +1633,9 @@ public class AlohAndesTM {
 				throw new NoSuchElementException("No se encontró el cliente con la cedula: " + reserva.getIdCliente());
 			}
 
-			Restaurante restaurante = usuarioCliente.getRestaurante();
 			//////transaccion
-
-			daoReserva.addReserva(reserva);;
+			Reserva reser = new Reserva(reserva.getIdCliente(), reserva.getIdHospedaje(), reserva.getFechaInic(), reserva.getFechaFin());
+			daoReserva.addReserva(reser);;
 			conn.commit();
 
 		} catch (SQLException e) {

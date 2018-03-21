@@ -1,8 +1,13 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+
+import vos.Cliente;
 
 public class DAOTablaCliente {
 
@@ -45,5 +50,24 @@ public class DAOTablaCliente {
 	 */
 	public void setConn(Connection con){
 		this.conn = con;
+	}
+	
+	
+	public Cliente buscarClientePorCedula(int cedula) throws SQLException{
+		Cliente cliente = null;
+
+		String sql = "SELECT * FROM CLIENTE WHERE CEDULA =" + cedula;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		if(rs.next()) {
+			Integer id = rs.getInt("ID");
+			String nombre = rs.getString("EMAIL");
+			cliente = new Cliente(id, nombre);
+		}
+
+		return cliente;
 	}
 }
