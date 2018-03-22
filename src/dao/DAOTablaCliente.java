@@ -56,7 +56,7 @@ public class DAOTablaCliente {
 	public Cliente buscarClientePorCedula(int cedula) throws SQLException{
 		Cliente cliente = null;
 
-		String sql = "SELECT * FROM CLIENTE WHERE CEDULA =" + cedula;
+		String sql = "SELECT * FROM CLIENTE WHERE CEDULA = " + cedula;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);

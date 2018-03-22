@@ -1,6 +1,6 @@
 PRUEBAS EN POSTMAN
 
-POST (Requerimiento 1)
+POST (Prueba 1)
 
 http://localhost:8080/RotondAndes/rest/usuarios
 
@@ -8,10 +8,10 @@ caso: es administrador o restaurante.
 
 JSON:
 {
-	"id":11111111,
-	"nombre": "Coca Cola",
-	"Tipo":"ADMINISTRADOR",
-	"email":"pepe@ponku.edu.co"
+	"Id_cliente":10001,
+	"Id_hospedaje": "1000029",
+	"Fecha_inicio":"10/01/17",
+	"Fecha_Terminacion":"01/10/17"
 }
 
 Response: 200 OK

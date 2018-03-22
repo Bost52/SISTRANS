@@ -47,6 +47,7 @@ public class ReservaServices {
 
 
 	@POST
+	@Path("/agregarReserva")
 	public Response addReserva(AgregarReserva reserva) {
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
