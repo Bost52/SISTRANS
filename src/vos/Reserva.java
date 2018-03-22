@@ -10,11 +10,11 @@ public class Reserva {
 	
 	private Integer idHospedaje;
 	
-	private Date fechaInicio;
+	private String fechaInicio;
 	
-	private Date fechaFin;
+	private String fechaFin;
 
-	public Reserva(Integer cli, Integer hosp, Date inic, Date fin) {
+	public Reserva(Integer cli, Integer hosp, String inic, String fin) {
 		super();
 		idCliente = cli;
 		idHospedaje = hosp;
@@ -38,23 +38,20 @@ public class Reserva {
 		this.idHospedaje = idHospedaje;
 	}
 
-	public Date getFechaInicio() {
+	public String getFechaInicio() {
 		return fechaInicio;
 	}
 
-	public void setFechaInicio(Date fechaInicio) {
+	public void setFechaInicio(String fechaInicio) {
 		this.fechaInicio = fechaInicio;
 	}
 
-	public Date getFechaFin() {
+	public String getFechaFin() {
 		return fechaFin;
 	}
 
-	public void setFechaFin(Date fechaFin) {
+	public void setFechaFin(String fechaFin) {
 		this.fechaFin = fechaFin;
 	}
-
-
-	
 	
 }

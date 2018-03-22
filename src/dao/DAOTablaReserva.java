@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import vos.Hospedaje;
 
 import vos.Reserva;
@@ -59,8 +60,12 @@ public class DAOTablaReserva {
 	public void addReserva(Reserva reserva) throws SQLException, Exception {
 		Integer idCli = reserva.getIdCliente();
 		Integer idHosp = reserva.getIdHospedaje();
+		String[] ini = reserva.getFechaInicio().split("-");
+		String[] fini = reserva.getFechaFin().split("-");
+		String inic = Integer.parseInt(ini[1])+"/"+Integer.parseInt(ini[2])+"/"+Integer.parseInt(ini[0]);
+		String fin = Integer.parseInt(fini[1])+"/"+Integer.parseInt(fini[2])+"/"+Integer.parseInt(fini[0]);
 
-		String sql = "insert into RESERVA (ID_CLIENTE, ID_HOSPEDAJE, FECHA_INICIO, FECHA_TERMINACION) values ("+ idCli+ ", "+ idHosp+", "+"SYSDATE,  "+ "  SYSDATE)";
+		String sql = "insert into RESERVA (ID_CLIENTE, ID_HOSPEDAJE, FECHA_INICIO, FECHA_TERMINACION) values ("+ idCli+ ", "+ idHosp+", "+"TO_DATE('"+inic+"', 'MM/DD/YYYY'),  "+ "  TO_DATE('"+fin+"', 'MM/DD/YYYY'))";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -71,10 +76,11 @@ public class DAOTablaReserva {
 	public void deleteReserva(Reserva reserva) throws SQLException, Exception {
 		Integer idCli = reserva.getIdCliente();
 		Integer idHosp = reserva.getIdHospedaje();
-		Date inic = reserva.getFechaInicio();
-		Date fin = reserva.getFechaFin();
-
-		String sql = "DELETE FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = "+inic+" AND FECHA_FINAL = "+fin;
+		String[] ini = reserva.getFechaInicio().split("-");
+		String[] fini = reserva.getFechaFin().split("-");
+		String inic = Integer.parseInt(ini[0])+"/"+Integer.parseInt(ini[1])+"/"+Integer.parseInt(ini[2]);
+		String fin = Integer.parseInt(fini[0])+"/"+Integer.parseInt(fini[1])+"/"+Integer.parseInt(fini[2]);
+		String sql = "DELETE FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = TO_DATE('"+inic+"', 'MM/DD/YYYY') AND FECHA_FINAL =TO_DATE('"+fin+"', 'MM/DD/YYYY')";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -84,8 +90,10 @@ public class DAOTablaReserva {
 	public Reserva buscarReserva(Reserva reserva) throws SQLException, Exception {
 		Integer idCli = reserva.getIdCliente();
 		Integer idHosp = reserva.getIdHospedaje();
-		Date inic = reserva.getFechaInicio();
-		Date fin = reserva.getFechaFin();
+		String[] ini = reserva.getFechaInicio().split("-");
+		String[] fini = reserva.getFechaFin().split("-");
+		Date inic = new Date(Integer.parseInt(ini[0]),Integer.parseInt(ini[1]),Integer.parseInt(ini[2]));
+		Date fin = new Date(Integer.parseInt(fini[0]),Integer.parseInt(fini[1]),Integer.parseInt(fini[2]));
 
 		String sql = "SELECT * FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = "+inic+" AND FECHA_TERMINACION = "+fin;
 
@@ -96,8 +104,8 @@ public class DAOTablaReserva {
 		if(rs.next()) {
 			Integer idCliente = rs.getInt("ID_CLIENTE");
 			Integer idHospedaje = rs.getInt("ID_HOSPEDAJE");
-			Date fechaInicio = rs.getDate("FECHA_INICIO");
-			Date fechaFinal = rs.getDate("FECHA_TERMINACION");			
+			String fechaInicio = rs.getString("FECHA_INICIO");
+			String fechaFinal = rs.getString("FECHA_TERMINACION");			
 			reserva = new Reserva(idCliente, idHospedaje, fechaInicio, fechaFinal);
 		}
 

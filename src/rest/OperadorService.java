@@ -46,6 +46,7 @@ public class OperadorService {
 		ArrayList<IngresosParAnios> resp = new ArrayList<IngresosParAnios>();
 		try {
 			resp = tm.ingresosPorOperadorUltimoParAnios();
+			System.out.println(resp.size());
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
