@@ -262,13 +262,64 @@ public class AlohAndesTM {
 
 	public Hospedaje[] getHospedajesPopulares() throws SQLException{
 		DAOTablaReserva daoReserva = new DAOTablaReserva();
+		DAOTablaHospedaje daoHospedaje = new DAOTablaHospedaje();
 		try 
 		{
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
-			Hospedaje[] resp =null;
+			daoHospedaje.setConn(conn);
+			Integer[] resp =null;
+			
+			
 			//////transaccion
 			resp=daoReserva.darVeinteHospedajesPopulares();
+			Hospedaje[] hosp = new Hospedaje[20];
+			int i = 0;
+			while(i<20){
+				hosp[i] = daoHospedaje.buscarHospedaje(resp[i]);
+				i++;
+			}
+			conn.commit();
+
+			return hosp;
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+			//		} catch(NoPermissionException e){
+			//			System.err.println("privilegeException:" + e.getMessage());
+			//			e.printStackTrace();
+			//			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<Hospedaje> getHospedajes() throws SQLException{
+		DAOTablaHospedaje daoReserva = new DAOTablaHospedaje();
+		try 
+		{
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+			ArrayList<Hospedaje> resp =null;
+			//////transaccion
+			resp= daoReserva.getHospedajes();
 
 			conn.commit();
 

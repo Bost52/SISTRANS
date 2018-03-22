@@ -11,6 +11,7 @@ import vos.Hospedaje;
 
 import vos.Reserva;
 
+
 public class DAOTablaReserva {
 
 	/**
@@ -104,23 +105,24 @@ public class DAOTablaReserva {
 		return reserva;
 	}
 
-	public Hospedaje[] darVeinteHospedajesPopulares() throws SQLException{
-		Hospedaje[] resp = new Hospedaje[20];
+	public Integer[] darVeinteHospedajesPopulares() throws SQLException{
+		Integer[] resp = new Integer[20];
 
-		String sql = "SELECT * FROM (SELECT R.ID_HOSPEDAJE, COUNT(*) FROM RESERVA R GROUP BY R.ID_HOSPEDAJE ORDER BY COUNT(*) DESC) WHERE ROWNUM <=20;";
+		String sql = "SELECT * FROM (SELECT R.ID_HOSPEDAJE, COUNT(*) FROM RESERVA R GROUP BY R.ID_HOSPEDAJE ORDER BY COUNT(*) DESC) WHERE ROWNUM <=20";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		ResultSet rs = prepStmt.executeQuery();
 		int i = 0;
 		while (rs.next()) {
-			Integer id = rs.getInt("ID");
-			String tipo = rs.getString("TIPO");
-			
-			resp[i] = new Hospedaje(id, tipo);
+			Integer id = rs.getInt("ID_HOSPEDAJE");
+			resp[i] = id;
 			i++;		
 
 		}
 		return resp;
 	}
+	
+	
+	
 }

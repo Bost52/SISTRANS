@@ -20,7 +20,7 @@ import vos.AgregarReserva;
 import vos.Reserva;
 
 
-@Path("reservas")
+@Path("reserva")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ReservaServices {

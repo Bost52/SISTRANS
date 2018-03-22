@@ -1,6 +1,7 @@
 package rest;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -23,7 +24,7 @@ import vos.Hospedaje;
 import vos.Reserva;
 
 
-@Path("hospedaje/")
+@Path("hospedaje")
 @Produces({MediaType.APPLICATION_JSON})
 public class HospedajeServices{
 
@@ -66,7 +67,7 @@ public class HospedajeServices{
 	
 	
 	@GET
-	@Path("20")
+	@Path("/20")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getHospedajesPopulares() {
 		AlohAndesTM tm = new AlohAndesTM(getPath());
@@ -80,5 +81,19 @@ public class HospedajeServices{
 		return Response.status(200).entity(resp).build();
 	}
 	
+	@GET
+	@Path("/prueba")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response getHospedajes() {
+		AlohAndesTM tm = new AlohAndesTM(getPath());
+		ArrayList<Hospedaje> resp = new ArrayList<Hospedaje>();
+//		List<Usuario> usuarios;
+		try {
+			resp = tm.getHospedajes();
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resp).build();
+	}
 	
 }

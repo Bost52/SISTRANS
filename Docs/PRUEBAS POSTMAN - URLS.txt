@@ -8,9 +8,9 @@ caso: es administrador o restaurante.
 
 JSON:
 {
-	"cedula":11111111,
-	"nombre": "Pedro Perez",
-	"rol":"ADMINISTRADOR",
+	"id":11111111,
+	"nombre": "Coca Cola",
+	"Tipo":"ADMINISTRADOR",
 	"email":"pepe@ponku.edu.co"
 }
 

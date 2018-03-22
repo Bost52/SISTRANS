@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import vos.Cliente;
 import vos.Hospedaje;
+import vos.Reserva;
 
 public class DAOTablaHospedaje {
 
@@ -82,4 +83,21 @@ public class DAOTablaHospedaje {
 		prepStmt.executeQuery();
 	}
 	
+	
+	public ArrayList<Hospedaje> getHospedajes() throws SQLException{
+		ArrayList<Hospedaje> hospedajes = new ArrayList<Hospedaje>();
+
+		String sql = "SELECT * FROM HOSPEDAJE";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			Integer idx = rs.getInt("ID");
+			String tipo = rs.getString("TIPO");
+			hospedajes.add(new Hospedaje(idx, tipo));
+		}
+		return hospedajes;
+	}
 }
