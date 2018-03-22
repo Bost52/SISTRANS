@@ -59,8 +59,6 @@ public class DAOTablaReserva {
 	public void addReserva(Reserva reserva) throws SQLException, Exception {
 		Integer idCli = reserva.getIdCliente();
 		Integer idHosp = reserva.getIdHospedaje();
-		Date inic = reserva.getFechaInicio();
-		Date fin = reserva.getFechaFin();
 
 		String sql = "insert into RESERVA (ID_CLIENTE, ID_HOSPEDAJE, FECHA_INICIO, FECHA_TERMINACION) values ("+ idCli+ ", "+ idHosp+", "+"SYSDATE,  "+ "  SYSDATE)";
 

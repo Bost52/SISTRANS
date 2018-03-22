@@ -41,9 +41,9 @@ public class OperadorService {
 	@GET
 	@Path("/ingreso")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public ArrayList<IngresosParAnios> getIngresosParAnios(){
+	public Response getIngresosParAnios(){
 		AlohAndesTM tm = new AlohAndesTM(getPath());
-		Hospedaje[] resp = new Hospedaje[20];
+		ArrayList<IngresosParAnios> resp = new ArrayList<IngresosParAnios>();
 		try {
 			resp = tm.ingresosPorOperadorUltimoParAnios();
 		} catch (Exception e) {
