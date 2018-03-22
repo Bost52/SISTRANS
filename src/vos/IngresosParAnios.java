@@ -10,7 +10,7 @@ public class IngresosParAnios {
 	@JsonProperty(value="ingresos")
 	private int ingresos;
 	
-	public IngresosParAnios(long id, int ingresos) {
+	public IngresosParAnios(@JsonProperty(value="id")long id, @JsonProperty(value="ingresos")int ingresos) {
 		super();
 		this.id = id;
 		this.ingresos = ingresos;
