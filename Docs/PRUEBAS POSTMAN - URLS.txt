@@ -9,9 +9,7 @@ caso: es administrador o restaurante.
 JSON:
 {
 	"idCliente":10001,
-	"idHospedaje": 1000029,
-	"fechaInicio":"2017-01-01",
-	"fechaFin":"2017-12-31"
+	"idHospedaje": 1000029
 }
 
 Response: 200 OK
