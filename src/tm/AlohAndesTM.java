@@ -23,6 +23,7 @@ import dao.DAOTablaReserva;
 import vos.AgregarReserva;
 import vos.Cliente;
 import vos.Hospedaje;
+import vos.IngresosParAnios;
 import vos.Reserva;
 
 
@@ -112,7 +113,7 @@ public class AlohAndesTM {
 			daoReserva.setConn(conn);
 			daoClientes.setConn(conn);
 			Cliente cli = daoClientes.buscarClientePorCedula(reserva.getIdCliente());
-			if(cli != null){
+			if(cli == null){
 				throw new NoSuchElementException("No se encontró el cliente con la cedula: " + reserva.getIdCliente());
 			}
 
@@ -353,17 +354,19 @@ public class AlohAndesTM {
 		}
 	}
 
-	public void ingresosPorOperadorUltimoParAnios() throws Exception {
+	public ArrayList<IngresosParAnios> ingresosPorOperadorUltimoParAnios() throws Exception {
 		DAOTablaIngresosParAnios daoIngresos= new DAOTablaIngresosParAnios();
 		try 
 		{
+			
+			ArrayList<IngresosParAnios> resp = new ArrayList<IngresosParAnios>();
 			this.conn = darConexion();
 			daoIngresos.setConn(conn);
 			//////transaccion
-
-			daoIngresos.dineroRecibidoPorProveedorParAnios();
+			resp = daoIngresos.dineroRecibidoPorProveedorParAnios();
 			conn.commit();
-
+			
+			return resp;
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
 			e.printStackTrace();

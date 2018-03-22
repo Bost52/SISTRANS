@@ -56,7 +56,7 @@ public class DAOTablaCliente {
 	public Cliente buscarClientePorCedula(int cedula) throws SQLException{
 		Cliente cliente = null;
 
-		String sql = "SELECT * FROM CLIENTE WHERE CEDULA = " + cedula;
+		String sql = "SELECT * FROM CLIENTE WHERE ID = " + cedula;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -64,8 +64,9 @@ public class DAOTablaCliente {
 
 		if(rs.next()) {
 			Integer id = rs.getInt("ID");
-			String nombre = rs.getString("EMAIL");
+			String nombre = rs.getString("NOMBRE");
 			cliente = new Cliente(id, nombre);
+			System.out.println(cliente == null);
 		}
 
 		return cliente;

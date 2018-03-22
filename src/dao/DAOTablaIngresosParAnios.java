@@ -53,11 +53,11 @@ public class DAOTablaIngresosParAnios {
 		this.conn = con;
 	}
 	
-	public IngresosParAnios dineroRecibidoPorProveedorParAnios() throws SQLException, Exception {
+	public ArrayList<IngresosParAnios> dineroRecibidoPorProveedorParAnios() throws SQLException, Exception {
 		
 		Integer idOperador;
 		Integer ingresos;
-		IngresosParAnios rpta = null;
+		ArrayList<IngresosParAnios> rpta = new ArrayList<IngresosParAnios>();
 		
 		String sql = "SELECT ID, SUM(INGRESOS) AS INGRESOS_TOTALES" + 
 				"FROM((SELECT HOSTAL.ID_EMPRESA AS ID, SUM(T2.RECIBIDO) AS INGRESOS" + 
@@ -101,7 +101,7 @@ public class DAOTablaIngresosParAnios {
 		if(rs.next()) {
 			idOperador = rs.getInt("ID");
 			ingresos = rs.getInt("INGRESOS_TOTALES");
-			rpta = new IngresosParAnios(idOperador, ingresos);
+			rpta.add(new IngresosParAnios(idOperador, ingresos));
 		}
 
 		return rpta;
