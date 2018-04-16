@@ -13,12 +13,12 @@ public class AgregarReserva {
 	private Integer idHospedaje;
 	
 	@JsonProperty(value="fechaInicio")
-	private Date fechaInic;
+	private String fechaInic;
 	
 	@JsonProperty(value="fechaFin")
-	private Date fechaFin;
+	private String fechaFin;
 	
-	public AgregarReserva(@JsonProperty(value="idCliente") Integer idCli, @JsonProperty(value="idHospedaje") Integer idHosp, @JsonProperty(value="fechaInicio") Date fecIn, @JsonProperty(value="fechaFin") Date feFin) {
+	public AgregarReserva(@JsonProperty(value="idCliente") Integer idCli, @JsonProperty(value="idHospedaje") Integer idHosp, @JsonProperty(value="fechaInicio") String fecIn, @JsonProperty(value="fechaFin") String feFin) {
 		this.idCliente = idCli;
 		this.idHospedaje = idHosp;
 		this.fechaInic = fecIn;
@@ -41,21 +41,22 @@ public class AgregarReserva {
 		this.idHospedaje = idHospedaje;
 	}
 
-	public Date getFechaInic() {
+	public String getFechaInic() {
 		return fechaInic;
 	}
 
-	public void setFechaInic(Date fechaInic) {
+	public void setFechaInic(String fechaInic) {
 		this.fechaInic = fechaInic;
 	}
 
-	public Date getFechaFin() {
+	public String getFechaFin() {
 		return fechaFin;
 	}
 
-	public void setFechaFin(Date fechaFin) {
+	public void setFechaFin(String fechaFin) {
 		this.fechaFin = fechaFin;
 	}
+
 
 	
 	

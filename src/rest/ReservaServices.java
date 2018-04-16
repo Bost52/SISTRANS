@@ -62,9 +62,9 @@ public class ReservaServices {
 		return Response.status(200).entity(reserva).build();
 	}
 
-	@DELETE
-	@Path("/reserva/{idHospedaje: \\d+}/{idCliente: \\\\d+}/{fechaInicio: \\\\d+}/{fechaFin: \\\\d+}")
-	public Response cancelarReserva(@PathParam("idHospedaje") Integer idHos, @PathParam("idCliente") Integer idCli, @PathParam("fechaInicio") Date fecIni, @PathParam("fechaFin") Date fecFin){
+	@POST
+	@Path("/deleteReserva")
+	public Response cancelarReserva(@PathParam("idHospedaje") Integer idHos, @PathParam("idCliente") Integer idCli, @PathParam("fechaInicio") String fecIni, @PathParam("fechaFin") String fecFin){
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			Reserva reserva = new Reserva(idHos, idCli, fecIni, fecFin);

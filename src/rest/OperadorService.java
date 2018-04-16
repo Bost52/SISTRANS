@@ -41,11 +41,12 @@ public class OperadorService {
 	@GET
 	@Path("/ingreso")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public ArrayList<IngresosParAnios> getIngresosParAnios(){
+	public Response getIngresosParAnios(){
 		AlohAndesTM tm = new AlohAndesTM(getPath());
-		Hospedaje[] resp = new Hospedaje[20];
+		ArrayList<IngresosParAnios> resp = new ArrayList<IngresosParAnios>();
 		try {
 			resp = tm.ingresosPorOperadorUltimoParAnios();
+			System.out.println(resp.size());
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
