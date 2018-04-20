@@ -78,4 +78,9 @@ public class ReservaServices {
 		}
 		return Response.status(200).entity(idHos).build();
 	}
+	
+	@POST
+	public void reservaMasiva(){
+		
+	}
 }

@@ -25,6 +25,7 @@ import vos.Cliente;
 import vos.Hospedaje;
 import vos.IngresosParAnios;
 import vos.Reserva;
+import vos.ReservaMasiva;
 
 
 public class AlohAndesTM {
@@ -270,8 +271,8 @@ public class AlohAndesTM {
 			daoReserva.setConn(conn);
 			daoHospedaje.setConn(conn);
 			Integer[] resp =null;
-			
-			
+
+
 			//////transaccion
 			resp=daoReserva.darVeinteHospedajesPopulares();
 			Hospedaje[] hosp = new Hospedaje[20];
@@ -311,7 +312,7 @@ public class AlohAndesTM {
 			}
 		}
 	}
-	
+
 	public ArrayList<Hospedaje> getHospedajes() throws SQLException{
 		DAOTablaHospedaje daoReserva = new DAOTablaHospedaje();
 		try 
@@ -358,14 +359,14 @@ public class AlohAndesTM {
 		DAOTablaIngresosParAnios daoIngresos= new DAOTablaIngresosParAnios();
 		try 
 		{
-			
+
 			ArrayList<IngresosParAnios> resp = new ArrayList<IngresosParAnios>();
 			this.conn = darConexion();
 			daoIngresos.setConn(conn);
 			//////transaccion
 			resp = daoIngresos.dineroRecibidoPorProveedorParAnios();
 			conn.commit();
-			
+
 			return resp;
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -396,6 +397,80 @@ public class AlohAndesTM {
 				throw exception;
 			}
 		}		
+	}
+
+	public void addReservaMasiva(ReservaMasiva res) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		DAOTablaCliente daoClientes = new DAOTablaCliente();
+		try 
+		{
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+			daoClientes.setConn(conn);
+
+			//verfifica que el cliente exista
+			Cliente cli = daoClientes.buscarClientePorCedula(res.getIdUsuario());
+			if(cli == null){
+				throw new NoSuchElementException("No se encontró el cliente con la cedula: " + res.getIdUsuario());
+			}
+
+			//Verifica donde 
+
+			//////transaccion
+			int cant = res.getCantidad();
+			ArrayList<Integer> hospedajes = verificarHospedajes(cant);
+			if(hospedajes.size() != cant){
+				while (cant != 0){
+					Reserva reser = new Reserva(res.getIdUsuario(), hospedajes.get(cant-1), res.getFechaInicio(), res.getFechaFin());
+					daoReserva.addReserva(reser);
+					cant--;
+				}
+			}
+			
+			else{
+				throw new Exception("No se encontraron suficientes ofertas de hospedaje (" + cant + ") para poder realizar la reserva.");
+			}
+
+
+
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				daoClientes.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	
+	public ArrayList<Integer> verificarHospedajes(int cantidad){
+		ArrayList<Integer> hospedajes = new ArrayList<Integer>();
+		
 	}
 
 }

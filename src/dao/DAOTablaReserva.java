@@ -130,6 +130,24 @@ public class DAOTablaReserva {
 		return resp;
 	}
 	
+	public void reservasMasivas(){
+		
+		
+		
+		Integer idCli = reserva.getIdCliente();
+		Integer idHosp = reserva.getIdHospedaje();
+		String[] ini = reserva.getFechaInicio().split("-");
+		String[] fini = reserva.getFechaFin().split("-");
+		String inic = Integer.parseInt(ini[1])+"/"+Integer.parseInt(ini[2])+"/"+Integer.parseInt(ini[0]);
+		String fin = Integer.parseInt(fini[1])+"/"+Integer.parseInt(fini[2])+"/"+Integer.parseInt(fini[0]);
+
+		String sql = "insert into RESERVA (ID_CLIENTE, ID_HOSPEDAJE, FECHA_INICIO, FECHA_TERMINACION) values ("+ idCli+ ", "+ idHosp+", "+"TO_DATE('"+inic+"', 'MM/DD/YYYY'),  "+ "  TO_DATE('"+fin+"', 'MM/DD/YYYY'))";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		prepStmt.executeQuery();
+	}
+	
 	
 	
 }
