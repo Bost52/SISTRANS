@@ -19,11 +19,13 @@ import javax.naming.NoPermissionException;
 import dao.DAOTablaCliente;
 import dao.DAOTablaHospedaje;
 import dao.DAOTablaIngresosParAnios;
+import dao.DAOTablaOferta;
 import dao.DAOTablaReserva;
 import vos.AgregarReserva;
 import vos.Cliente;
 import vos.Hospedaje;
 import vos.IngresosParAnios;
+import vos.Oferta;
 import vos.Reserva;
 
 
@@ -212,6 +214,102 @@ public class AlohAndesTM {
 		}		
 	}
 
+	public void deshabilitarOferta(Oferta oferta) throws Exception {
+		DAOTablaOferta daoOferta= new DAOTablaOferta();
+		try 
+		{
+			this.conn = darConexion();
+			daoOferta.setConn(conn);
+			//////transaccion
+
+			Oferta ofer= daoOferta.buscarOferta(oferta);
+			if(ofer==null)
+			{
+				throw new NoSuchElementException("no se puede deshabilitar una oferta inexistente");
+			}
+
+			daoOferta.deleteOferta(ofer);
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} 
+		catch(NoPermissionException e){
+			System.err.println("privilegeException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
+		catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				daoOferta.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}		
+	}
+	
+	
+	public void addOferta(Oferta oferta) throws Exception{
+		DAOTablaOferta daoOferta= new DAOTablaOferta();
+		try 
+		{
+			this.conn = darConexion();
+			daoOferta.setConn(conn);
+			Oferta ofer= daoOferta.buscarOferta(oferta);
+			if(ofer != null){
+				throw new Exception("Ya existe esta oferta");
+			}
+
+			//////transaccion
+			daoOferta.addOferta(oferta);;
+			conn.commit();
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoOferta.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	
 	public void eliminarHospedaje(Integer id) throws SQLException{
 
 		DAOTablaHospedaje daoHospedaje= new DAOTablaHospedaje();
