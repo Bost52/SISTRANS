@@ -6,6 +6,7 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -41,7 +42,7 @@ public class ReservaMasivaServices {
 	}
 	
 	@POST
-	@Path("/agregar/{id: \\d+}")
+	@Path("/agregar")
 	public Response addReservaMasiva(ReservaMasiva reserva) {
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
@@ -59,11 +60,11 @@ public class ReservaMasivaServices {
 	
 	//@DELETE
 	@POST
-	@Path("/cancelar")
-	public Response cancelarReservaMasiva(ReservaMasiva reserva) {
+	@Path("/cancelar/{id: \\d+}")
+	public Response cancelarReservaMasiva(@PathParam("id") Integer masiva) {
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
-			tm.cancelarReservaMasiva(reserva);
+			tm.cancelarReservaMasiva(masiva);
 			//		}catch(NoPermissionException e){
 			//			return Response.status(403).entity(doErrorMessage(e)).build();
 		}catch(NoSuchElementException e) {
@@ -71,7 +72,7 @@ public class ReservaMasivaServices {
 		}catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(reserva).build();
+		return Response.status(200).entity(masiva).build();
 	}
 	
 }
