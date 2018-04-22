@@ -46,7 +46,6 @@ public class OfertaServices {
 
 	@POST
 	@Path("/agregarOferta")
-	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addOferta(Integer oferta) {
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
@@ -61,9 +60,9 @@ public class OfertaServices {
 		return Response.status(200).entity(oferta).build();
 	}
 
+
 	@DELETE
-	@Path("/deshabilitarOferta")
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/deshabilitarOferta/{idHospedaje: \\d+}")
 	public Response deshabilitarOferta(@PathParam("idHospedaje") Integer idHos){
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
