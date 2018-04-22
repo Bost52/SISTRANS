@@ -6,7 +6,7 @@ public class ReservaMasiva {
 
 
 	@JsonProperty(value="id")
-	private long id;
+	private int id;
 
 	@JsonProperty(value="usuario")
 	private int idUsuario;
@@ -27,7 +27,7 @@ public class ReservaMasiva {
 	//private Servicios[] servicios;
 
 
-	public ReservaMasiva(@JsonProperty(value="id") long id, @JsonProperty(value="usuario") int idUsuario, @JsonProperty(value="cantidad") int cant, @JsonProperty(value="tipo") String tipo, @JsonProperty(value="fechaInicio")String fechaIni, @JsonProperty(value="fechaFin")String fechaFin){
+	public ReservaMasiva(@JsonProperty(value="id") int id, @JsonProperty(value="usuario") int idUsuario, @JsonProperty(value="cantidad") int cant, @JsonProperty(value="tipo") String tipo, @JsonProperty(value="fechaInicio")String fechaIni, @JsonProperty(value="fechaFin")String fechaFin){
 		this.id = id;
 		this.idUsuario = idUsuario;
 		this.cantidad = cant;
@@ -37,12 +37,12 @@ public class ReservaMasiva {
 	}
 
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
 
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

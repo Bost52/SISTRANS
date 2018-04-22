@@ -122,7 +122,7 @@ public class AlohAndesTM {
 
 			//////transaccion
 			Reserva reser = new Reserva(reserva.getIdCliente(), reserva.getIdHospedaje(), reserva.getFechaInic(), reserva.getFechaFin());
-			daoReserva.addReserva(reser);;
+			daoReserva.addReserva(reser, -1);;
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -262,8 +262,8 @@ public class AlohAndesTM {
 			}
 		}		
 	}
-	
-	
+
+
 	public void addOferta(Oferta oferta) throws Exception{
 		DAOTablaOferta daoOferta= new DAOTablaOferta();
 		try 
@@ -309,8 +309,8 @@ public class AlohAndesTM {
 			}
 		}
 	}
-	
-	
+
+
 	public void eliminarHospedaje(Integer id) throws SQLException{
 
 		DAOTablaHospedaje daoHospedaje= new DAOTablaHospedaje();
@@ -497,6 +497,8 @@ public class AlohAndesTM {
 		}		
 	}
 
+
+	//Agregar reserva masiva
 	public void addReservaMasiva(ReservaMasiva res) throws Exception{
 		DAOTablaReserva daoReserva= new DAOTablaReserva();
 		DAOTablaCliente daoClientes = new DAOTablaCliente();
@@ -512,19 +514,32 @@ public class AlohAndesTM {
 				throw new NoSuchElementException("No se encontró el cliente con la cedula: " + res.getIdUsuario());
 			}
 
-			//Verifica donde 
 
 			//////transaccion
+
+			//autocommit en 0
+			daoReserva.setAutocommit0();
+
 			int cant = res.getCantidad();
-			ArrayList<Integer> hospedajes = verificarHospedajes(cant);
+
+			//Consulta las ofertas disponibles que pueden suplir la reserva.
+			ArrayList<Integer> hospedajes = verificarHospedajes(cant, res.getTipo(), res.getFechaInicio(), res.getFechaFin());
 			if(hospedajes.size() != cant){
+				//Persiste la reserva masiva
+				daoReserva.addReservaMasiva(res.getId());
+
+				//persiste todas las reservas
 				while (cant != 0){
 					Reserva reser = new Reserva(res.getIdUsuario(), hospedajes.get(cant-1), res.getFechaInicio(), res.getFechaFin());
-					daoReserva.addReserva(reser);
+					daoReserva.addReserva(reser, res.getId());
 					cant--;
 				}
+				// hago commit 
+				daoReserva.commit();
 			}
-			
+
+
+
 			else{
 				throw new Exception("No se encontraron suficientes ofertas de hospedaje (" + cant + ") para poder realizar la reserva.");
 			}
@@ -564,11 +579,59 @@ public class AlohAndesTM {
 			}
 		}
 	}
-	
-	
-	public ArrayList<Integer> verificarHospedajes(int cantidad){
+
+
+	public ArrayList<Integer> verificarHospedajes(int cantidad, String tipo, String fechaInic, String fechaFin){
 		ArrayList<Integer> hospedajes = new ArrayList<Integer>();
-		
+
+		DAOTablaReserva daoReserva = new DAOTablaReserva();
+		DAOTablaOferta daoOferta = new DAOTablaOferta();
+
+		try 
+		{
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+			daoOferta.setConn(conn);
+
+			//Consulta todas las ofertas disponibles (aun no verifica la fecha)
+			ArrayList<Integer> ofertasDeTipo = daoOferta.getOfertasTipo(tipo);
+			if(ofertasDeTipo.size() >= cantidad){
+				//Selecciona unicamente las ofertas que no estan en reservas 
+				hospedajes = daoReserva.verificarMasivas(ofertasDeTipo, cantidad, fechaInic, fechaFin);
+			}
+			else{
+				return hospedajes;
+			}
+			//verifica primero si hay al menos la cantidad necesaria y luego si la fecha sirve
+		}
+		catch(Exception e){
+
+		}
+
+		return hospedajes;
+	}
+
+	//Cancelar reserva masiva
+	public void cancelarReservaMasiva(ReservaMasiva res){
+		DAOTablaReserva daoReserva = new DAOTablaReserva();
+		try{
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+			
+			//Set autocommit 0
+			daoReserva.setAutocommit0();
+			
+			//Busca todas las reservas singulares asociadas a la masiva y las elimina
+			daoReserva.cancelarSingularesMasiva(res.getId());
+			
+			//Una vez eliminadas las singulares, elimina la grande y hace commit.
+			daoReserva.cancelarMasiva(res.getId());
+			daoReserva.commit();
+		}
+		catch(Exception e){
+
+		}
+
 	}
 
 }
