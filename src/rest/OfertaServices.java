@@ -47,7 +47,7 @@ public class OfertaServices {
 
 	@POST
 	@Path("/agregarOferta")
-	public Response addOferta(Oferta oferta) {
+	public Response addOferta(Integer oferta) {
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addOferta(oferta);
@@ -61,13 +61,13 @@ public class OfertaServices {
 		return Response.status(200).entity(oferta).build();
 	}
 
-	@DELETE
-	@Path("/deshabilitarOferta")
+	//@DELETE
+	@POST
+	@Path("/deshabilitarOferta/{idHospedaje: \\d+}")
 	public Response deshabilitarOferta(@PathParam("idHospedaje") Integer idHos){
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
-			Oferta oferta = new Oferta(idHos);
-			tm.deshabilitarOferta(oferta);
+			tm.deshabilitarOferta(idHos);
 
 		}catch(NoPermissionException e){
 			return Response.status(403).entity(doErrorMessage(e)).build();
