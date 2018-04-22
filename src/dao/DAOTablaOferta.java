@@ -27,7 +27,7 @@ public class DAOTablaOferta{
 	public DAOTablaOferta() {
 		recursos = new ArrayList<Object>();
 	}
-	
+
 	/**
 	 * Metodo que cierra todos los recursos que estan enel arreglo de recursos
 	 * <b>post: </b> Todos los recurso del arreglo de recursos han sido cerrados
@@ -42,7 +42,7 @@ public class DAOTablaOferta{
 				}
 		}
 	}
-	
+
 	/**
 	 * Metodo que inicializa la connection del DAO a la base de datos con la conexión que entra como parametro.
 	 * @param con  - connection a la base de datos
@@ -50,8 +50,8 @@ public class DAOTablaOferta{
 	public void setConn(Connection con){
 		this.conn = con;
 	}
-	
-	
+
+
 	public Oferta buscarOferta(Integer id) throws SQLException, Exception{
 		Oferta hospedaje = null;
 
@@ -68,18 +68,16 @@ public class DAOTablaOferta{
 
 		return hospedaje;
 	}
-	
-	
-	public void deleteOferta(Integer oferta) throws SQLException, Exception{
-		
-		String sql = "DELETE FROM OFERTAS WHERE ID_HOSPEDAJE = "+oferta;
+
+	public void deleteOferta(Integer id) throws SQLException, Exception{
+		String sql = "DELETE FROM OFERTAS WHERE ID_HOSPEDAJE = "+id;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 	}
-	
-	
+
+
 	public ArrayList<Oferta> getOfertas() throws SQLException, Exception{
 		ArrayList<Oferta> hospedajes = new ArrayList<Oferta>();
 
@@ -95,13 +93,31 @@ public class DAOTablaOferta{
 		}
 		return hospedajes;
 	}
-	
+
 	public void addOferta(Integer id) throws SQLException, Exception {
-		
+
 		String sql = "insert into OFERTAS (ID_HOSPEDAJE) values ("+ id +")";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 	}
+
+	public ArrayList<Integer> getOfertasTipo(String tipo) throws SQLException{
+		ArrayList<Integer> hospedajes = new ArrayList<Integer>();
+
+		String sql = "SELECT H.ID FROM OFERTAS O INNER JOIN HOSPEDAJE H ON (O.ID_HOSPEDAJE = H.ID) WHERE H.TIPO = " + tipo;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			Integer idx = rs.getInt("ID");
+			hospedajes.add(idx);
+		}
+		return hospedajes;
+	}
+	
+	
 }
