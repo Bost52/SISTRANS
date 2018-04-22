@@ -46,8 +46,8 @@ public class OfertaServices {
 
 
 	@POST
-	@Path("/agregarOferta")
-	public Response addOferta(Integer oferta) {
+	@Path("/agregarOferta/{idHospedaje: \\d+}")
+	public Response addOferta(@PathParam("idHospedaje") Integer oferta) {
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addOferta(oferta);
@@ -61,8 +61,8 @@ public class OfertaServices {
 		return Response.status(200).entity(oferta).build();
 	}
 
-	//@DELETE
-	@POST
+	
+	@DELETE
 	@Path("/deshabilitarOferta/{idHospedaje: \\d+}")
 	public Response deshabilitarOferta(@PathParam("idHospedaje") Integer idHos){
 		AlohAndesTM tm = new AlohAndesTM(getPath());
