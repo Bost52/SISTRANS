@@ -20,8 +20,7 @@ import vos.Oferta;
 import vos.Reserva;
 
 @Path("oferta")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@Produces({MediaType.APPLICATION_JSON})
 public class OfertaServices {
 
 	/**
@@ -60,7 +59,7 @@ public class OfertaServices {
 		}
 		return Response.status(200).entity(oferta).build();
 	}
-
+	
 	
 	@DELETE
 	@Path("/deshabilitarOferta/{idHospedaje: \\d+}")

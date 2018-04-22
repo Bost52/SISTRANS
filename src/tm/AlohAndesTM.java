@@ -215,6 +215,7 @@ public class AlohAndesTM {
 		}		
 	}
 
+
 	public void deshabilitarOferta(Integer oferta) throws Exception {
 		DAOTablaOferta daoOferta= new DAOTablaOferta();
 		try 
@@ -228,6 +229,7 @@ public class AlohAndesTM {
 			{
 				throw new NoSuchElementException("no se puede deshabilitar una oferta inexistente");
 			}
+
 
 			daoOferta.deleteOferta(oferta);
 			conn.commit();
