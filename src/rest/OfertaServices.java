@@ -45,8 +45,8 @@ public class OfertaServices {
 
 
 	@POST
-	@Path("/agregarOferta")
-	public Response addOferta(Integer oferta) {
+	@Path("/agregarOferta/{idHospedaje: \\d+}")
+	public Response addOferta(@PathParam("idHospedaje") Integer oferta) {
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addOferta(oferta);
