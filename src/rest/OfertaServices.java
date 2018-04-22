@@ -15,9 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import tm.AlohAndesTM;
-import vos.AgregarReserva;
-import vos.Oferta;
-import vos.Reserva;
+
 
 @Path("oferta")
 @Produces({MediaType.APPLICATION_JSON})

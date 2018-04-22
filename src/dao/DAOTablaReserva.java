@@ -143,13 +143,14 @@ public class DAOTablaReserva {
 		prepStmt.executeQuery();
 	}
 
+	
 	public ArrayList<Integer> verificarMasivas(ArrayList<Integer> hospedajes, int cantidad, String fechaIn, String fechaFin) throws SQLException, Exception{
 		ArrayList<Integer> resp = new ArrayList<Integer>();
 		int cont = 0;
 		for(int i = 0; i < hospedajes.size() || cont != cantidad; i++){
 			Reserva res = buscarReservaSinCliente(hospedajes.get(i), fechaIn, fechaFin);
-			if(res != null){
-				resp.add(res.getIdHospedaje());
+			if(res == null){
+				resp.add(hospedajes.get(i));
 			}
 		}
 
@@ -184,23 +185,6 @@ public class DAOTablaReserva {
 		return reserva;
 	}
 
-
-	public void setAutocommit0() throws SQLException{
-		String sql = "set autocommit 0";
-
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
-		recursos.add(prepStmt);
-		prepStmt.executeQuery();
-	}
-
-
-	public void commit() throws SQLException{
-		String sql = "commit";
-
-		PreparedStatement prepStmt = conn.prepareStatement(sql);
-		recursos.add(prepStmt);
-		prepStmt.executeQuery();
-	}
 	
 	public void cancelarSingularesMasiva(int idMasiva) throws SQLException{
 		String sql = "DELETE * FROM RESERVA WHERE IDMASIVA = " + idMasiva;

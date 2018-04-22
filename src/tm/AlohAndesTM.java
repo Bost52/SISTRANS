@@ -520,16 +520,16 @@ public class AlohAndesTM {
 			//////transaccion
 
 			//autocommit en 0
-			daoReserva.setAutocommit0();
+			conn.setAutoCommit(false);
 
 			int cant = res.getCantidad();
 
 			//Consulta las ofertas disponibles que pueden suplir la reserva.
 			ArrayList<Integer> hospedajes = verificarHospedajes(cant, res.getTipo(), res.getFechaInicio(), res.getFechaFin());
-			if(hospedajes.size() != cant){
+			if(hospedajes.size() >= cant && hospedajes.size() != 0){
 				//Persiste la reserva masiva
 				daoReserva.addReservaMasiva(res.getId());
-
+				System.out.println("existen " + hospedajes.size() + " ofertas que pueden suplir la reserva");
 				//persiste todas las reservas
 				while (cant != 0){
 					Reserva reser = new Reserva(res.getIdUsuario(), hospedajes.get(cant-1), res.getFechaInicio(), res.getFechaFin());
@@ -537,7 +537,7 @@ public class AlohAndesTM {
 					cant--;
 				}
 				// hago commit 
-				daoReserva.commit();
+				conn.commit();
 			}
 
 
@@ -597,6 +597,7 @@ public class AlohAndesTM {
 
 			//Consulta todas las ofertas disponibles (aun no verifica la fecha)
 			ArrayList<Integer> ofertasDeTipo = daoOferta.getOfertasTipo(tipo);
+			System.out.println("hay " + ofertasDeTipo.size() + " hosp que son del tipo requerido");
 			if(ofertasDeTipo.size() >= cantidad){
 				//Selecciona unicamente las ofertas que no estan en reservas 
 				hospedajes = daoReserva.verificarMasivas(ofertasDeTipo, cantidad, fechaInic, fechaFin);
@@ -614,21 +615,21 @@ public class AlohAndesTM {
 	}
 
 	//Cancelar reserva masiva
-	public void cancelarReservaMasiva(ReservaMasiva res){
+	public void cancelarReservaMasiva(Integer res){
 		DAOTablaReserva daoReserva = new DAOTablaReserva();
 		try{
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
 			
 			//Set autocommit 0
-			daoReserva.setAutocommit0();
+			conn.setAutoCommit(false);;
 			
 			//Busca todas las reservas singulares asociadas a la masiva y las elimina
-			daoReserva.cancelarSingularesMasiva(res.getId());
+			daoReserva.cancelarSingularesMasiva(res);
 			
 			//Una vez eliminadas las singulares, elimina la grande y hace commit.
-			daoReserva.cancelarMasiva(res.getId());
-			daoReserva.commit();
+			daoReserva.cancelarMasiva(res);
+			conn.commit();
 		}
 		catch(Exception e){
 
