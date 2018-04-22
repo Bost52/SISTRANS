@@ -214,7 +214,7 @@ public class AlohAndesTM {
 		}		
 	}
 
-	public void deshabilitarOferta(Oferta oferta) throws Exception {
+	public void deshabilitarOferta(Integer id) throws Exception {
 		DAOTablaOferta daoOferta= new DAOTablaOferta();
 		try 
 		{
@@ -222,13 +222,13 @@ public class AlohAndesTM {
 			daoOferta.setConn(conn);
 			//////transaccion
 
-			Oferta ofer= daoOferta.buscarOferta(oferta);
+			Oferta ofer= daoOferta.buscarOferta(id);
 			if(ofer==null)
 			{
 				throw new NoSuchElementException("no se puede deshabilitar una oferta inexistente");
 			}
 
-			daoOferta.deleteOferta(ofer);
+			daoOferta.deleteOferta(id);
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -263,7 +263,7 @@ public class AlohAndesTM {
 	}
 	
 	
-	public void addOferta(Oferta oferta) throws Exception{
+	public void addOferta(Integer oferta) throws Exception{
 		DAOTablaOferta daoOferta= new DAOTablaOferta();
 		try 
 		{

@@ -52,8 +52,7 @@ public class DAOTablaOferta{
 	}
 	
 	
-	public Oferta buscarOferta(Oferta oferta) throws SQLException, Exception{
-		Integer id = oferta.getId();
+	public Oferta buscarOferta(Integer id) throws SQLException, Exception{
 		Oferta hospedaje = null;
 
 		String sql = "SELECT * FROM OFERTA WHERE ID_HOSPEDAJE = " + id;
@@ -71,9 +70,9 @@ public class DAOTablaOferta{
 	}
 	
 	
-	public void deleteOferta(Oferta oferta) throws SQLException, Exception{
-		Integer id = oferta.getId();
-		String sql = "DELETE FROM OFERTAS WHERE ID_HOSPEDAJE = "+id;
+	public void deleteOferta(Integer oferta) throws SQLException, Exception{
+		
+		String sql = "DELETE FROM OFERTAS WHERE ID_HOSPEDAJE = "+oferta;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -97,8 +96,7 @@ public class DAOTablaOferta{
 		return hospedajes;
 	}
 	
-	public void addOferta(Oferta oferta) throws SQLException, Exception {
-		Integer id = oferta.getId();
+	public void addOferta(Integer id) throws SQLException, Exception {
 		
 		String sql = "insert into OFERTAS (ID_HOSPEDAJE) values ("+ id +")";
 

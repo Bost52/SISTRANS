@@ -20,8 +20,7 @@ import vos.Oferta;
 import vos.Reserva;
 
 @Path("oferta")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@Produces({MediaType.APPLICATION_JSON})
 public class OfertaServices {
 
 	/**
@@ -47,7 +46,8 @@ public class OfertaServices {
 
 	@POST
 	@Path("/agregarOferta")
-	public Response addOferta(Oferta oferta) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response addOferta(Integer oferta) {
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
 			tm.addOferta(oferta);
@@ -63,11 +63,11 @@ public class OfertaServices {
 
 	@DELETE
 	@Path("/deshabilitarOferta")
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response deshabilitarOferta(@PathParam("idHospedaje") Integer idHos){
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
-			Oferta oferta = new Oferta(idHos);
-			tm.deshabilitarOferta(oferta);
+			tm.deshabilitarOferta(idHos);
 
 		}catch(NoPermissionException e){
 			return Response.status(403).entity(doErrorMessage(e)).build();
