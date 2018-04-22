@@ -165,7 +165,7 @@ public class DAOTablaReserva {
 		Date fin = new Date(Integer.parseInt(fini[0]),Integer.parseInt(fini[1]),Integer.parseInt(fini[2]));
 
 
-		String sql = "SELECT * FROM RESERVA WHERE ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = "+inic+" AND FECHA_TERMINACION = "+fin;
+		String sql = "SELECT * FROM RESERVA WHERE ID_HOSPEDAJE = "+idHosp+" MINUS SELECT * FROM RESERVA WHERE ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = "+inic+" AND FECHA_TERMINACION = "+fin;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
