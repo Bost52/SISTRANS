@@ -67,7 +67,7 @@ public class ReservaServices {
 	public Response cancelarReserva(@PathParam("idHospedaje") Integer idHos, @PathParam("idCliente") Integer idCli, @PathParam("fechaInicio") String fecIni, @PathParam("fechaFin") String fecFin){
 		AlohAndesTM tm = new AlohAndesTM(getPath());
 		try {
-			Reserva reserva = new Reserva(idHos, idCli, fecIni, fecFin);
+			Reserva reserva = new Reserva(idHos, idCli, fecIni, fecFin, -1, 0);
 			tm.cancelarReserva(reserva);
 
 		}catch(NoPermissionException e){
