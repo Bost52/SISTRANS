@@ -652,7 +652,7 @@ public class AlohAndesTM<T> {
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
 
-			UsoPorUsuario resp = daoReserva.DarUsoDeUsuarioDado(id);
+			UsoPorUsuario resp = daoReserva.darUsoDeUsuarioDado(id);
 			conn.commit();
 			
 			return resp;
@@ -696,7 +696,7 @@ public class AlohAndesTM<T> {
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
 
-			resp = daoReserva.DarUsoPorTipoUsuario();
+			resp = daoReserva.darUsoPorTipoUsuario();
 			conn.commit();
 			
 			return resp;
@@ -741,7 +741,7 @@ public class AlohAndesTM<T> {
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
 
-			resp = daoReserva.DarHospedajesDisponiblesConServicio(consulta);
+			resp = daoReserva.darHospedajesDisponiblesConServicio(consulta);
 			conn.commit();
 			
 			return resp;
@@ -785,7 +785,7 @@ public class AlohAndesTM<T> {
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
 
-			resp = daoReserva.DarIndiceDeOcupacionPorHospedaje();
+			resp = daoReserva.darIndiceDeOcupacionPorHospedaje();
 			conn.commit();
 			
 			return resp;
@@ -830,7 +830,7 @@ public class AlohAndesTM<T> {
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
 
-			resp = daoReserva.DarClientesFrecuentes(id);
+			resp = daoReserva.darClientesFrecuentes(id);
 			conn.commit();
 			
 			return resp;
