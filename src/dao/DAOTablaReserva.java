@@ -60,10 +60,10 @@ public class DAOTablaReserva {
 	public void addReserva(Reserva reserva, int masiva) throws SQLException, Exception {
 		Integer idCli = reserva.getIdCliente();
 		Integer idHosp = reserva.getIdHospedaje();
-		String[] ini = reserva.getFechaInicio().split("-");
-		String[] fini = reserva.getFechaFin().split("-");
-		String inic = Integer.parseInt(ini[1])+"/"+Integer.parseInt(ini[2])+"/"+Integer.parseInt(ini[0]);
-		String fin = Integer.parseInt(fini[1])+"/"+Integer.parseInt(fini[2])+"/"+Integer.parseInt(fini[0]);
+		String[] ini = reserva.getFechaInicio().split("/");
+		String[] fini = reserva.getFechaFin().split("/");
+		String inic = Integer.parseInt(ini[0])+"/"+Integer.parseInt(ini[1])+"/"+Integer.parseInt(ini[2]);
+		String fin = Integer.parseInt(fini[0])+"/"+Integer.parseInt(fini[1])+"/"+Integer.parseInt(fini[2]);
 
 		String sql = "";
 		if(masiva == -1){
@@ -85,7 +85,7 @@ public class DAOTablaReserva {
 		String[] fini = reserva.getFechaFin().split("-");
 		String inic = Integer.parseInt(ini[0])+"/"+Integer.parseInt(ini[1])+"/"+Integer.parseInt(ini[2]);
 		String fin = Integer.parseInt(fini[0])+"/"+Integer.parseInt(fini[1])+"/"+Integer.parseInt(fini[2]);
-		String sql = "DELETE FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = TO_DATE('"+inic+"', 'MM/DD/YYYY') AND FECHA_FINAL =TO_DATE('"+fin+"', 'MM/DD/YYYY')";
+		String sql = "DELETE FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = TO_DATE('"+inic+"', 'MM/DD/YYYY') AND FECHA_TERMINACION =TO_DATE('"+fin+"', 'MM/DD/YYYY')";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -100,7 +100,7 @@ public class DAOTablaReserva {
 		Date inic = new Date(Integer.parseInt(ini[0]),Integer.parseInt(ini[1]),Integer.parseInt(ini[2]));
 		Date fin = new Date(Integer.parseInt(fini[0]),Integer.parseInt(fini[1]),Integer.parseInt(fini[2]));
 
-		String sql = "SELECT * FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = "+inic+" AND FECHA_TERMINACION = "+fin;
+		String sql = "SELECT * FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND FECHA_INICIO = TO_DATE('"+inic+"', 'MM/DD/YYYY') AND FECHA_TERMINACION =TO_DATE('"+fin+"', 'MM/DD/YYYY')";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -143,59 +143,49 @@ public class DAOTablaReserva {
 		prepStmt.executeQuery();
 	}
 
-	
-	public ArrayList<Integer> verificarMasivas(ArrayList<Integer> hospedajes, int cantidad, String fechaIn, String fechaFin) throws SQLException, Exception{
+
+	public ArrayList<Integer> verificarMasivas(String tipo, String fechaIn, String fechaFin) throws SQLException, Exception{
 		ArrayList<Integer> resp = new ArrayList<Integer>();
-		int cont = 0;
-		for(int i = 0; i < hospedajes.size() || cont != cantidad; i++){
-			Reserva res = buscarReservaSinCliente(hospedajes.get(i), fechaIn, fechaFin);
-			if(res == null){
-				resp.add(hospedajes.get(i));
-			}
-		}
 
-
-		return resp;
-	}
-
-
-	public Reserva buscarReservaSinCliente(int idHosp, String fechaIn, String fechaFin) throws SQLException, Exception {
-		String[] ini = fechaIn.split("-");
-		String[] fini = fechaFin.split("-");
+		String[] ini = fechaIn.split("/");
+		String[] fini = fechaFin.split("/");
 		Date inic = new Date(Integer.parseInt(ini[0]),Integer.parseInt(ini[1]),Integer.parseInt(ini[2]));
 		Date fin = new Date(Integer.parseInt(fini[0]),Integer.parseInt(fini[1]),Integer.parseInt(fini[2]));
+		System.out.println(Integer.parseInt(ini[0]));
 
+		String sql = "(SELECT O.ID_HOSPEDAJE FROM OFERTAS O INNER JOIN HOSPEDAJE H ON (O.ID_HOSPEDAJE = H.ID) WHERE H.TIPO = '"+ tipo+"') MINUS (SELECT R.ID_HOSPEDAJE FROM RESERVA R INNER JOIN HOSPEDAJE H1 ON (R.ID_HOSPEDAJE = H1.ID) WHERE H1.TIPO = '" + tipo +"' AND FECHA_INICIO = TO_DATE('" + fechaIn+"') AND FECHA_TERMINACION =TO_DATE('"+fechaFin+"'))";
 
-		String sql = "SELECT * FROM RESERVA WHERE ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = "+inic+" AND FECHA_TERMINACION = "+fin;
+		//		String sql = "(SELECT O.ID_HOSPEDAJE FROM OFERTAS O INNER JOIN HOSPEDAJE H ON (O.ID_HOSPEDAJE = H.ID) WHERE H.TIPO = '" + tipo + "') MINUS (SELECT R.ID_HOSPEDAJE FROM RESERVA R INNER JOIN HOSPEDAJE H1 ON (R.ID_HOSPEDAJE = H1.ID) WHERE H1.TIPO = '" + tipo
+		//				+ "' AND FECHA_INICIO = TO_DATE('"+Integer.parseInt(ini[0]) + "/" + Integer.parseInt(ini[1]) + "/" + Integer.parseInt(ini[2])+"', 'MM/DD/YYYY') AND FECHA_TERMINACION =TO_DATE('"+ Integer.parseInt(fini[0]) + "/" + Integer.parseInt(fini[0])+ "/" + Integer.parseInt(fini[2])+"', 'MM/DD/YYYY'))";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
 		ResultSet rs = prepStmt.executeQuery();
 
-		Reserva reserva = null;
-		if(rs.next()) {
-			Integer idCliente = rs.getInt("ID_CLIENTE");
-			Integer idHospedaje = rs.getInt("ID_HOSPEDAJE");
-			String fechaInicio = rs.getString("FECHA_INICIO");
-			String fechaFinal = rs.getString("FECHA_TERMINACION");			
-			reserva = new Reserva(idCliente, idHospedaje, fechaInicio, fechaFinal);
+		while(rs.next()) {	
+			resp.add(rs.getInt("ID_HOSPEDAJE"));
+			System.out.println(rs.getInt("ID_HOSPEDAJE") +"hosp");
 		}
-
-		return reserva;
+		return resp;
 	}
 
-	
 	public void cancelarSingularesMasiva(int idMasiva) throws SQLException{
-		String sql = "DELETE * FROM RESERVA WHERE IDMASIVA = " + idMasiva;
+		String sql = "DELETE FROM RESERVA WHERE MASIVA = " + idMasiva;
+		String sql1 = "DELETE FROM RESERVAMASIVA WHERE ID = " + idMasiva;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
+
+		PreparedStatement prepStmt1 = conn.prepareStatement(sql1);
+		recursos.add(prepStmt);
+		prepStmt1.executeQuery();
 	}
-	
+
+
 	public void cancelarMasiva(int idMasiva) throws SQLException{
-		String sql = "DELETE * FROM RESERVAMASIVA WHERE ID = " + idMasiva;
+		String sql = "DELETE FROM RESERVAMASIVA WHERE ID = " + idMasiva;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);

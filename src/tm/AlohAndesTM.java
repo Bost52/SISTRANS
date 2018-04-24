@@ -521,21 +521,26 @@ public class AlohAndesTM {
 
 			//autocommit en 0
 			conn.setAutoCommit(false);
+			
+			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+			
+			//Añade la grande.
+			daoReserva.addReservaMasiva(res.getId());
 
 			int cant = res.getCantidad();
+			//Consulta las ofertas disponibles que pueden suplir la reserva.	
+			ArrayList<Integer> hospedajes = daoReserva.verificarMasivas(res.getTipo(), res.getFechaInicio(), res.getFechaFin());
+			System.out.println(hospedajes.size());
 
-			//Consulta las ofertas disponibles que pueden suplir la reserva.
-			ArrayList<Integer> hospedajes = verificarHospedajes(cant, res.getTipo(), res.getFechaInicio(), res.getFechaFin());
 			if(hospedajes.size() >= cant && hospedajes.size() != 0){
-				//Persiste la reserva masiva
-				daoReserva.addReservaMasiva(res.getId());
 				System.out.println("existen " + hospedajes.size() + " ofertas que pueden suplir la reserva");
 				//persiste todas las reservas
-				while (cant != 0){
+				while (cant > 0){
 					Reserva reser = new Reserva(res.getIdUsuario(), hospedajes.get(cant-1), res.getFechaInicio(), res.getFechaFin());
 					daoReserva.addReserva(reser, res.getId());
 					cant--;
 				}
+				
 				// hago commit 
 				conn.commit();
 			}
@@ -583,56 +588,27 @@ public class AlohAndesTM {
 	}
 
 
-	public ArrayList<Integer> verificarHospedajes(int cantidad, String tipo, String fechaInic, String fechaFin){
-		ArrayList<Integer> hospedajes = new ArrayList<Integer>();
-
-		DAOTablaReserva daoReserva = new DAOTablaReserva();
-		DAOTablaOferta daoOferta = new DAOTablaOferta();
-
-		try 
-		{
-			this.conn = darConexion();
-			daoReserva.setConn(conn);
-			daoOferta.setConn(conn);
-
-			//Consulta todas las ofertas disponibles (aun no verifica la fecha)
-			ArrayList<Integer> ofertasDeTipo = daoOferta.getOfertasTipo(tipo);
-			System.out.println("hay " + ofertasDeTipo.size() + " hosp que son del tipo requerido");
-			if(ofertasDeTipo.size() >= cantidad){
-				//Selecciona unicamente las ofertas que no estan en reservas 
-				hospedajes = daoReserva.verificarMasivas(ofertasDeTipo, cantidad, fechaInic, fechaFin);
-			}
-			else{
-				return hospedajes;
-			}
-			//verifica primero si hay al menos la cantidad necesaria y luego si la fecha sirve
-		}
-		catch(Exception e){
-
-		}
-
-		return hospedajes;
-	}
-
 	//Cancelar reserva masiva
 	public void cancelarReservaMasiva(Integer res){
 		DAOTablaReserva daoReserva = new DAOTablaReserva();
 		try{
 			this.conn = darConexion();
 			daoReserva.setConn(conn);
-			
+
 			//Set autocommit 0
-			conn.setAutoCommit(false);;
-			
+			conn.setAutoCommit(false);
+
 			//Busca todas las reservas singulares asociadas a la masiva y las elimina
 			daoReserva.cancelarSingularesMasiva(res);
-			
+
 			//Una vez eliminadas las singulares, elimina la grande y hace commit.
 			daoReserva.cancelarMasiva(res);
 			conn.commit();
+			System.out.println("hizo commit supuestamente");
 		}
 		catch(Exception e){
 
+			// '25/07/2018' 
 		}
 
 	}
