@@ -1,0 +1,303 @@
+{
+	"info": {
+		"name": "Requerimientos consultas",
+		"_postman_id": "f3d211a2-729f-5575-8095-b6dae581ceab",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Consulta Requerimiento 4",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2a2daadd-dbc8-4784-8ecc-283dacca3f39",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fechaInicio\": \"10/03/2017\",\n    \"fechaFin\": \"15/03/2017\",\n    \"servicio\": \"Agua\"\n}"
+				},
+				"url": "http://localhost:8080/AlohAndes/rest/consulta/darHospedajesDisponiblesConServicio",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Consulta Requerimiento 7 Caso 1",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2a2daadd-dbc8-4784-8ecc-283dacca3f39",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tipo\": \"HABHOTEL\",\n    \"tipoConsulta\": 5\n}"
+				},
+				"url": "http://localhost:8080/AlohAndes/rest/consulta/darDatosTopPorTipoAlojamiento",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Consulta Requerimiento 7 Caso 2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2a2daadd-dbc8-4784-8ecc-283dacca3f39",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tipo\": \"HABHOTEL\",\n    \"tipoConsulta\": 4\n}"
+				},
+				"url": "http://localhost:8080/AlohAndes/rest/consulta/darDatosTopPorTipoAlojamiento",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Requerimiento 7 Caso 3",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2a2daadd-dbc8-4784-8ecc-283dacca3f39",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tipo\": \"HABHOTEL\",\n    \"tipoConsulta\": 3\n}"
+				},
+				"url": "http://localhost:8080/AlohAndes/rest/consulta/darDatosTopPorTipoAlojamiento",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Consulta Requerimiento 7 caso 4",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2a2daadd-dbc8-4784-8ecc-283dacca3f39",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tipo\": \"HABHOTEL\",\n    \"tipoConsulta\": 2\n}"
+				},
+				"url": "http://localhost:8080/AlohAndes/rest/consulta/darDatosTopPorTipoAlojamiento",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Consulta Requerimiento 7 caso 5",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2a2daadd-dbc8-4784-8ecc-283dacca3f39",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tipo\": \"HABHOTEL\",\n    \"tipoConsulta\": 1\n}"
+				},
+				"url": "http://localhost:8080/AlohAndes/rest/consulta/darDatosTopPorTipoAlojamiento",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Consulta Requerimiento 7 caso 6",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2a2daadd-dbc8-4784-8ecc-283dacca3f39",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tipo\": \"HABHOTEL\",\n    \"tipoConsulta\": 6\n}"
+				},
+				"url": "http://localhost:8080/AlohAndes/rest/consulta/darDatosTopPorTipoAlojamiento",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Consulta Requqerimiento 8",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"idHospedaje\": 1000001\n}"
+				},
+				"url": "http://localhost:8080/AlohAndes/rest/consulta/darClientesFrecuentes/1000020",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Consulta Requerimiento 6 ",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"idHospedaje\": 1000001\n}"
+				},
+				"url": "http://localhost:8080/AlohAndes/rest/consulta/darUsoDeUsuarioDado/10046",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Consulta Requerimiento 3 ",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"idHospedaje\": 1000001\n}"
+				},
+				"url": "http://localhost:8080/AlohAndes/rest/consulta/darIndiceDeOcupacionPorHospedaje",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Consulta Requerimiento 5",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"idHospedaje\": 1000001\n}"
+				},
+				"url": "http://localhost:8080/AlohAndes/rest/consulta/darUsoPorTipoUsuario",
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
