@@ -23,14 +23,21 @@ import dao.DAOTablaOferta;
 import dao.DAOTablaReserva;
 import vos.AgregarReserva;
 import vos.Cliente;
+import vos.ConsultaHospServicio;
+import vos.ConsultasPeriodos;
+import vos.DatosTopPorTipoAlojamiento;
 import vos.Hospedaje;
+import vos.HospedajeIndicador;
 import vos.IngresosParAnios;
+import vos.IngresosPeriodoAlojamiento;
 import vos.Oferta;
 import vos.Reserva;
 import vos.ReservaMasiva;
+import vos.UsoPorTipoUsuario;
+import vos.UsoPorUsuario;
 
 
-public class AlohAndesTM {
+public class AlohAndesTM<T> {
 
 
 	/**
@@ -636,5 +643,523 @@ public class AlohAndesTM {
 		}
 
 	}
+	
+	
+	public UsoPorUsuario darUsoDeUsuarioDado(Integer id) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
 
+			UsoPorUsuario resp = daoReserva.DarUsoDeUsuarioDado(id);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<UsoPorTipoUsuario> darUsoPorTipoUsuario() throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<UsoPorTipoUsuario> resp = new ArrayList<UsoPorTipoUsuario>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.DarUsoPorTipoUsuario();
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+
+	
+	public ArrayList<Integer> darHospedajesDisponiblesConServicio(ConsultaHospServicio consulta) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<Integer> resp = new ArrayList<Integer>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.DarHospedajesDisponiblesConServicio(consulta);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<HospedajeIndicador> darIndiceDeOcupacionPorHospedaje() throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<HospedajeIndicador> resp = new ArrayList<HospedajeIndicador>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.DarIndiceDeOcupacionPorHospedaje();
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	
+	public ArrayList<Integer> darClientesFrecuentes(Integer id) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<Integer> resp = new ArrayList<Integer>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.DarClientesFrecuentes(id);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	
+	public ArrayList<ConsultasPeriodos> darDatosTopPorTipoAlojamiento(DatosTopPorTipoAlojamiento datos) throws Exception{
+		Integer tipoConsulta = datos.getTipoConsulta();
+		String tipo = datos.getTipo();
+		ArrayList<ConsultasPeriodos> resp = new ArrayList<ConsultasPeriodos>();
+		//Consulta por la semanas con mayor demanda según tipo alojamiento
+		if(tipoConsulta==1) {
+			resp = darSemanasMayorDemandaPorTipoAlojamiento(tipo);
+		}
+		//Consulta por la meses con mayor demanda según tipo alojamiento
+		else if(tipoConsulta==2) {
+			resp = darMesesMayorDemandaPorTipoAlojamiento(tipo);
+		}
+		//Consulta por la semanas con menor demanda según tipo alojamiento
+		else if(tipoConsulta==3) {
+			resp = darSemanasMenorDemandaPorTipoAlojamiento(tipo);
+		}
+		//Consulta por la meses con menor demanda según tipo alojamiento
+		else if(tipoConsulta==4) {
+			resp = darMesesMenorDemandaPorTipoAlojamiento(tipo);
+		}
+		//Consulta por la semanas con mayores ingresos según tipo alojamiento
+		else if(tipoConsulta==5) {
+			resp = darSemanasMayorIngresoPorTipoAlojamiento(tipo);
+		}
+		//Consulta por la meses con mayores ingresos según tipo alojamiento
+		else if(tipoConsulta==6) {
+			resp = darMesesDeMayorIngresoSegunTipoAlojamiento(tipo);
+		}
+		return resp;
+	}
+	
+	public ArrayList<ConsultasPeriodos> darSemanasMayorDemandaPorTipoAlojamiento(String tipo) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<ConsultasPeriodos> resp = new ArrayList<ConsultasPeriodos>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.darSemanasDeMayorDemandaSegunTipoAlojamiento(tipo);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<ConsultasPeriodos> darMesesMayorDemandaPorTipoAlojamiento(String tipo) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<ConsultasPeriodos> resp = new ArrayList<ConsultasPeriodos>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.darMesesDeMayorDemandaSegunTipoAlojamiento(tipo);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	
+	public ArrayList<ConsultasPeriodos> darSemanasMenorDemandaPorTipoAlojamiento(String tipo) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<ConsultasPeriodos> resp = new ArrayList<ConsultasPeriodos>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.darSemanasDeMenorDemandaSegunTipoAlojamiento(tipo);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<ConsultasPeriodos> darMesesMenorDemandaPorTipoAlojamiento(String tipo) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<ConsultasPeriodos> resp = new ArrayList<ConsultasPeriodos>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.darMesesDeMenorDemandaSegunTipoAlojamiento(tipo);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<ConsultasPeriodos> darSemanasMayorIngresoPorTipoAlojamiento(String tipo) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<ConsultasPeriodos> resp = new ArrayList<ConsultasPeriodos>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.darSemanasDeMayorIngresoSegunTipoAlojamiento(tipo);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<ConsultasPeriodos> darMesesDeMayorIngresoSegunTipoAlojamiento(String tipo) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<ConsultasPeriodos> resp = new ArrayList<ConsultasPeriodos>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.darMesesDeMayorIngresoSegunTipoAlojamiento(tipo);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
 }

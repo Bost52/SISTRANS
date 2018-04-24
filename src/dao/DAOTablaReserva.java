@@ -8,9 +8,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import vos.ConsultaHospServicio;
+import vos.ConsultasPeriodos;
 import vos.Hospedaje;
-
+import vos.HospedajeIndicador;
+import vos.IngresosPeriodoAlojamiento;
 import vos.Reserva;
+import vos.UsoPorTipoUsuario;
+import vos.UsoPorUsuario;
 
 
 public class DAOTablaReserva {
@@ -202,4 +207,292 @@ public class DAOTablaReserva {
 		prepStmt.executeQuery();
 	}
 
+	public UsoPorUsuario DarUsoDeUsuarioDado(Integer id) throws SQLException, Exception{
+		UsoPorUsuario datos = null;
+		
+		String sql = "SELECT CLIENTE, TIMME/TIEMPO_TOTAL AS USO, TIMME AS NOCHES_USO, DINERO_PAGADO\r\n" + 
+				" FROM (SELECT CLIENTE, SUM(TIEMPO) AS TIMME, SYSDATE-TO_DATE('01/01/2017') AS TIEMPO_TOTAL, SUM(INGRESO) AS DINERO_PAGADO\r\n" + 
+				" FROM (SELECT RESERVA.ID_CLIENTE AS CLIENTE, RESERVA.FECHA_TERMINACION - RESERVA.FECHA_INICIO AS TIEMPO, INGRESO\r\n" + 
+				" FROM RESERVA)\r\n" + 
+				" GROUP BY CLIENTE)\r\n" + 
+				" WHERE CLIENTE = "+id;
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			Integer cliente = rs.getInt("CLIENTE");
+			Double uso = rs.getDouble("USO");
+			Integer nochesUso = rs.getInt("NOCHES_USO");
+			Integer dinero = rs.getInt("DINERO_PAGADO");
+			datos = new UsoPorUsuario(cliente, uso, nochesUso, dinero);
+		}
+		
+		return datos;
+	}
+	
+	public ArrayList<UsoPorTipoUsuario> DarUsoPorTipoUsuario() throws SQLException, Exception{
+		ArrayList<UsoPorTipoUsuario> uso = new ArrayList<UsoPorTipoUsuario>();
+
+		String sql = "SELECT T2.TIPO, T2.U/T2.CU AS USOTIPO\r\n" + 
+				" FROM (SELECT CLIENTE.TIPO, SUM(T1.USO) AS U, COUNT(*) AS CU\r\n" + 
+				" FROM (SELECT CLIENTE, TIMME/TIEMPO_TOTAL AS USO\r\n" + 
+				" FROM (SELECT CLIENTE, SUM(TIEMPO) AS TIMME, SYSDATE-TO_DATE('01/01/2017') AS TIEMPO_TOTAL\r\n" + 
+				" FROM (SELECT RESERVA.ID_CLIENTE AS CLIENTE, RESERVA.FECHA_TERMINACION - RESERVA.FECHA_INICIO AS TIEMPO\r\n" + 
+				" FROM RESERVA)\r\n" + 
+				" GROUP BY CLIENTE))T1, CLIENTE\r\n" + 
+				" WHERE T1.CLIENTE = CLIENTE.ID\r\n" + 
+				" GROUP BY CLIENTE.TIPO)T2";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String tipo = rs.getString("TIPO");
+			Double usoTipo = rs.getDouble("USOTIPO");
+			uso.add(new UsoPorTipoUsuario(tipo, usoTipo));
+		}
+		return uso;
+	}
+	
+	public ArrayList<Integer> DarHospedajesDisponiblesConServicio(ConsultaHospServicio consulta) throws SQLException, Exception{
+		ArrayList<Integer> hospedajes = new ArrayList<Integer>();
+
+		String servicio = consulta.getServicio();
+		String inicio1 = consulta.getFechaInicio();
+		String fin1 = consulta.getFechaFin();
+		
+
+		String sql = "SELECT T1.ID_HOSPEDAJE\r\n" + 
+				" FROM (SELECT ID_HOSPEDAJE \r\n" + 
+				" FROM RESERVA\r\n" + 
+				" MINUS \r\n" + 
+				" SELECT RESERVA.ID_HOSPEDAJE \r\n" + 
+				" FROM RESERVA \r\n" + 
+				" WHERE FECHA_INICIO = TO_DATE('"+inicio1+"') AND FECHA_TERMINACION = TO_DATE('"+fin1+"'))T1, SERVICIO\r\n" + 
+				" WHERE T1.ID_HOSPEDAJE = SERVICIO.ID_HOSPEDAJE AND SERVICIO.TIPOSERVICIO = '"+servicio+"'";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			Integer id = rs.getInt("ID_HOSPEDAJE");
+			hospedajes.add(id);
+		}
+		return hospedajes;
+	}
+	
+	public ArrayList<HospedajeIndicador> DarIndiceDeOcupacionPorHospedaje() throws SQLException, Exception{
+		ArrayList<HospedajeIndicador> hospedajes = new ArrayList<HospedajeIndicador>();
+
+		String sql = "SELECT HOSPEDAJE, TIMME/TIEMPO_TOTAL AS INDICADOR\r\n" + 
+				" FROM (SELECT HOSPEDAJE, SUM(TIEMPO) AS TIMME, SYSDATE-TO_DATE('01/01/2017') AS TIEMPO_TOTAL\r\n" + 
+				" FROM (SELECT RESERVA.ID_HOSPEDAJE AS HOSPEDAJE, RESERVA.FECHA_TERMINACION - RESERVA.FECHA_INICIO AS TIEMPO\r\n" + 
+				" FROM RESERVA)\r\n" + 
+				" GROUP BY HOSPEDAJE)\r\n" + 
+				" ORDER BY INDICADOR ASC";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			Integer hosp = rs.getInt("HOSPEDAJE");
+			Double ind = rs.getDouble("INDICADOR");
+			hospedajes.add(new HospedajeIndicador(hosp,ind));
+		}
+		return hospedajes;
+	}
+	
+	public ArrayList<Integer> DarClientesFrecuentes(Integer id) throws SQLException, Exception{
+		ArrayList<Integer> frecuentes = new ArrayList<Integer>();
+
+		String sql = "SELECT ID\r\n" + 
+				" FROM(SELECT RESERVA.ID_CLIENTE AS ID, COUNT(*) AS CUENTA\r\n" + 
+				" FROM RESERVA\r\n" + 
+				" WHERE RESERVA.ID_HOSPEDAJE = "+id+" \r\n" + 
+				" GROUP BY RESERVA.ID_CLIENTE)\r\n" + 
+				" WHERE CUENTA >= 3\r\n" + 
+				" UNION\r\n" + 
+				" SELECT ID\r\n" + 
+				" FROM (SELECT CLIENTE AS ID, SUM(TIEMPO) AS TIME\r\n" + 
+				" FROM (SELECT RESERVA.ID_CLIENTE AS CLIENTE, RESERVA.ID_HOSPEDAJE AS RESERVA, RESERVA.FECHA_TERMINACION - RESERVA.FECHA_INICIO AS TIEMPO\r\n" + 
+				" FROM RESERVA\r\n" + 
+				" WHERE RESERVA.ID_HOSPEDAJE = "+id+")\r\n" + 
+				" GROUP BY CLIENTE)\r\n" + 
+				" WHERE TIME >= 15";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			Integer ids = rs.getInt("ID");
+			frecuentes.add(ids);
+		}
+		return frecuentes;
+	}
+	
+	public ArrayList<ConsultasPeriodos> darSemanasDeMayorDemandaSegunTipoAlojamiento(String tipo) throws SQLException, Exception{
+		ArrayList<ConsultasPeriodos> semanas = new ArrayList<ConsultasPeriodos>();
+
+		String sql = "SELECT AÑO, SEMANA, RESERVAS_TOTALES\r\n" + 
+				" FROM(SELECT to_char(reserva.fecha_inicio - 7/24,'IYYY') as AÑO, to_char(reserva.fecha_inicio - 7/24,'IW') as SEMANA,count(reserva.id_cliente) as RESERVAS_TOTALES\r\n" + 
+				" FROM reserva, hospedaje\r\n" + 
+				" WHERE reserva.id_hospedaje = hospedaje.id AND hospedaje.tipo = '"+tipo+"'\r\n" + 
+				" GROUP BY to_char(reserva.fecha_inicio - 7/24,'IYYY'), to_char(reserva.fecha_inicio - 7/24,'IW'))\r\n" + 
+				" WHERE RESERVAS_TOTALES >= ALL(SELECT count(reserva.id_cliente) as RESERVAS_TOTALES\r\n" + 
+				"                                FROM reserva, hospedaje\r\n" + 
+				"                                WHERE reserva.id_hospedaje = hospedaje.id AND hospedaje.tipo = '"+tipo+"'\r\n" + 
+				"                                GROUP BY to_char(reserva.fecha_inicio - 7/24,'IYYY'), to_char(reserva.fecha_inicio - 7/24,'IW'))";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String anio = rs.getString("AÑO");
+			String semana = rs.getString("SEMANA");
+			Integer reservas = rs.getInt("RESERVAS_TOTALES");
+			semanas.add(new ConsultasPeriodos(anio, semana, reservas));
+		}
+		return semanas;
+	}
+	
+	public ArrayList<ConsultasPeriodos> darMesesDeMayorDemandaSegunTipoAlojamiento(String tipo) throws SQLException, Exception{
+		ArrayList<ConsultasPeriodos> meses = new ArrayList<ConsultasPeriodos>();
+
+		String sql = "SELECT AÑO, MES, RESERVAS_TOTALES\r\n" + 
+				" FROM(SELECT extract(year from RESERVA.FECHA_INICIO) as AÑO, extract(month from RESERVA.FECHA_INICIO) AS MES, COUNT(RESERVA.ID_CLIENTE) AS RESERVAS_TOTALES\r\n" + 
+				" FROM RESERVA, HOSPEDAJE\r\n" + 
+				" WHERE RESERVA.ID_HOSPEDAJE = HOSPEDAJE.ID\r\n" + 
+				"      AND HOSPEDAJE.TIPO = '"+tipo+"'\r\n" + 
+				" group by extract(year from FECHA_INICIO),extract(month from FECHA_INICIO))\r\n" + 
+				" WHERE RESERVAS_TOTALES >= ALL(SELECT COUNT(RESERVA.ID_CLIENTE) AS RESERVAS_TOTALES\r\n" + 
+				"                                FROM RESERVA, HOSPEDAJE\r\n" + 
+				"                                WHERE RESERVA.ID_HOSPEDAJE = HOSPEDAJE.ID AND HOSPEDAJE.TIPO = '"+tipo+"'\r\n" + 
+				"                                group by extract(year from RESERVA.FECHA_INICIO),extract(month from RESERVA.FECHA_INICIO))\r\n" + 
+				"                                ";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String anio = rs.getString("AÑO");
+			String mes = rs.getString("MES");
+			Integer reservas = rs.getInt("RESERVAS_TOTALES");
+			meses.add(new ConsultasPeriodos(anio, mes, reservas));
+		}
+		return meses;
+	}
+	
+	public ArrayList<ConsultasPeriodos> darSemanasDeMenorDemandaSegunTipoAlojamiento(String tipo) throws SQLException, Exception{
+		ArrayList<ConsultasPeriodos> semanas = new ArrayList<ConsultasPeriodos>();
+
+		String sql = "SELECT AÑO, SEMANA, RESERVAS_TOTALES\r\n" + 
+				" FROM(SELECT to_char(reserva.fecha_inicio - 7/24,'IYYY') as AÑO, to_char(reserva.fecha_inicio - 7/24,'IW') as SEMANA,count(reserva.id_cliente) as RESERVAS_TOTALES\r\n" + 
+				" FROM reserva, hospedaje\r\n" + 
+				" WHERE reserva.id_hospedaje = hospedaje.id AND hospedaje.tipo = '"+tipo+"'\r\n" + 
+				" GROUP BY to_char(reserva.fecha_inicio - 7/24,'IYYY'), to_char(reserva.fecha_inicio - 7/24,'IW'))\r\n" + 
+				" WHERE RESERVAS_TOTALES <= ALL(SELECT count(reserva.id_cliente) as RESERVAS_TOTALES\r\n" + 
+				"                                FROM reserva, hospedaje\r\n" + 
+				"                                WHERE reserva.id_hospedaje = hospedaje.id AND hospedaje.tipo = '"+tipo+"'\r\n" + 
+				"                                GROUP BY to_char(reserva.fecha_inicio - 7/24,'IYYY'), to_char(reserva.fecha_inicio - 7/24,'IW'))";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String anio = rs.getString("AÑO");
+			String semana = rs.getString("SEMANA");
+			Integer reservas = rs.getInt("RESERVAS_TOTALES");
+			semanas.add(new ConsultasPeriodos(anio, semana, reservas));
+		}
+		return semanas;
+	}
+	
+	public ArrayList<ConsultasPeriodos> darMesesDeMenorDemandaSegunTipoAlojamiento(String tipo) throws SQLException, Exception{
+		ArrayList<ConsultasPeriodos> meses = new ArrayList<ConsultasPeriodos>();
+
+		String sql = "SELECT AÑO, MES, RESERVAS_TOTALES\r\n" + 
+				" FROM(SELECT extract(year from RESERVA.FECHA_INICIO) as AÑO, extract(month from RESERVA.FECHA_INICIO) AS MES, COUNT(RESERVA.ID_CLIENTE) AS RESERVAS_TOTALES\r\n" + 
+				" FROM RESERVA, HOSPEDAJE\r\n" + 
+				" WHERE RESERVA.ID_HOSPEDAJE = HOSPEDAJE.ID\r\n" + 
+				"      AND HOSPEDAJE.TIPO = '"+tipo+"'\r\n" + 
+				" group by extract(year from FECHA_INICIO),extract(month from FECHA_INICIO))\r\n" + 
+				" WHERE RESERVAS_TOTALES <= ALL(SELECT COUNT(RESERVA.ID_CLIENTE) AS RESERVAS_TOTALES\r\n" + 
+				"                                FROM RESERVA, HOSPEDAJE\r\n" + 
+				"                                WHERE RESERVA.ID_HOSPEDAJE = HOSPEDAJE.ID AND HOSPEDAJE.TIPO = '"+tipo+"'\r\n" + 
+				"                                group by extract(year from RESERVA.FECHA_INICIO),extract(month from RESERVA.FECHA_INICIO))";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String anio = rs.getString("AÑO");
+			String mes = rs.getString("MES");
+			Integer reservas = rs.getInt("RESERVAS_TOTALES");
+			meses.add(new ConsultasPeriodos(anio, mes, reservas));
+		}
+		return meses;
+	}
+	
+	public ArrayList<ConsultasPeriodos> darSemanasDeMayorIngresoSegunTipoAlojamiento(String tipo) throws SQLException, Exception{
+		ArrayList<ConsultasPeriodos> semanas = new ArrayList<ConsultasPeriodos>();
+
+		String sql = "SELECT AÑO, SEMANA, INGRESOS_TOTALES\r\n" + 
+				" FROM(SELECT to_char(reserva.fecha_inicio - 7/24,'IYYY') as AÑO, to_char(reserva.fecha_inicio - 7/24,'IW') as SEMANA, SUM(reserva.ingreso) as INGRESOS_TOTALES\r\n" + 
+				" FROM reserva, hospedaje\r\n" + 
+				" WHERE reserva.id_hospedaje = hospedaje.id AND hospedaje.tipo = '"+tipo+"'\r\n" + 
+				" GROUP BY to_char(reserva.fecha_inicio - 7/24,'IYYY'), to_char(reserva.fecha_inicio - 7/24,'IW'))\r\n" + 
+				" WHERE INGRESOS_TOTALES >= ALL(SELECT SUM(reserva.INGRESO) as INGRESOS_TOTALES\r\n" + 
+				"                                FROM reserva, hospedaje\r\n" + 
+				"                                WHERE reserva.id_hospedaje = hospedaje.id AND hospedaje.tipo = '"+tipo+"'\r\n" + 
+				"                                GROUP BY to_char(reserva.fecha_inicio - 7/24,'IYYY'), to_char(reserva.fecha_inicio - 7/24,'IW'))";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String anio = rs.getString("AÑO");
+			String semana = rs.getString("SEMANA");
+			Integer ingresos = rs.getInt("INGRESOS_TOTALES");
+			semanas.add(new ConsultasPeriodos(anio, semana, ingresos));
+		}
+		return semanas;
+	}
+	
+	public ArrayList<ConsultasPeriodos> darMesesDeMayorIngresoSegunTipoAlojamiento(String tipo) throws SQLException, Exception{
+		ArrayList<ConsultasPeriodos> meses = new ArrayList<ConsultasPeriodos>();
+
+		String sql = "SELECT AÑO, MES, INGRESOS_TOTALES\r\n" + 
+				" FROM(SELECT extract(year from RESERVA.FECHA_INICIO) as AÑO, extract(month from RESERVA.FECHA_INICIO) AS MES, SUM(RESERVA.INGRESO) AS INGRESOS_TOTALES\r\n" + 
+				" FROM RESERVA, HOSPEDAJE\r\n" + 
+				" WHERE RESERVA.ID_HOSPEDAJE = HOSPEDAJE.ID\r\n" + 
+				"      AND HOSPEDAJE.TIPO = '"+tipo+"'\r\n" + 
+				" group by extract(year from FECHA_INICIO),extract(month from FECHA_INICIO))\r\n" + 
+				" WHERE INGRESOS_TOTALES >= ALL(SELECT SUM(RESERVA.INGRESO) AS INGRESOS_TOTALES\r\n" + 
+				"                                FROM RESERVA, HOSPEDAJE\r\n" + 
+				"                                WHERE RESERVA.ID_HOSPEDAJE = HOSPEDAJE.ID AND HOSPEDAJE.TIPO = '"+tipo+"'\r\n" + 
+				"                                group by extract(year from RESERVA.FECHA_INICIO),extract(month from RESERVA.FECHA_INICIO))";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String anio = rs.getString("AÑO");
+			String mes = rs.getString("MES");
+			Integer ingresos = rs.getInt("INGRESOS_TOTALES");
+			meses.add(new ConsultasPeriodos(anio, mes, ingresos));
+		}
+		return meses;
+	}
 }
