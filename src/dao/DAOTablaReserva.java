@@ -67,8 +67,8 @@ public class DAOTablaReserva {
 		Integer idHosp = reserva.getIdHospedaje();
 		String[] ini = reserva.getFechaInicio().split("/");
 		String[] fini = reserva.getFechaFin().split("/");
-		String inic = Integer.parseInt(ini[0])+"/"+Integer.parseInt(ini[1])+"/"+Integer.parseInt(ini[2]);
-		String fin = Integer.parseInt(fini[0])+"/"+Integer.parseInt(fini[1])+"/"+Integer.parseInt(fini[2]);
+		String inic = Integer.parseInt(ini[1])+"/"+Integer.parseInt(ini[0])+"/"+Integer.parseInt(ini[2]);
+		String fin = Integer.parseInt(fini[1])+"/"+Integer.parseInt(fini[0])+"/"+Integer.parseInt(fini[2]);
 
 		String sql = "";
 		if(masiva == -1){
@@ -156,12 +156,9 @@ public class DAOTablaReserva {
 		String[] fini = fechaFin.split("/");
 		Date inic = new Date(Integer.parseInt(ini[0]),Integer.parseInt(ini[1]),Integer.parseInt(ini[2]));
 		Date fin = new Date(Integer.parseInt(fini[0]),Integer.parseInt(fini[1]),Integer.parseInt(fini[2]));
-		System.out.println(Integer.parseInt(ini[0]));
-
-		String sql = "(SELECT O.ID_HOSPEDAJE FROM OFERTAS O INNER JOIN HOSPEDAJE H ON (O.ID_HOSPEDAJE = H.ID) WHERE H.TIPO = '"+ tipo+"') MINUS (SELECT R.ID_HOSPEDAJE FROM RESERVA R INNER JOIN HOSPEDAJE H1 ON (R.ID_HOSPEDAJE = H1.ID) WHERE H1.TIPO = '" + tipo +"' AND FECHA_INICIO = TO_DATE('" + fechaIn+"') AND FECHA_TERMINACION =TO_DATE('"+fechaFin+"'))";
-		//		String sql = "(SELECT O.ID_HOSPEDAJE FROM OFERTAS O INNER JOIN HOSPEDAJE H ON (O.ID_HOSPEDAJE = H.ID) WHERE H.TIPO = '" + tipo + "') MINUS (SELECT R.ID_HOSPEDAJE FROM RESERVA R INNER JOIN HOSPEDAJE H1 ON (R.ID_HOSPEDAJE = H1.ID) WHERE H1.TIPO = '" + tipo
-		//				+ "' AND FECHA_INICIO = TO_DATE('"+Integer.parseInt(ini[0]) + "/" + Integer.parseInt(ini[1]) + "/" + Integer.parseInt(ini[2])+"', 'MM/DD/YYYY') AND FECHA_TERMINACION =TO_DATE('"+ Integer.parseInt(fini[0]) + "/" + Integer.parseInt(fini[0])+ "/" + Integer.parseInt(fini[2])+"', 'MM/DD/YYYY'))";
-
+		System.out.println(fechaFin + " hey " + fechaIn);
+		
+		String sql = "(SELECT O.ID_HOSPEDAJE FROM OFERTAS O INNER JOIN HOSPEDAJE H ON (O.ID_HOSPEDAJE = H.ID) WHERE H.TIPO = 'HabHostal') MINUS (SELECT R.ID_HOSPEDAJE FROM RESERVA R INNER JOIN HOSPEDAJE H1 ON (R.ID_HOSPEDAJE = H1.ID) WHERE H1.TIPO = 'habhostal' AND FECHA_INICIO = TO_DATE('10/04/2018','MM/DD/YYYY') AND FECHA_TERMINACION = TO_DATE('10/04/2018','MM/DD/YYYY'))";
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
 		prepStmt.executeQuery();
