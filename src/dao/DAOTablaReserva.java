@@ -193,7 +193,7 @@ public class DAOTablaReserva {
 		prepStmt.executeQuery();
 	}
 
-	public UsoPorUsuario DarUsoDeUsuarioDado(Integer id) throws SQLException, Exception{
+	public UsoPorUsuario darUsoDeUsuarioDado(Integer id) throws SQLException, Exception{
 		UsoPorUsuario datos = null;
 		
 		String sql = "SELECT CLIENTE, TIMME/TIEMPO_TOTAL AS USO, TIMME AS NOCHES_USO, DINERO_PAGADO\r\n" + 
@@ -218,7 +218,7 @@ public class DAOTablaReserva {
 		return datos;
 	}
 	
-	public ArrayList<UsoPorTipoUsuario> DarUsoPorTipoUsuario() throws SQLException, Exception{
+	public ArrayList<UsoPorTipoUsuario> darUsoPorTipoUsuario() throws SQLException, Exception{
 		ArrayList<UsoPorTipoUsuario> uso = new ArrayList<UsoPorTipoUsuario>();
 
 		String sql = "SELECT T2.TIPO, T2.U/T2.CU AS USOTIPO\r\n" + 
@@ -243,7 +243,7 @@ public class DAOTablaReserva {
 		return uso;
 	}
 	
-	public ArrayList<Integer> DarHospedajesDisponiblesConServicio(ConsultaHospServicio consulta) throws SQLException, Exception{
+	public ArrayList<Integer> darHospedajesDisponiblesConServicio(ConsultaHospServicio consulta) throws SQLException, Exception{
 		ArrayList<Integer> hospedajes = new ArrayList<Integer>();
 
 		String servicio = consulta.getServicio();
@@ -271,7 +271,7 @@ public class DAOTablaReserva {
 		return hospedajes;
 	}
 	
-	public ArrayList<HospedajeIndicador> DarIndiceDeOcupacionPorHospedaje() throws SQLException, Exception{
+	public ArrayList<HospedajeIndicador> darIndiceDeOcupacionPorHospedaje() throws SQLException, Exception{
 		ArrayList<HospedajeIndicador> hospedajes = new ArrayList<HospedajeIndicador>();
 
 		String sql = "SELECT HOSPEDAJE, TIMME/TIEMPO_TOTAL AS INDICADOR\r\n" + 
@@ -293,7 +293,7 @@ public class DAOTablaReserva {
 		return hospedajes;
 	}
 	
-	public ArrayList<Integer> DarClientesFrecuentes(Integer id) throws SQLException, Exception{
+	public ArrayList<Integer> darClientesFrecuentes(Integer id) throws SQLException, Exception{
 		ArrayList<Integer> frecuentes = new ArrayList<Integer>();
 
 		String sql = "SELECT ID\r\n" + 
