@@ -23,6 +23,7 @@ import dao.DAOTablaOferta;
 import dao.DAOTablaOperador;
 import dao.DAOTablaReserva;
 import vos.AgregarReserva;
+import vos.Agrupamiento10;
 import vos.Cliente;
 import vos.ConsultaHospServicio;
 import vos.ConsultarBuenosClientes;
@@ -35,8 +36,11 @@ import vos.HospedajeIndicador;
 import vos.IngresosParAnios;
 import vos.IngresosPeriodoAlojamiento;
 import vos.Oferta;
+import vos.Ordenamiento10;
 import vos.Reserva;
 import vos.ReservaMasiva;
+import vos.Rpta10Agrupamiento;
+import vos.Rpta10Ordenamiento;
 import vos.UsoPorTipoUsuario;
 import vos.UsoPorUsuario;
 
@@ -1119,6 +1123,182 @@ public class AlohAndesTM<T> {
 			daoReserva.setConn(conn);
 
 			resp = daoReserva.darMesesDeMayorIngresoSegunTipoAlojamiento(tipo);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<Rpta10Agrupamiento> rfc10Agrupamiento(Agrupamiento10 cs) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<Rpta10Agrupamiento> resp = new ArrayList<Rpta10Agrupamiento>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.rfc10Argupamiento(cs);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<Rpta10Ordenamiento> rfc10Ordenamiento(Ordenamiento10 id) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<Rpta10Ordenamiento> resp = new ArrayList<Rpta10Ordenamiento>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.rfc10Ordenamiento(id);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<Rpta10Agrupamiento> rfc11Agrupamiento(Agrupamiento10 cs) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<Rpta10Agrupamiento> resp = new ArrayList<Rpta10Agrupamiento>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.rfc11Argupamiento(cs);
+			conn.commit();
+			
+			return resp;
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<Rpta10Ordenamiento> rfc11Ordenamiento(Ordenamiento10 id) throws Exception{
+		DAOTablaReserva daoReserva= new DAOTablaReserva();
+		try 
+		{
+			ArrayList<Rpta10Ordenamiento> resp = new ArrayList<Rpta10Ordenamiento>();
+			this.conn = darConexion();
+			daoReserva.setConn(conn);
+
+			resp = daoReserva.rfc11Ordenamiento(id);
 			conn.commit();
 			
 			return resp;
