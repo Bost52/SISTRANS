@@ -503,7 +503,7 @@ public class DAOTablaReserva {
 				" FROM RESERVA\r\n" + 
 				" WHERE ((FECHA_INICIO BETWEEN TO_DATE('"+inicioInferior+"') AND TO_DATE('"+inicioSuperior+"') \r\n" + 
 				" OR (FECHA_TERMINACION BETWEEN TO_DATE('"+finInferior+"') AND TO_DATE('"+finSuperior+"')))) AND ID_HOSPEDAJE = "+idHospedaje+")\r\n" + 
-				" ORDER BY "+ordenamiento+";";
+				" ORDER BY "+ordenamiento+" ASC";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -529,13 +529,13 @@ public class DAOTablaReserva {
 		String ordenamiento = consulta.getOrdenamiento();
 		String criterio = consulta.getCriterioAgrupamiento();
 
-		String sql = "SELECT "+ordenamiento+", "+criterio+"(ID)\r\n" + 
+		String sql = "SELECT "+ordenamiento+" AS CRITERIO, COUNT(ID) AS CUENTA\r\n" + 
 				" FROM CLIENTE\r\n" + 
 				" WHERE ID IN (SELECT ID_CLIENTE\r\n" + 
 				" FROM RESERVA\r\n" + 
 				" WHERE ((FECHA_INICIO BETWEEN TO_DATE('"+inicioInferior+"') AND TO_DATE('"+inicioSuperior+"') \r\n" + 
 				" OR (FECHA_TERMINACION BETWEEN TO_DATE('"+finInferior+"') AND TO_DATE('"+finSuperior+"')))) AND ID_HOSPEDAJE = "+idHospedaje+")\r\n" + 
-				" GROUP BY "+ordenamiento+";";
+				" GROUP BY "+ordenamiento;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -565,7 +565,7 @@ public class DAOTablaReserva {
 				" FROM RESERVA\r\n" + 
 				" WHERE ((FECHA_INICIO NOT BETWEEN TO_DATE('"+inicioInferior+"') AND TO_DATE('"+inicioSuperior+"') \r\n" + 
 				" OR (FECHA_TERMINACION NOT BETWEEN TO_DATE('"+finInferior+"') AND TO_DATE('"+finSuperior+"')))) AND ID_HOSPEDAJE = "+idHospedaje+")\r\n" + 
-				" ORDER BY "+ordenamiento+";";
+				" ORDER BY "+ordenamiento;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -591,13 +591,13 @@ public class DAOTablaReserva {
 		String ordenamiento = consulta.getOrdenamiento();
 		String criterio = consulta.getCriterioAgrupamiento();
 
-		String sql = "SELECT "+ordenamiento+", "+criterio+"(ID)\r\n" + 
+		String sql = "SELECT "+ordenamiento+" AS CRITERIO, COUNT(ID) AS CUENTA\r\n" + 
 				" FROM CLIENTE\r\n" + 
 				" WHERE ID IN (SELECT ID_CLIENTE\r\n" + 
 				" FROM RESERVA\r\n" + 
 				" WHERE ((FECHA_INICIO NOT BETWEEN TO_DATE('"+inicioInferior+"') AND TO_DATE('"+inicioSuperior+"') \r\n" + 
 				" OR (FECHA_TERMINACION NOT BETWEEN TO_DATE('"+finInferior+"') AND TO_DATE('"+finSuperior+"')))) AND ID_HOSPEDAJE = "+idHospedaje+")\r\n" + 
-				" GROUP BY "+ordenamiento+";";
+				" GROUP BY "+ordenamiento;
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
