@@ -17,11 +17,15 @@ import javax.ws.rs.core.Response;
 
 import tm.AlohAndesTM;
 import vos.AgregarReserva;
+import vos.Agrupamiento10;
 import vos.ConsultaHospServicio;
 import vos.DatosTopPorTipoAlojamiento;
 import vos.HospedajeIndicador;
 import vos.IngresosParAnios;
+import vos.Ordenamiento10;
 import vos.Reserva;
+import vos.Rpta10Agrupamiento;
+import vos.Rpta10Ordenamiento;
 import vos.UsoPorTipoUsuario;
 import vos.UsoPorUsuario;
 
@@ -143,6 +147,40 @@ public class Consultas {
 		ArrayList<DatosTopPorTipoAlojamiento> resp = new ArrayList<DatosTopPorTipoAlojamiento>();
 		try {
 			resp = tm.darDatosTopPorTipoAlojamiento(datos);
+
+		}catch(NoPermissionException e){
+			return Response.status(403).entity(doErrorMessage(e)).build();
+		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resp).build();
+	}
+	
+	@POST
+	@Path("/rfc10Ordenamiento")
+	public Response rfc10(Ordenamiento10 datos){
+		AlohAndesTM tm = new AlohAndesTM(getPath());
+		ArrayList<Rpta10Ordenamiento> resp = new ArrayList<Rpta10Ordenamiento>();
+		try {
+			resp = tm.rfc10Ordenamiento(datos);
+
+		}catch(NoPermissionException e){
+			return Response.status(403).entity(doErrorMessage(e)).build();
+		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resp).build();
+	}
+	
+	@POST
+	@Path("/rfc10Agrupamiento")
+	public Response rfc10(Agrupamiento10 datos){
+		AlohAndesTM tm = new AlohAndesTM(getPath());
+		ArrayList<Rpta10Agrupamiento> resp = new ArrayList<Rpta10Agrupamiento>();
+		try {
+			resp = tm.rfc10Agrupamiento(datos);
 
 		}catch(NoPermissionException e){
 			return Response.status(403).entity(doErrorMessage(e)).build();
