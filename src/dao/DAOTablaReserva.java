@@ -486,6 +486,51 @@ public class DAOTablaReserva {
 		return meses;
 	}
 	
+	public void reacomodarHospedajes(Integer hospedaje) throws Exception{
+		ArrayList<Reserva> reacomodables = new ArrayList<Reserva>();
+		//String sql = "select * from reserva where id_hospedaje = " + hospedaje;
+		
+		PreparedStatement prepStmt = conn.prepareStatement("select r.id_cliente, r.id_hospedaje, r.fecha_inicio, r.fecha_terminacion, r.masiva, r.ingreso, h.tipo from reserva r inner join hospedaje h on (h.id = r.id_hospedaje) where id_hospedaje = " + hospedaje);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+		
+		
+		//las busco
+		String tipo = "";
+		while(rs.next()){
+			reacomodables.add(new Reserva(rs.getInt("ID_CLIENTE"), rs.getInt("ID_HOSPEDAJE"), rs.getDate("FECHA_INICIO").toString(), rs.getDate("FECHA_TERMINACION").toString(), rs.getInt("MASIVA"), rs.getInt("INGRESO")));
+			tipo = rs.getString("TIPO");
+		}
+		
+		System.out.println("hay " + reacomodables.size() + " reacomodables");
+		
+		//Busco donde reacomodarlas
+		PreparedStatement prepStmt2 = conn.prepareStatement("select id as i from hospedaje where tipo = '" + tipo+ "' and id !=" + hospedaje);
+		recursos.add(prepStmt2);
+		ResultSet rs2 = prepStmt2.executeQuery();
+		
+		ArrayList<Integer> hospedajes = new ArrayList<Integer>();
+		while(rs2.next()){
+			hospedajes.add(rs2.getInt("I"));
+		}
+		
+		
+		//las reacomodo
+		for(int i = 0; i < reacomodables.size(); i++){
+			String[] fin = reacomodables.get(i).getFechaFin().split("-");
+			Date fini = new Date(Integer.parseInt(fin[0]),Integer.parseInt(fin[1]), Integer.parseInt(fin[2]));
+			PreparedStatement prepStmt1 = conn.prepareStatement("insert into reserva(id_hospedaje, id_cliente, fecha_inicio, fecha_terminacion) values(" + hospedajes.get(i)+","+ reacomodables.get(i).getIdCliente()+","+ "SYSDATE"+","+ "TO_DATE('"+ fini+"','YYYY/MM/DD'))");
+			recursos.add(prepStmt1);
+			ResultSet rs1 = prepStmt1.executeQuery();
+		}
+		
+		
+		
+		//las elimino
+		for(int i = 0; i < reacomodables.size(); i++){
+			deleteReserva(reacomodables.get(i));
+		}	
+	}
 
 	public ArrayList<Rpta10Ordenamiento> rfc10Ordenamiento(Ordenamiento10 consulta) throws SQLException, Exception{
 		ArrayList<Rpta10Ordenamiento> clientes = new ArrayList<Rpta10Ordenamiento>();

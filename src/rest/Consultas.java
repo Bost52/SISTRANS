@@ -19,7 +19,10 @@ import tm.AlohAndesTM;
 import vos.AgregarReserva;
 import vos.Agrupamiento10;
 import vos.ConsultaHospServicio;
+import vos.ConsultarBuenosClientes;
+import vos.ConsultarFuncionamiento;
 import vos.DatosTopPorTipoAlojamiento;
+import vos.Funcionamiento;
 import vos.HospedajeIndicador;
 import vos.IngresosParAnios;
 import vos.Ordenamiento10;
@@ -219,6 +222,40 @@ public class Consultas {
 		}catch(NoPermissionException e){
 			return Response.status(403).entity(doErrorMessage(e)).build();
 		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resp).build();
+	}
+	
+	@POST
+	@Path("/buenosClientes")
+	public Response darBuenosClientes(ConsultarBuenosClientes ger){
+		AlohAndesTM tm = new AlohAndesTM(getPath());
+		ArrayList<Integer> resp = new ArrayList<Integer>();
+		try{
+			resp = tm.getBuenosClientes(ger);
+		}
+		//		catch(NoPermissionException e){
+		//			return Response.status(403).entity(doErrorMessage(e)).build();
+		//		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resp).build();
+	}
+
+	@POST
+	@Path("/funcionamiento")
+	public Response darFuncionamiento(ConsultarFuncionamiento fun){
+		AlohAndesTM tm = new AlohAndesTM(getPath());
+		ArrayList<Funcionamiento> resp = new ArrayList<Funcionamiento>();
+		try{
+			resp = tm.getFuncionamiento(fun);
+		}
+		//	catch(NoPermissionException e){
+		//		return Response.status(403).entity(doErrorMessage(e)).build();
+		//	}
 		catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}

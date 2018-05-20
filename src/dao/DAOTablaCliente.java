@@ -71,4 +71,19 @@ public class DAOTablaCliente {
 
 		return cliente;
 	}
+	
+	public ArrayList<Integer> getBuenosClientes() throws SQLException{
+		ArrayList<Integer> resp = new ArrayList<>();
+		String sql = "select distinct(cliente) from(SELECT DISTINCT(ID_CLIENTE) AS CLIENTE FROM RESERVA WHERE INGRESO >= 300000 UNION SELECT DISTINCT(CLI) AS CLIENTE FROM(SELECT ID_CLIENTE AS CLI, FECHA_INICIO FROM RESERVA) WHERE (SELECT COUNT(DISTINCT(extract(year from FECHA_INICIO))) FROM RESERVA WHERE ID_CLIENTE = CLI GROUP BY ID_CLIENTE)>=2 AND (SELECT COUNT(DISTINCT(extract(month from FECHA_INICIO))) FROM RESERVA WHERE ID_CLIENTE = CLI GROUP BY ID_CLIENTE)>=12 UNION SELECT DISTINCT(ID_CLIENTE) AS CLIENTE FROM RESERVA WHERE ID_HOSPEDAJE IN (SELECT ID_HOSPEDAJE FROM HABITACIONHOTEL WHERE TIPOHABITACION = 'Suite'))";
+		
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while(rs.next()) {
+			resp.add(rs.getInt("CLIENTE"));
+		}
+		
+		return resp;
+	}
 }

@@ -20,13 +20,17 @@ import dao.DAOTablaCliente;
 import dao.DAOTablaHospedaje;
 import dao.DAOTablaIngresosParAnios;
 import dao.DAOTablaOferta;
+import dao.DAOTablaOperador;
 import dao.DAOTablaReserva;
 import vos.AgregarReserva;
 import vos.Agrupamiento10;
 import vos.Cliente;
 import vos.ConsultaHospServicio;
+import vos.ConsultarBuenosClientes;
+import vos.ConsultarFuncionamiento;
 import vos.ConsultasPeriodos;
 import vos.DatosTopPorTipoAlojamiento;
+import vos.Funcionamiento;
 import vos.Hospedaje;
 import vos.HospedajeIndicador;
 import vos.IngresosParAnios;
@@ -250,7 +254,7 @@ public class AlohAndesTM<T> {
 			}
 			
 			//Re acomodamiento de hospedajes
-			//daoReserva.reacomodarHospedajes(oferta);
+			daoReserva.reacomodarHospedajes(oferta);
 			
 			//elimina las ofertas
 			daoOferta.deleteOferta(oferta);
@@ -1320,6 +1324,127 @@ public class AlohAndesTM<T> {
 		} finally {
 			try {
 				daoReserva.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<Integer> getBuenosClientes(ConsultarBuenosClientes ger) throws SQLException, NoPermissionException{
+		DAOTablaCliente daoCliente = new DAOTablaCliente();
+		DAOTablaOperador daoOperador = new DAOTablaOperador();
+		try 
+		{
+			ArrayList<Integer> resp = new ArrayList<Integer>();
+			this.conn = darConexion();
+			daoCliente.setConn(conn);
+			daoOperador.setConn(conn);
+			
+			//Verifica permisos
+			
+			if(daoOperador.getGerente(ger.getId()) != false){
+				resp = daoCliente.getBuenosClientes();
+				conn.commit();
+				
+				return resp;
+			}
+			else{
+				throw new NoPermissionException();
+			}
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoCliente.cerrarRecursos();
+				daoOperador.cerrarRecursos();
+				if(this.conn!=null)
+					this.conn.close();
+			} catch (SQLException exception) {
+				System.err.println("SQLException closing resources:" + exception.getMessage());
+				exception.printStackTrace();
+				throw exception;
+			}
+		}
+	}
+	
+	public ArrayList<Funcionamiento> getFuncionamiento(ConsultarFuncionamiento fun) throws Exception{
+		DAOTablaCliente daoCliente = new DAOTablaCliente();
+		DAOTablaOperador daoOperador = new DAOTablaOperador();
+		try 
+		{
+			ArrayList<Funcionamiento> resp = new ArrayList<Funcionamiento>();
+			this.conn = darConexion();
+			daoCliente.setConn(conn);
+			daoOperador.setConn(conn);
+			
+			//Verifica permisos
+			
+			if(daoOperador.getGerente(fun.getId()) != false){
+				if(fun.getTipo().equalsIgnoreCase("Alojamiento") && fun.getTipo2().equalsIgnoreCase("mas")){
+					resp = daoOperador.funcionamiento1();
+				}
+				else if(fun.getTipo().equalsIgnoreCase("Alojamiento") && fun.getTipo2().equalsIgnoreCase("menos")){
+					resp = daoOperador.funcionamiento2();
+				}
+				else if(fun.getTipo().equalsIgnoreCase("Operador") && fun.getTipo2().equalsIgnoreCase("mas")){
+					resp = daoOperador.funcionamiento3();
+				}
+				else if(fun.getTipo().equalsIgnoreCase("Operador") && fun.getTipo2().equalsIgnoreCase("menos")){
+					resp = daoOperador.funcionamiento4();
+				}
+				else{
+					throw new Exception("Algo está mal");
+				}
+				
+				return resp;
+			}
+			else{
+				throw new NoPermissionException();
+			}
+
+		} catch (SQLException e) {
+			System.err.println("SQLException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		} catch(NoPermissionException e){
+			System.err.println("NoPermissionException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch(NoSuchElementException e) {
+			System.err.println("noSuchElementException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}catch (Exception e) {
+			System.err.println("GeneralException:" + e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+
+		} finally {
+			try {
+				daoCliente.cerrarRecursos();
+				daoOperador.cerrarRecursos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
