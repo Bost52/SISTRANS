@@ -87,10 +87,14 @@ public class DAOTablaReserva {
 		Integer idCli = reserva.getIdCliente();
 		Integer idHosp = reserva.getIdHospedaje();
 		String[] ini = reserva.getFechaInicio().split("-");
-		String[] fini = reserva.getFechaFin().split("-");
-		String inic = Integer.parseInt(ini[0])+"/"+Integer.parseInt(ini[1])+"/"+Integer.parseInt(ini[2]);
-		String fin = Integer.parseInt(fini[0])+"/"+Integer.parseInt(fini[1])+"/"+Integer.parseInt(fini[2]);
-		String sql = "DELETE FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = TO_DATE('"+inic+"', 'MM/DD/YYYY') AND FECHA_TERMINACION =TO_DATE('"+fin+"', 'MM/DD/YYYY')";
+		String[] fin = reserva.getFechaFin().split("-");
+		Date inic = new Date(Integer.parseInt(ini[0]),Integer.parseInt(ini[1]), Integer.parseInt(ini[2]));
+		Date fini = new Date(Integer.parseInt(fin[0]),Integer.parseInt(fin[1]), Integer.parseInt(fin[2]));
+//		String inic = Integer.parseInt(ini[0])+"/"+Integer.parseInt(ini[1])+"/"+Integer.parseInt(ini[2]);
+//		String fin = Integer.parseInt(fini[0])+"/"+Integer.parseInt(fini[1])+"/"+Integer.parseInt(fini[2]);
+		System.out.println(inic + " abcd " + fin);
+		
+		String sql = "DELETE FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND ID_HOSPEDAJE = "+idHosp+" AND FECHA_INICIO = TO_DATE('"+inic+"', 'YYYY/MM/DD') AND FECHA_TERMINACION =TO_DATE('"+fini+"', 'YYYY/MM/DD')";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -105,7 +109,7 @@ public class DAOTablaReserva {
 		Date inic = new Date(Integer.parseInt(ini[0]),Integer.parseInt(ini[1]),Integer.parseInt(ini[2]));
 		Date fin = new Date(Integer.parseInt(fini[0]),Integer.parseInt(fini[1]),Integer.parseInt(fini[2]));
 
-		String sql = "SELECT * FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND FECHA_INICIO = TO_DATE('"+inic+"', 'MM/DD/YYYY') AND FECHA_TERMINACION =TO_DATE('"+fin+"', 'MM/DD/YYYY')";
+		String sql = "SELECT * FROM RESERVA WHERE ID_CLIENTE = "+idCli+" AND FECHA_INICIO = TO_DATE('"+inic+"', 'YYYY/MM/DD') AND FECHA_TERMINACION =TO_DATE('"+fin+"', 'YYYY/MM/DD')";
 
 		PreparedStatement prepStmt = conn.prepareStatement(sql);
 		recursos.add(prepStmt);
@@ -514,9 +518,8 @@ public class DAOTablaReserva {
 		//las reacomodo
 		for(int i = 0; i < reacomodables.size(); i++){
 			String[] fin = reacomodables.get(i).getFechaFin().split("-");
-			System.out.println(reacomodables.get(i).getFechaFin()+ " abc " + fin.length);
 			Date fini = new Date(Integer.parseInt(fin[0]),Integer.parseInt(fin[1]), Integer.parseInt(fin[2]));
-			PreparedStatement prepStmt1 = conn.prepareStatement("insert into reserva(id_hospedaje, id_cliente, fecha_inicio, fecha_terminacion) values(" + hospedajes.get(i)+","+ reacomodables.get(i).getIdCliente()+","+ "SYSDATE"+","+ "TO_DATE('"+ fini+"','MM/DD/YYYY'))");
+			PreparedStatement prepStmt1 = conn.prepareStatement("insert into reserva(id_hospedaje, id_cliente, fecha_inicio, fecha_terminacion) values(" + hospedajes.get(i)+","+ reacomodables.get(i).getIdCliente()+","+ "SYSDATE"+","+ "TO_DATE('"+ fini+"','YYYY/MM/DD'))");
 			recursos.add(prepStmt1);
 			ResultSet rs1 = prepStmt1.executeQuery();
 		}

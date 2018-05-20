@@ -18,7 +18,10 @@ import javax.ws.rs.core.Response;
 import tm.AlohAndesTM;
 import vos.AgregarReserva;
 import vos.ConsultaHospServicio;
+import vos.ConsultarBuenosClientes;
+import vos.ConsultarFuncionamiento;
 import vos.DatosTopPorTipoAlojamiento;
+import vos.Funcionamiento;
 import vos.HospedajeIndicador;
 import vos.IngresosParAnios;
 import vos.Reserva;
@@ -84,7 +87,7 @@ public class Consultas {
 		}
 		return Response.status(200).entity(resp).build();
 	}
-	
+
 	@POST
 	@Path("/darHospedajesDisponiblesConServicio")
 	public Response darHospedajesDisponiblesConServicio(ConsultaHospServicio consulta){
@@ -101,7 +104,7 @@ public class Consultas {
 		}
 		return Response.status(200).entity(resp).build();
 	}
-	
+
 	@GET
 	@Path("/darIndiceDeOcupacionPorHospedaje")
 	public Response darIndiceDeOcupacionPorHospedaje(){
@@ -118,7 +121,7 @@ public class Consultas {
 		}
 		return Response.status(200).entity(resp).build();
 	}
-	
+
 	@GET
 	@Path("/darClientesFrecuentes/{id: \\d+}")
 	public Response darClientesFrecuentes(@PathParam("id") Integer id){
@@ -135,7 +138,7 @@ public class Consultas {
 		}
 		return Response.status(200).entity(resp).build();
 	}
-	
+
 	@POST
 	@Path("/darDatosTopPorTipoAlojamiento")
 	public Response darDatosTopPorTipoAlojamiento(DatosTopPorTipoAlojamiento datos){
@@ -147,6 +150,40 @@ public class Consultas {
 		}catch(NoPermissionException e){
 			return Response.status(403).entity(doErrorMessage(e)).build();
 		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resp).build();
+	}
+
+	@POST
+	@Path("/buenosClientes")
+	public Response darBuenosClientes(ConsultarBuenosClientes ger){
+		AlohAndesTM tm = new AlohAndesTM(getPath());
+		ArrayList<Integer> resp = new ArrayList<Integer>();
+		try{
+			resp = tm.getBuenosClientes(ger);
+		}
+		//		catch(NoPermissionException e){
+		//			return Response.status(403).entity(doErrorMessage(e)).build();
+		//		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resp).build();
+	}
+
+	@POST
+	@Path("/funcionamiento")
+	public Response darFuncionamiento(ConsultarFuncionamiento fun){
+		AlohAndesTM tm = new AlohAndesTM(getPath());
+		ArrayList<Funcionamiento> resp = new ArrayList<Funcionamiento>();
+		try{
+			resp = tm.getFuncionamiento(fun);
+		}
+		//	catch(NoPermissionException e){
+		//		return Response.status(403).entity(doErrorMessage(e)).build();
+		//	}
 		catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
