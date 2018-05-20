@@ -13,13 +13,35 @@ public class Reserva {
 	private String fechaInicio;
 	
 	private String fechaFin;
+	
+	private int masiva;
+	
+	private int ingreso;
 
-	public Reserva(Integer cli, Integer hosp, String inic, String fin) {
+	public Reserva(Integer cli, Integer hosp, String inic, String fin, int masi, int ingre) {
 		super();
 		idCliente = cli;
 		idHospedaje = hosp;
 		fechaInicio = inic;
 		fechaFin = fin;
+		this.masiva = masi;
+		this.ingreso = ingre;
+	}
+
+	public int getMasiva() {
+		return masiva;
+	}
+
+	public void setMasiva(int masiva) {
+		this.masiva = masiva;
+	}
+
+	public int getIngreso() {
+		return ingreso;
+	}
+
+	public void setIngreso(int ingreso) {
+		this.ingreso = ingreso;
 	}
 
 	public Integer getIdCliente() {

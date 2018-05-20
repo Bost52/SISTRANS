@@ -128,7 +128,7 @@ public class AlohAndesTM<T> {
 			}
 
 			//////transaccion
-			Reserva reser = new Reserva(reserva.getIdCliente(), reserva.getIdHospedaje(), reserva.getFechaInic(), reserva.getFechaFin());
+			Reserva reser = new Reserva(reserva.getIdCliente(), reserva.getIdHospedaje(), reserva.getFechaInic(), reserva.getFechaFin(), -1, 0);
 			daoReserva.addReserva(reser, -1);;
 			conn.commit();
 
@@ -225,19 +225,30 @@ public class AlohAndesTM<T> {
 
 	public void deshabilitarOferta(Integer oferta) throws Exception {
 		DAOTablaOferta daoOferta= new DAOTablaOferta();
+		DAOTablaReserva daoReserva = new DAOTablaReserva();
 		try 
 		{
 			this.conn = darConexion();
 			daoOferta.setConn(conn);
+			daoReserva.setConn(conn);
 			//////transaccion
-
+			
+			//autocommit 0
+			conn.setAutoCommit(false);
+			
+			//Aislamiento
+			conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+			
 			Oferta ofer= daoOferta.buscarOferta(oferta);
 			if(ofer==null)
 			{
 				throw new NoSuchElementException("no se puede deshabilitar una oferta inexistente");
 			}
-
-
+			
+			//Re acomodamiento de hospedajes
+			daoReserva.reacomodarHospedajes(oferta);
+			
+			//elimina las ofertas
 			daoOferta.deleteOferta(oferta);
 			conn.commit();
 
@@ -543,7 +554,7 @@ public class AlohAndesTM<T> {
 				System.out.println("existen " + hospedajes.size() + " ofertas que pueden suplir la reserva");
 				//persiste todas las reservas
 				while (cant > 0){
-					Reserva reser = new Reserva(res.getIdUsuario(), hospedajes.get(cant-1), res.getFechaInicio(), res.getFechaFin());
+					Reserva reser = new Reserva(res.getIdUsuario(), hospedajes.get(cant-1), res.getFechaInicio(), res.getFechaFin(), res.getId(), 0);
 					daoReserva.addReserva(reser, res.getId());
 					cant--;
 				}
