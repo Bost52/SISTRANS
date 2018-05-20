@@ -190,4 +190,38 @@ public class Consultas {
 		}
 		return Response.status(200).entity(resp).build();
 	}
+	
+	@POST
+	@Path("/rfc11Ordenamiento")
+	public Response rfc11(Ordenamiento10 datos){
+		AlohAndesTM tm = new AlohAndesTM(getPath());
+		ArrayList<Rpta10Ordenamiento> resp = new ArrayList<Rpta10Ordenamiento>();
+		try {
+			resp = tm.rfc11Ordenamiento(datos);
+
+		}catch(NoPermissionException e){
+			return Response.status(403).entity(doErrorMessage(e)).build();
+		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resp).build();
+	}
+	
+	@POST
+	@Path("/rfc11Agrupamiento")
+	public Response rfc11(Agrupamiento10 datos){
+		AlohAndesTM tm = new AlohAndesTM(getPath());
+		ArrayList<Rpta10Agrupamiento> resp = new ArrayList<Rpta10Agrupamiento>();
+		try {
+			resp = tm.rfc11Agrupamiento(datos);
+
+		}catch(NoPermissionException e){
+			return Response.status(403).entity(doErrorMessage(e)).build();
+		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(resp).build();
+	}
 }

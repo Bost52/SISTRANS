@@ -548,4 +548,66 @@ public class DAOTablaReserva {
 		}
 		return clientes;
 	}
+	
+	public ArrayList<Rpta10Ordenamiento> rfc11Ordenamiento(Ordenamiento10 consulta) throws SQLException, Exception{
+		ArrayList<Rpta10Ordenamiento> clientes = new ArrayList<Rpta10Ordenamiento>();
+
+		String inicioInferior = consulta.getFechaInicioInferior();
+		String inicioSuperior = consulta.getFechaInicioSuperior();
+		String finInferior = consulta.getFechaFinInferior();
+		String finSuperior = consulta.getFechaFinSuperior();
+		Integer idHospedaje = consulta.getIdHospedaje();
+		String ordenamiento = consulta.getOrdenamiento();
+		
+		String sql = "SELECT *\r\n" + 
+				" FROM CLIENTE\r\n" + 
+				" WHERE ID IN (SELECT ID_CLIENTE\r\n" + 
+				" FROM RESERVA\r\n" + 
+				" WHERE ((FECHA_INICIO NOT BETWEEN TO_DATE('"+inicioInferior+"') AND TO_DATE('"+inicioSuperior+"') \r\n" + 
+				" OR (FECHA_TERMINACION NOT BETWEEN TO_DATE('"+finInferior+"') AND TO_DATE('"+finSuperior+"')))) AND ID_HOSPEDAJE = "+idHospedaje+")\r\n" + 
+				" ORDER BY "+ordenamiento+";";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String nombre = rs.getString("NOMBRE");
+			String tipo = rs.getString("TIPO");
+			Integer id = rs.getInt("ID");
+			clientes.add(new Rpta10Ordenamiento(id, nombre, tipo));
+		}
+		return clientes;
+	}
+	
+	public ArrayList<Rpta10Agrupamiento> rfc11Argupamiento(Agrupamiento10 consulta) throws SQLException, Exception{
+		ArrayList<Rpta10Agrupamiento> clientes = new ArrayList<Rpta10Agrupamiento>();
+
+		String inicioInferior = consulta.getFechaInicioInferior();
+		String inicioSuperior = consulta.getFechaInicioSuperior();
+		String finInferior = consulta.getFechaFinInferior();
+		String finSuperior = consulta.getFechaFinSuperior();
+		Integer idHospedaje = consulta.getIdHospedaje();
+		String ordenamiento = consulta.getOrdenamiento();
+		String criterio = consulta.getCriterioAgrupamiento();
+
+		String sql = "SELECT "+ordenamiento+", "+criterio+"(ID)\r\n" + 
+				" FROM CLIENTE\r\n" + 
+				" WHERE ID IN (SELECT ID_CLIENTE\r\n" + 
+				" FROM RESERVA\r\n" + 
+				" WHERE ((FECHA_INICIO NOT BETWEEN TO_DATE('"+inicioInferior+"') AND TO_DATE('"+inicioSuperior+"') \r\n" + 
+				" OR (FECHA_TERMINACION NOT BETWEEN TO_DATE('"+finInferior+"') AND TO_DATE('"+finSuperior+"')))) AND ID_HOSPEDAJE = "+idHospedaje+")\r\n" + 
+				" GROUP BY "+ordenamiento+";";
+
+		PreparedStatement prepStmt = conn.prepareStatement(sql);
+		recursos.add(prepStmt);
+		ResultSet rs = prepStmt.executeQuery();
+
+		while (rs.next()) {
+			String tipo = rs.getString("CRITERIO");
+			Double cri = rs.getDouble("CUENTA");
+			clientes.add(new Rpta10Agrupamiento(cri, tipo));
+		}
+		return clientes;
+	}
 }
