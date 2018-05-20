@@ -56,5 +56,4 @@ public class Funcionamiento {
 		this.hospedaje = hospedaje;
 	}
 	
-	
 }

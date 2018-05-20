@@ -535,7 +535,7 @@ public class DAOTablaReserva {
 			deleteReserva(reacomodables.get(i));
 		}	
 	}
-	
+
 	public ArrayList<Rpta10Ordenamiento> rfc10Ordenamiento(Ordenamiento10 consulta) throws SQLException, Exception{
 		ArrayList<Rpta10Ordenamiento> clientes = new ArrayList<Rpta10Ordenamiento>();
 

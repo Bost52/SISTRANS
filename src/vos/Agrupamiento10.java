@@ -3,7 +3,7 @@ package vos;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public class Agrupamiento10 {
-
+	
 	@JsonProperty(value="fechaInicioInferior")
 	private String fechaInicioInferior;
 
@@ -34,9 +34,7 @@ public class Agrupamiento10 {
 		this.idHospedaje = idHospedaje;
 		this.ordenamiento = ordenamiento;
 	}
-
-
-
+	
 	public String getCriterioAgrupamiento() {
 		return criterioAgrupamiento;
 	}
@@ -96,6 +94,5 @@ public class Agrupamiento10 {
 	public void setIdHospedaje(int idHospedaje) {
 		this.idHospedaje = idHospedaje;
 	}
-
 
 }

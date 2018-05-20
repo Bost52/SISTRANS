@@ -91,7 +91,7 @@ public class Consultas {
 		}
 		return Response.status(200).entity(resp).build();
 	}
-
+	
 	@POST
 	@Path("/darHospedajesDisponiblesConServicio")
 	public Response darHospedajesDisponiblesConServicio(ConsultaHospServicio consulta){
@@ -108,7 +108,7 @@ public class Consultas {
 		}
 		return Response.status(200).entity(resp).build();
 	}
-
+	
 	@GET
 	@Path("/darIndiceDeOcupacionPorHospedaje")
 	public Response darIndiceDeOcupacionPorHospedaje(){
@@ -125,7 +125,7 @@ public class Consultas {
 		}
 		return Response.status(200).entity(resp).build();
 	}
-
+	
 	@GET
 	@Path("/darClientesFrecuentes/{id: \\d+}")
 	public Response darClientesFrecuentes(@PathParam("id") Integer id){
@@ -142,7 +142,7 @@ public class Consultas {
 		}
 		return Response.status(200).entity(resp).build();
 	}
-
+	
 	@POST
 	@Path("/darDatosTopPorTipoAlojamiento")
 	public Response darDatosTopPorTipoAlojamiento(DatosTopPorTipoAlojamiento datos){
@@ -159,6 +159,7 @@ public class Consultas {
 		}
 		return Response.status(200).entity(resp).build();
 	}
+	
 	@POST
 	@Path("/rfc10Ordenamiento")
 	public Response rfc10(Ordenamiento10 datos){
